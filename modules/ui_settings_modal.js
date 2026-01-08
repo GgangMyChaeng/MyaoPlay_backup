@@ -21,6 +21,8 @@ let _rerenderAll = () => {};
 let _updateNowPlayingUI = () => {};
 let _engineTick = () => {};
 let _setDebugMode = () => {};
+let _playAsset = async (_fileKey, _volume01) => {};
+
 
 let _uid = () => `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 
@@ -204,6 +206,7 @@ export function abgmBindSettingsModalDeps(deps = {}) {
   if (typeof deps.updateNowPlayingUI === "function") _updateNowPlayingUI = deps.updateNowPlayingUI;
   if (typeof deps.engineTick === "function") _engineTick = deps.engineTick;
   if (typeof deps.setDebugMode === "function") _setDebugMode = deps.setDebugMode;
+  if (typeof deps.playAsset === "function") _playAsset = deps.playAsset;
   if (typeof deps.uid === "function") _uid = deps.uid;
   if (typeof deps.abgmConfirm === "function") _abgmConfirm = deps.abgmConfirm;
   if (typeof deps.abgmPrompt === "function") _abgmPrompt = deps.abgmPrompt;
@@ -1161,17 +1164,26 @@ if (e.target.classList.contains("abgm_source")) {
       _rerenderAll(root, settings);
       return;
     }
-    // test / runtime play
+    // test / preview play (1회 재생)
     if (e.target.closest(".abgm_test")) {
-      if (settings.keywordMode) return; // 키워드 모드에서는 개별 재생 금지
-      settings.playMode = "manual";
-      if (pm) { pm.value = "manual"; pm.disabled = false; }
-      const ctx = _getSTContextSafe();
-      const chatKey = _getChatKeyFromContext(ctx);
-      settings.chatStates ??= {};
-      settings.chatStates[chatKey] ??= { currentKey: "", listIndex: 0, lastSig: "", defaultPlayedSig: "", prevKey: "" };
-      settings.chatStates[chatKey].currentKey = bgm.fileKey;
-      _saveSettingsDebounced();
+      // 키워드 모드에서는 개별(테스트) 재생 금지 유지
+      if (settings?.keywordMode) {
+        // 원하면 여기서 토스트/안내 띄워도 됨
+        // toast("키워드 모드에서는 개별 재생 불가");
+        return;
+      }
+      const fk = String(bgm?.fileKey ?? "").trim();
+      if (!fk) return;
+      const gv = Number(settings?.globalVolume ?? 0.7);
+      const pv = Number(bgm?.volume ?? 1);
+      const vol01 =
+        (Number.isFinite(gv) ? gv : 0.7) * (Number.isFinite(pv) ? pv : 1);
+
+      try {
+        await _playAsset(fk, vol01);
+      } catch (err) {
+        console.warn("[MyaPl] preview play failed:", err);
+      }
       return;
     }
   });
