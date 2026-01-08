@@ -46,7 +46,8 @@ function playAsset(src, vol01 = 0.6) {
   try {
     if (!_testAudio) {
       _testAudio = new Audio();
-      window.__ABGM_AUDIO_BUS__ ??= { engine: null, freesrc: null };
+      window.__ABGM_AUDIO_BUS__ ??= { engine: null, freesrc: null, preview: null };
+
       window.__ABGM_AUDIO_BUS__.freesrc = _testAudio;
       _testAudio.addEventListener("play", () => window.abgmStopOtherAudio?.("freesrc"));
     }
