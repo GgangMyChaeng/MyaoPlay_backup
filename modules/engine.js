@@ -59,7 +59,7 @@ export function getEngineCurrentPresetId() { return _engineCurrentPresetId; }
 export function setEngineCurrentFileKey(key) { _engineCurrentFileKey = String(key || ""); }
 
 // ===== ABGM audio exclusivity bus =====
-window.__ABGM_AUDIO_BUS__ ??= { engine: null, freesrc: null };
+window.__ABGM_AUDIO_BUS__ ??= { engine: null, freesrc: null, preview: null };
 window.__ABGM_AUDIO_BUS__.engine = _bgmAudio;
 
 // 메인 오디오 재생 시작하면 프리소스 끄기
