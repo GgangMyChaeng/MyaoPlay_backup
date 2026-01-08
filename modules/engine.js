@@ -352,6 +352,7 @@ export function stopRuntime() {
   _engineCurrentFileKey = "";
   _engineCurrentPresetId = "";
   _updateNowPlayingUI();
+  try { delete _bgmAudio.dataset.currentFileKey; } catch {}
 }
 
 // 재생↔일시정지 토글(아무 것도 없으면 engineTick으로 “뭐라도” 재생 시도)
@@ -382,6 +383,7 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
     _bgmUrl = "";
     _bgmAudio.loop = !!loop;
     _bgmAudio.src = fk;
+    _bgmAudio.dataset.currentFileKey = fk;
     _bgmAudio.volume = clamp01(vol01);
     try { await _bgmAudio.play(); } catch {}
     _engineCurrentFileKey = fk;
@@ -395,6 +397,7 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
   _bgmUrl = URL.createObjectURL(blob);
   _bgmAudio.loop = !!loop;
   _bgmAudio.src = _bgmUrl;
+  _bgmAudio.dataset.currentFileKey = fk;
   _bgmAudio.volume = clamp01(vol01);
   try { await _bgmAudio.play(); } catch {}
   _engineCurrentFileKey = fk;
@@ -588,8 +591,18 @@ export function engineTick() {
       _setDebugLine(`[${subMode}] time:${timeKws.length ? timeKws.join(",") : "off"} | ${tokenInfo} | kw:${kws} | hit:${hitName}${hitSource ? "("+hitSource+")" : ""}`);
     }
     const isPlayingNow = !!_engineCurrentFileKey && !_bgmAudio.paused && !_bgmAudio.ended;
-    if (isPlayingNow) return;
-    if (hitKey && hitKey === _engineCurrentFileKey) return;
+    // 재생 중이어도 "볼륨은 항상" 최신으로
+    if (isPlayingNow && _engineCurrentFileKey) {
+      _bgmAudio.loop = false;
+      _bgmAudio.volume = getVol(_engineCurrentFileKey);
+      return;
+    }
+    // 같은 곡이면 재시작은 안 하되 볼륨은 갱신
+    if (hitKey && hitKey === _engineCurrentFileKey) {
+      _bgmAudio.loop = false;
+      _bgmAudio.volume = getVol(hitKey);
+      return;
+    }
     if (hitKey) {
       st.currentKey = "";
       st.defaultPlayedSig = "";
