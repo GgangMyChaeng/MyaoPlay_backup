@@ -1,0 +1,59 @@
+<div class="abgm-fs-wrap" style="
+  max-width: 900px;
+  max-height: 85vh;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 16px;
+  background: rgba(10,10,10,.95);
+  backdrop-filter: blur(12px);
+  overflow-y: auto;
+  overflow: visible;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+">
+  
+  <!-- top row: tabs + close -->
+  <div class="abgm-fs-topbar">
+    <div class="abgm-fs-tabs" role="tablist" aria-label="Sources tabs">
+      <button type="button" class="abgm-fs-tab is-active" data-tab="free" role="tab" aria-selected="true">Free</button>
+      <button type="button" class="abgm-fs-tab" data-tab="my" role="tab" aria-selected="false">My</button>
+    </div>
+
+    <button type="button" class="menu_button abgm-fs-close" title="Close" aria-label="Close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- search row -->
+  <div class="abgm-fs-searchrow">
+    <input id="abgm_fs_search" type="text" placeholder="Search..."
+      class="abgm-fs-search" />
+    <button id="abgm_fs_clear" type="button" class="menu_button abgm-fs-clear">Clear</button>
+  </div>
+
+<div class="abgm-fs-prevrow">
+  <small class="abgm-fs-prevlabel">Preview Volume</small>
+  <input id="abgm_fs_prevvol" class="abgm-fs-prevvol" type="range" min="0" max="100" step="1" value="100" />
+  <span id="abgm_fs_prevvol_val" class="abgm-fs-prevval">100%</span>
+  <button id="abgm_fs_prevvol_lock" class="menu_button abgm-iconbtn abgm-fs-prevlock" title="Lock Preview Volume">🔒</button>
+  <!-- JSON 스니펫 생성 -->
+  <button id="abgm_fs_emit_json" class="menu_button abgm-iconbtn abgm-fs-jsonbtn" title="프리소스 JSON 생성">✎</button>
+</div>
+
+
+  <!-- category bar (tag group selector) -->
+<div id="abgm_fs_catbar" class="abgm-fs-catbar">
+  <button type="button" class="menu_button abgm-fs-cat is-active" data-cat="all">ETC</button>
+  <button type="button" class="menu_button abgm-fs-cat" data-cat="bpm">BPM</button>
+  <button type="button" class="menu_button abgm-fs-cat" data-cat="genre">Genre</button>
+  <button type="button" class="menu_button abgm-fs-cat" data-cat="inst">Inst</button>
+  <button type="button" class="menu_button abgm-fs-cat" data-cat="mood">Mood</button>
+  <button type="button" class="menu_button abgm-fs-cat" data-cat="lyric">Lyric</button>
+</div>
+
+  <!-- dropdown tag picker (overlay style) -->
+  <div id="abgm_fs_tag_picker" class="abgm-fs-picker" style="display:none;"></div>
+
+  <!-- list -->
+  <div id="abgm_fs_list" class="abgm-fs-list"></div>
+</div>

@@ -1,0 +1,664 @@
+<!-- templates/popup.html -->
+<div class="autobgm-modal abgm-surface">
+  <div class="autobgm-modal-h">
+    <b>MyaoPlay Settings</b>
+
+    <div class="modal-header-buttons">
+      <div class="abgm-iconbtn" id="abgm_modal_back" title="Back to Menu">
+        <i class="fa-solid fa-arrow-left fa-lg"></i>
+      </div>
+      <div class="abgm-iconbtn" id="abgm_modal_close" title="Close">
+        <i class="fa-solid fa-xmark fa-lg"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+<div class="myaoplay-tabbar" role="tablist" aria-label="Settings tabs">
+  <button class="myaoplay-tab-btn is-active" role="tab" aria-selected="true" aria-controls="myaoplay-panel-main" id="myaoplay-tab-main" tabindex="0" data-tab="main">
+    🎵 메인
+  </button>
+  <button class="myaoplay-tab-btn" role="tab" aria-selected="false" aria-controls="myaoplay-panel-mode" id="myaoplay-tab-mode" tabindex="-1" data-tab="mode">
+    ⚙️ 모드
+  </button>
+  <button class="myaoplay-tab-btn" role="tab" aria-selected="false" aria-controls="myaoplay-panel-sources" id="myaoplay-tab-sources" tabindex="-1" data-tab="sources">
+    📁 소스
+  </button>
+  <button class="myaoplay-tab-btn" role="tab" aria-selected="false" aria-controls="myaoplay-panel-theme" id="myaoplay-tab-theme" tabindex="-1" data-tab="theme">
+    🎨 테마
+  </button>
+  <button class="myaoplay-tab-btn" role="tab" aria-selected="false" aria-controls="myaoplay-panel-about" id="myaoplay-tab-about" tabindex="-1" data-tab="about">
+    ℹ️ 정보
+  </button>
+</div>
+
+  <!-- Main Panel (기존 콘텐츠) -->
+<div class="myaoplay-tab-panel is-active" role="tabpanel" id="myaoplay-panel-main" aria-labelledby="myaoplay-tab-main" tabindex="0">
+  
+  <!-- 상단 옵션 -->
+<div class="abgm-top-controls">
+
+<!-- Now Playing -->
+<div class="abgm-nowplaying"
+  style="display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;
+         padding:8px 10px; border:1px solid rgba(255,255,255,.12);
+         border-radius:12px; background:rgba(0,0,0,.18); margin:10px 0;">
+  <small style="opacity:.75;">Now Playing</small>
+  <b id="abgm_now_title"
+     style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;">
+    (none)
+  </b>
+</div>
+
+    <div class="abgm-grid">
+      <!-- LEFT: Presets -->
+      <section class="abgm-card">
+        <div class="abgm-card-h">
+          <b>Presets</b>
+          <div class="abgm-row">
+            <div class="menu_button" id="abgm_preset_add" title="New Preset">
+              <i class="fa-solid fa-plus"></i>
+            </div>
+            <div class="menu_button" id="abgm_preset_del" title="Delete Preset">
+              <i class="fa-solid fa-trash"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="abgm-row" style="gap:8px;">
+          <select id="abgm_preset_select" class="abgm-select"></select>
+        </div>
+
+<!-- Default select -->
+<div class="abgm-row abgm-row-between">
+  <!-- Default select (좌측) -->
+  <div class="abgm-top-item" style="min-width:160px;">
+    <small style="opacity:.85;">Default</small>
+    <select id="abgm_default_select" class="abgm-select"></select>
+  </div>
+
+  <!-- Rename (우측) -->
+  <div class="abgm-top-item" style="min-width:auto;">
+    <small style="opacity:.85;">&nbsp;</small>
+    <div id="abgm_preset_rename_btn" class="menu_button abgm-iconbtn" title="Rename Preset">
+      <i class="fa-solid fa-pen"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Global Volume (preset select 하단) -->
+<div class="abgm-top-row1">
+  <div class="abgm-volume-block">
+    <small style="opacity:.85;">Global Volume</small>
+    <div class="abgm-vol-row">
+      <input id="abgm_globalVol" type="range" min="0" max="100" value="70" class="abgm-range">
+      <small id="abgm_globalVolText" style="opacity:.85; width:38px; text-align:right;">70</small>
+
+      <!-- Lock 버튼 추가 -->
+      <div id="abgm_globalVol_lock" class="menu_button abgm-iconbtn" title="Lock Global Volume">
+        <i class="fa-solid fa-lock-open"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="abgm-row abgm-preset-actions" style="gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center;">
+  <div class="menu_button" id="abgm_bind_open" title="Bind this preset to character cards">
+    <i class="fa-solid fa-link"></i> Bind
+  </div>
+
+  <div class="menu_button" id="abgm_modal_help_toggle" title="Modal help">
+    <i class="fa-solid fa-book"></i>
+  </div>
+  
+<div class="menu_button" id="abgm_preset_help_toggle" title="Preset help">
+  <i class="fa-solid fa-book"></i>
+</div>
+
+  <!-- 오른쪽으로 밀기 -->
+  <div class="abgm-row" style="gap:10px; margin-left:auto; flex-wrap:wrap; align-items:center;">
+    <div class="menu_button" id="abgm_import"><i class="fa-solid fa-file-import"></i> Import</div>
+    <div class="menu_button" id="abgm_export"><i class="fa-solid fa-file-export"></i> Export</div>
+  </div>
+
+  <input id="abgm_import_file" type="file" accept="application/json" style="display:none;">
+</div>
+
+        <!-- 모달 설명 -->
+        <div class="abgm-minihelp" id="abgm_modal_help" style="display:none;">
+          <b># AutoBGM 설명</b>
+          <ul>
+  <li>
+    <strong>Now Playing: </strong>
+    현재 재생 중인 곡이나 상태를 확인할 수 있는 작은 창. 키워드 모드를 포함한 다섯 가지 재생 모드 중 무엇인지,
+    현재 재생 중인 곡은 어느 프리셋에 속했는지 간략히 확인할 수 있음.
+  </li>
+  <li>
+    <strong>License / Description(문서): </strong>
+    현재 재생 중인 곡의 라이센스나 설명 등을 볼 수 있는 창임. 해당사항 없으면 안 뜸.
+  </li>
+</ul>
+        </div>
+
+        <!-- 프리셋 설명 -->
+      <div class="abgm-minihelp" id="abgm_preset_help" style="display:none;">
+          <b># Presets 설명</b>
+<ul>
+  <li><strong>프리셋 추가(+): </strong>새 프리셋 생성 기능</li>
+  <li>
+    <strong>삭제(쓰레기통): </strong>
+    현재 프리셋 삭제 기능 → 실수 방지용 쿠션 창(확인 메시지) 뜸
+  </li>
+  <li>
+    <strong>수정(연필): </strong>
+    현재 프리셋 명칭 수정 기능
+  </li>
+  <li>
+    <strong>Default: </strong>
+    프리셋 타이틀곡 설정 기능. "키워드 모드" + "Use Default when no keyword" 활성화 중,
+    AI 마지막 컨텍스트에 인식된 키워드가 없을 때 재생됨.
+    키워드 모드 킨 상태에서 Default도 없고 키워드도 없으면 이전 곡 재생이 유지됨.
+  </li>
+  <li>
+    <strong>Global Volume(전체 볼륨): </strong>
+    BGM별 상세 볼륨을 설정해놨어도, Global Volume으로 전체적인 소리 크기를 한 번 더 조정할 수 있음.
+    프리셋 mp3들의 음량 편차 때문에 쓰기 불편한 상황을 줄이기 위한 쿠션 기능이라고 보면 됨.
+    (세부 볼륨은 BGM List에서 따로 조정하면 됨)
+  </li>
+  <li>
+    <strong>Bind(Bind this preset to character cards): </strong>
+    특정 프리셋을 여러 캐릭터에 종속시키는 기능. Bind 해둔 캐릭터의 채팅에 들어가면 해당 프리셋으로 자동 연결됨
+    (확장 비활성화 상태면 동작 안 함)
+  </li>
+  <li>
+    <strong>Import: </strong>
+    (이름)_AutoBGM.json을 삽입하면, 프리셋 설정(프리셋명/엔트리명/키워드/우선도/볼륨/파일명 또는 URL/라이센스 혹은 설명)만 불러와짐.<br>
+    Url이 아닌 mp3인 경우 파일은 따로 추가해야 하고, 파일명이 프리셋에 등록된 것과 일치하면 정상 동작함.
+  </li>
+  <li>
+    <strong>Export: </strong>
+    위 설정(프리셋명/엔트리명/키워드/우선도/볼륨/파일명 또는 URL/라이센스 혹은 설명)이 저장된 json 파일이 생성됨.<br>
+    mp3 파일까지 같이 공유하려면 사용자가 별도로 세팅해야 함. 공유 시 외부 오디오의 경우 오디오 원저작자의 라이센스 확인 필수.
+  </li>
+</ul>
+        </div>
+      </section>
+
+<!-- RIGHT: BGM List -->
+<section class="abgm-card">
+  <div class="abgm-card-h">
+    <b>BGM List</b>
+    <div class="abgm-row">
+      <div class="menu_button" id="abgm_free_open" title="Free Sources">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      </div>
+      <div class="menu_button" id="abgm_bgm_add" title="Add MP3">
+        <i class="fa-solid fa-music"></i>
+      </div>
+      <div class="menu_button" id="abgm_zip_add" title="Add ZIP">
+        <i class="fa-solid fa-file-zipper"></i>
+      </div>
+      <input id="abgm_zip_file" type="file" accept=".zip,application/zip" style="display:none;">
+    </div>
+  </div>
+
+  <!-- ===== BGM List controls (2 rows + help) ===== -->
+
+  <!-- Row 1: selected count (left) / sort (right) -->
+  <div class="abgm-row abgm-bgmbar1" style="margin-top:8px;">
+    <small id="abgm_selected_count" style="opacity:.75;">0 selected</small>
+
+    <div class="abgm-inline" style="margin-left:auto; min-width:240px;">
+      <small style="opacity:.85;">Sort</small>
+      <select id="abgm_sort" class="abgm-select abgm-select-slim">
+        <option value="priority_desc">Priority (High → Low)</option>
+        <option value="priority_asc">Priority (Low → High)</option>
+        <option value="name_asc">Name (A → Z)</option>
+        <option value="name_desc">Name (Z → A)</option>
+        <option value="added_asc">Added (old → new)</option>
+        <option value="added_desc">Added (new → old)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Row 2: delete+Vol reset+help (left) / add+expand+collapse+lock (right) -->
+<div class="abgm-row abgm-bgmbar2" style="margin-top:8px; align-items:center; gap:10px;">
+  <div class="menu_button" id="abgm_delete_selected" title="Delete selected entries">
+    <i class="fa-solid fa-trash"></i> Ent
+  </div>
+
+  <!-- Vol reset -->
+<div class="menu_button" id="abgm_reset_vol_selected" title="Reset volume of selected">
+  <i class="fa-solid fa-rotate-left"></i> Vol
+</div>
+
+  <!-- help 버튼 -->
+  <div class="menu_button" id="abgm_bgm_help_toggle" title="BGM List help">
+    <i class="fa-solid fa-book"></i>
+  </div>
+
+    <div class="menu_button" id="abgm_bgm_entry_help_toggle" title="BGM List Entry help">
+    <i class="fa-solid fa-book"></i>
+  </div>
+
+  <!-- 우측 정렬 영역 -->
+  <div class="abgm-row" style="margin-left:auto; gap:10px; align-items:center;">
+    <!-- 엔트리 추가 버튼: 책 버튼 원래 자리로 -->
+    <div class="menu_button" id="abgm_bgm_add_row" title="Add empty entry">
+      <i class="fa-solid fa-plus"></i>
+    </div>
+
+    <div class="menu_button" id="abgm_expand_all" title="Expand all rows">
+      <i class="fa-solid fa-angles-down"></i>
+    </div>
+    <div class="menu_button" id="abgm_collapse_all" title="Collapse all rows">
+      <i class="fa-solid fa-angles-up"></i>
+    </div>
+    <div class="menu_button" id="abgm_lock_all_vol" title="Lock all volume sliders">
+      <i class="fa-solid fa-lock"></i>
+    </div>
+  </div>
+
+  <input id="abgm_bgm_file" type="file" accept="audio/mpeg,audio/mp3" style="display:none;">
+</div>
+
+  <!-- 브금 리스트 설명 -->
+  <div class="abgm-minihelp" id="abgm_bgm_help" style="display:none;">
+    <b># BGM List 설명</b>
+    <ul>
+            <li><strong>MP3 파일 추가(음표): </strong>특정 경로에 있는 MP3 파일을 인식시켜줄 수 있음</li>
+            <li><strong>ZIP 파일 추가(ZIP): </strong>특정 경로에 있는 ZIP 파일을(MP3 파일이 들어가 있는 ZIP) 인식시켜줄 수 있음</li>
+            <li><strong>Sort:</strong> BGM List의 파일 정렬 순서 설정 기능임. 참고로 우선도 순은 동일 값일 시 항목 이름 순으로(A-Z) 정렬됨.</li>
+            <li><strong>Ent(쓰레기통):</strong> 선택한 BGM들을 삭제해 주는 기능임. 실수로 삭제하지 말라고 쿠션 창(삭제 확인 메시지) 뜰 거임.</li>
+            <li><strong>Vol(초기화):</strong> 선택한 BGM들의 볼륨 설정을 초기화해 주는 기능임. 얘도 실수로 삭제하지 말라고 쿠션 창(초기화 확인 메시지) 뜰 거임. 참고로 "<strong>Lock all volume sliders</strong>" 기능 활성화 여부와 무관하게 무조건 초기화해 주니 유의 바람.</li>
+            <li><strong>Add empty entry(+): </strong>빈 항목을 만들 수 있는 버튼. 생성된 항목은 Source에 오디오 직링(url)을 입력하거나, Change MP3 버튼을 통해 BGM 연결 가능.</li>
+            <li><strong>Expand all rows(하단): </strong>BGM List 항목들을 전부 펼쳐주는 기능임</li>
+            <li><strong>Collapse all rows(상단): </strong>BGM List 항목들을 전부 접어주는 기능임</li>
+            <li><strong>Lock all volume sliders(자물쇠):</strong> 각 BGM 볼륨을 설정해 주는 슬라이더를 잠가주는 기능임 → 키워드나 우선도 설정하다가 실수로 볼륨 설정 바꿔버리는 경우를 방지해 줌, 다만 볼륨 설정 입력창까지 잠가주진 않으니 그 점 유의 바람. 볼륨 입력창은 눌러서 수치를 입력해야 바뀌니까 굳이 실수할 거라 생각은 안 하고, 디테일한(터치로 하기 불편한 1 단위 조절이라든지) 설정을 할 수 있게 안 잠기게 해둔 거임.</li>
+        </ul>
+  </div>
+  <div class="abgm-minihelp" id="abgm_bgm_entry_help" style="display:none;">
+    <b># BGM List Entry 설명</b>
+    <ul>
+  <li><strong>File: </strong>해당 항목의 이름을 바꿀 수 있는 기능</li>
+  <li><strong>Play: </strong>누르면 재생됨</li>
+  <li>
+    <strong>펼치기/접기(More): </strong>BGM File 각각의 설정을 위한 기능. 항목별로 펼치거나 접을 수 있음</li>
+      <li><strong>Keywords: </strong>해당 BGM이 트리거(재생) 될 키워드 매칭 기능. 쉼표로 구분해 다수 키워드 매칭 가능</li>
+      <li>
+        <strong>Source: </strong>
+        해당 항목에 연결된 파일명 혹은 직링 URL을 볼 수 있는 볼 수 있는(혹은 Url 먹이는) 칸.
+        MP3를 먹여둬 파일명이 적힌 경우 함부로 수정하면 유령 항목이 되니,
+        반드시 "(원본파일명).mp3" 또는 올바른 직링 URL을 유지해야 함
+      </li>
+      <li><strong>Change MP3: </strong>해당 항목에 mp3 파일을 먹이거나 교체하는 기능</li>
+      <li><strong>License / Description: </strong>
+        해당 항목에 먹인 오디오 소스에 대한 라이센스나 설명을 기재할 수 있음. 해당 항목이 재생 중일 시, 작성해 둔 내용이 모달의 Now Playing 하단에 뜸. 작성값이 없을 시 안 뜸.
+</li>
+      <li>
+        <strong>Priority: </strong>
+        여러 키워드가 인식됐을 때 어떤 BGM을 재생할지 결정하는 값.
+        우선도 숫자가 가장 큰 BGM이 재생됨.
+      </li>
+  <li>
+    <strong>Volume: </strong>
+    mp3 파일들의 소리 설정을 각각 따로 할 수 있게 해주는 기능
+    <ul>
+      <li><strong>슬라이더: </strong>좌측(0)~우측(100). 터치로 조정 가능</li>
+      <li><strong>입력칸: </strong>1 단위 같은 미세 조절이 필요할 때 직접 수치 입력</li>
+    </ul>
+  </li>
+  <li>
+    <strong>자물쇠(Lock slider): </strong>
+    실수로 슬라이더를 건드려 볼륨이 바뀌는 걸 방지하는 기능. 눌러서 잠금/해제 가능
+  </li>
+  <li>
+    <strong>복사(종이): </strong>
+    해당 항목을 특정 프리셋에 복사해 주는 기능
+  </li>
+  <li>
+    <strong>이동(화살표): </strong>
+    해당 항목을 특정 프리셋에 이동해 주는 기능
+  </li>
+  <li>
+    <strong>삭제(쓰레기통): </strong>
+    해당 항목을 리스트에서 삭제하는 기능 → 실수 방지용 쿠션 창(확인 메시지) 뜸
+  </li>
+</ul>
+    </div>
+
+  <!-- 집 나갔던 파일들 -->
+  <div class="abgm-tablewrap">
+    <table class="abgm-table">
+      <thead>
+        <tr>
+          <th class="abgm-col-check">
+            <input type="checkbox" id="abgm_sel_all" title="Select all">
+          </th>
+          <th>File</th>
+          <th style="width:92px;">Play</th>
+          <th style="width:64px;">More</th>
+        </tr>
+      </thead>
+      <tbody id="abgm_bgm_tbody"></tbody>
+    </table>
+  </div>
+</section>
+    </div>
+  </div>
+</div>
+<!-- /Main Panel -->
+
+<!-- Mode Panel -->
+<div class="myaoplay-tab-panel" role="tabpanel" id="myaoplay-panel-mode" aria-labelledby="myaoplay-tab-mode" tabindex="0">
+  
+  <!-- Mode Sub-tabs -->
+  <div class="abgm-mode-subtabs" role="tablist" aria-label="Mode sub-tabs">
+    <button type="button" class="abgm-mode-subtab is-active" data-mode-tab="keyword" role="tab" aria-selected="true">🎤 Keyword</button>
+    <button type="button" class="abgm-mode-subtab" data-mode-tab="time" role="tab" aria-selected="false">⏰ Time</button>
+    <button type="button" class="abgm-mode-subtab" data-mode-tab="sfx" role="tab" aria-selected="false">🔊 SFX</button>
+  </div>
+
+  <!-- Keyword Mode Settings -->
+  <div class="abgm-mode-subpanel is-active" id="abgm-mode-keyword" data-mode-panel="keyword">
+    <div class="abgm-card" style="padding:15px;">
+      <b>키워드 모드 세부 설정</b>
+      
+      <div class="abgm-field" style="margin-top:12px;">
+        <small style="opacity:.85;">작동 방식</small>
+        <select id="abgm_kw_submode" class="abgm-select" style="margin-top:4px;">
+          <option value="matching">Matching (기존 방식)</option>
+          <option value="token">Token (AI 토큰 인식)</option>
+          <option value="hybrid">Hybrid (토큰 우선, 매칭 보조)</option>
+        </select>
+      </div>
+
+      <div class="abgm-kw-mode-desc" style="margin-top:10px; padding:10px; background:rgba(0,0,0,.2); border-radius:8px; font-size:12px; line-height:1.4;">
+        <div id="abgm_kw_mode_desc_matching">
+          <b>Matching:</b> AI 마지막 메시지에서 BGM List에 설정한 키워드를 직접 찾아 매칭합니다. (기존 방식)
+        </div>
+        <div id="abgm_kw_mode_desc_token" style="display:none;">
+          <b>Token:</b> AI가 <code>{{🎤🐱:keyword}}</code> 형식으로 출력한 토큰만 인식합니다. 프롬프트 설정이 필요합니다.
+        </div>
+        <div id="abgm_kw_mode_desc_hybrid" style="display:none;">
+          <b>Hybrid:</b> 토큰을 우선 인식하고, 토큰이 없으면 기존 매칭 방식으로 폴백합니다.
+        </div>
+      </div>
+
+      <!-- Token/Hybrid 전용: 프롬프트 설정 -->
+      <div id="abgm_kw_prompt_section" style="display:none; margin-top:15px; border-top:1px solid rgba(255,255,255,.1); padding-top:15px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+          <b style="font-size:13px;">📝 프롬프트 프리셋</b>
+          <div style="display:flex; gap:6px;">
+            <select id="abgm_kw_prompt_preset" class="abgm-select" style="min-width:120px;"></select>
+            <div class="menu_button abgm-iconbtn" id="abgm_kw_prompt_add" title="New Preset">
+              <i class="fa-solid fa-plus"></i>
+            </div>
+            <div class="menu_button abgm-iconbtn" id="abgm_kw_prompt_del" title="Delete Preset">
+              <i class="fa-solid fa-trash"></i>
+            </div>
+            <div class="menu_button abgm-iconbtn" id="abgm_kw_prompt_rename" title="Rename Preset">
+              <i class="fa-solid fa-pen"></i>
+            </div>
+          </div>
+        </div>
+        
+        <textarea id="abgm_kw_prompt_content" class="abgm-textarea" rows="10" style="margin-top:10px; width:100%; font-size:12px; line-height:1.4; resize:vertical;" placeholder="프롬프트 내용..."></textarea>
+        
+        <div style="margin-top:10px; padding:10px; background:rgba(0,0,0,.25); border-radius:8px; font-size:11px; line-height:1.5;">
+          <b>💡 매크로 안내</b><br>
+          • <code>{{mya_k}}</code>: 현재 프리셋의 모든 키워드로 치환됩니다.<br>
+          • <code>{{mya_p}}</code>: SillyTavern 프롬프트에서 이 프롬프트 전체로 치환됩니다.<br>
+          <span style="opacity:.7;">(World Info나 System Prompt 등 원하는 곳에 <code>{{mya_p}}</code>를 넣으세요)</span>
+        </div>
+      </div>
+
+      <!-- 기존 키워드 모드 옵션들 -->
+      <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,.1); padding-top:15px;">
+        <b style="font-size:13px;">⚙️ 공통 옵션</b>
+        
+        <label class="abgm-check" style="margin-top:10px;">
+          <input type="checkbox" id="abgm_mode_kw_enabled">
+          <span>Keyword Mode 활성화</span>
+        </label>
+        
+        <label class="abgm-check" style="margin-top:8px;">
+          <input type="checkbox" id="abgm_mode_kw_once">
+          <span>Once (한 번만 재생 후 정지)</span>
+        </label>
+        
+        <label class="abgm-check" style="margin-top:8px;">
+          <input type="checkbox" id="abgm_mode_use_default">
+          <span>Use Default (키워드 없을 시 기본곡 재생)</span>
+        </label>
+        
+        <label class="abgm-check" style="margin-top:8px;">
+          <input type="checkbox" id="abgm_mode_debug">
+          <span>Debug Mode (디버그 정보 표시)</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+<!-- Time Mode Settings -->
+  <div class="abgm-mode-subpanel" id="abgm-mode-time" data-mode-panel="time" style="display:none;">
+    <div class="abgm-card" style="padding:15px;">
+      <b>⏰ 타임 모드 설정</b>
+      <p style="opacity:.7; margin-top:6px; font-size:12px;">
+        시간에 따라 자동으로 키워드를 추가합니다. (키워드 모드와 함께 사용)
+      </p>
+
+      <!-- Time Mode Enable -->
+      <div class="abgm-row" style="margin-top:12px; gap:10px; align-items:center;">
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+          <input type="checkbox" id="abgm_time_enabled" />
+          <span>Time Mode 활성화</span>
+        </label>
+      </div>
+
+      <!-- Source: Token / Realtime -->
+      <div class="abgm-time-section" id="abgm_time_source_section" style="margin-top:14px;">
+        <small style="opacity:.85;">시간 소스</small>
+        <div class="abgm-row" style="gap:12px; margin-top:6px;">
+          <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+            <input type="radio" name="abgm_time_source" value="token" id="abgm_time_source_token" />
+            <span>🔤 토큰 (AI 지문에서 추출)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+            <input type="radio" name="abgm_time_source" value="realtime" id="abgm_time_source_realtime" />
+            <span>🕐 리얼타임 (시스템 시간)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Scheme: 4분할 / 2분할 -->
+      <div class="abgm-time-section" id="abgm_time_scheme_section" style="margin-top:14px;">
+        <small style="opacity:.85;">시간 구간</small>
+        <div class="abgm-row" style="gap:12px; margin-top:6px;">
+          <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+            <input type="radio" name="abgm_time_scheme" value="day4" id="abgm_time_scheme_day4" />
+            <span>4분할 (아침/낮/저녁/밤)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+            <input type="radio" name="abgm_time_scheme" value="ampm2" id="abgm_time_scheme_ampm2" />
+            <span>2분할 (오전/오후)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Day4 구간 설정 -->
+      <div class="abgm-time-slots" id="abgm_time_day4_slots" style="margin-top:14px;">
+        <small style="opacity:.85;">4분할 구간 설정</small>
+        <div class="abgm-time-slot-list" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
+          <div class="abgm-time-slot" data-slot-id="morning">
+            <span class="abgm-time-slot-label">🌅 아침</span>
+            <input type="text" class="abgm-time-kw" data-field="keywords" placeholder="아침, Morning" />
+            <input type="time" class="abgm-time-start" data-field="start" />
+            <span>~</span>
+            <input type="time" class="abgm-time-end" data-field="end" />
+          </div>
+          <div class="abgm-time-slot" data-slot-id="day">
+            <span class="abgm-time-slot-label">☀️ 낮</span>
+            <input type="text" class="abgm-time-kw" data-field="keywords" placeholder="낮, Daytime" />
+            <input type="time" class="abgm-time-start" data-field="start" />
+            <span>~</span>
+            <input type="time" class="abgm-time-end" data-field="end" />
+          </div>
+          <div class="abgm-time-slot" data-slot-id="evening">
+            <span class="abgm-time-slot-label">🌆 저녁</span>
+            <input type="text" class="abgm-time-kw" data-field="keywords" placeholder="저녁, Evening" />
+            <input type="time" class="abgm-time-start" data-field="start" />
+            <span>~</span>
+            <input type="time" class="abgm-time-end" data-field="end" />
+          </div>
+          <div class="abgm-time-slot" data-slot-id="night">
+            <span class="abgm-time-slot-label">🌙 밤</span>
+            <input type="text" class="abgm-time-kw" data-field="keywords" placeholder="밤, Night" />
+            <input type="time" class="abgm-time-start" data-field="start" />
+            <span>~</span>
+            <input type="time" class="abgm-time-end" data-field="end" />
+          </div>
+        </div>
+      </div>
+
+      <!-- AMPM2 구간 설정 -->
+      <div class="abgm-time-slots" id="abgm_time_ampm2_slots" style="margin-top:14px; display:none;">
+        <small style="opacity:.85;">2분할 구간 설정</small>
+        <div class="abgm-time-slot-list" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
+          <div class="abgm-time-slot" data-slot-id="am">
+            <span class="abgm-time-slot-label">🌤️ 오전</span>
+            <input type="text" class="abgm-time-kw" data-field="keywords" placeholder="오전, AM" />
+            <input type="time" class="abgm-time-start" data-field="start" />
+            <span>~</span>
+            <input type="time" class="abgm-time-end" data-field="end" />
+          </div>
+          <div class="abgm-time-slot" data-slot-id="pm">
+            <span class="abgm-time-slot-label">🌙 오후</span>
+            <input type="text" class="abgm-time-kw" data-field="keywords" placeholder="오후, PM" />
+            <input type="time" class="abgm-time-start" data-field="start" />
+            <span>~</span>
+            <input type="time" class="abgm-time-end" data-field="end" />
+          </div>
+        </div>
+      </div>
+
+      <!-- 도움말 -->
+      <div class="abgm-minihelp" style="margin-top:14px; padding:10px; background:rgba(0,0,0,.2); border-radius:8px; font-size:12px;">
+        <b>💡 사용법</b>
+        <ul style="margin:6px 0 0 16px; padding:0; line-height:1.5;">
+          <li><b>토큰 모드</b>: AI 지문에서 "13:00", "오후 3시", "9pm" 같은 시간 표현을 인식</li>
+          <li><b>리얼타임</b>: 현재 시스템 시간을 사용</li>
+          <li>인식된 시간이 해당 구간에 속하면, 설정된 키워드가 자동으로 추가됨</li>
+          <li>자정을 넘기는 구간도 지원 (예: 21:00~04:59)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SFX Mode Settings (준비 중) -->
+  <div class="abgm-mode-subpanel" id="abgm-mode-sfx" data-mode-panel="sfx" style="display:none;">
+    <div class="abgm-card" style="padding:15px;">
+      <b>SFX 모드 세부 설정</b>
+      <p style="opacity:.7; margin-top:10px;">🚧 준비 중...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Sources Panel -->
+<div class="myaoplay-tab-panel" role="tabpanel" id="myaoplay-panel-sources" aria-labelledby="myaoplay-tab-sources" tabindex="0">
+  <!-- Free Sources 내용 시작 -->
+  <div class="abgm-fs-inner">
+    <!-- tabs: Free / My -->
+    <div class="abgm-fs-tabs" role="tablist" aria-label="Sources tabs">
+      <button type="button" class="abgm-fs-tab is-active" data-tab="free" role="tab" aria-selected="true">Free</button>
+      <button type="button" class="abgm-fs-tab" data-tab="my" role="tab" aria-selected="false">My</button>
+    </div>
+    <!-- search row -->
+    <div class="abgm-fs-searchrow">
+      <input id="abgm_fs_search" type="text" placeholder="Search..." class="abgm-fs-search" />
+      <button id="abgm_fs_clear" type="button" class="menu_button abgm-fs-clear">Clear</button>
+    </div>
+    <!-- preview volume row -->
+    <div class="abgm-fs-prevrow" aria-label="Preview volume">
+      <small class="abgm-fs-prevlabel">Preview</small>
+      <input id="abgm_fs_prevvol" type="range" min="0" max="100" step="1" class="abgm-fs-prevvol" value="60" />
+      <span id="abgm_fs_prevvol_val" class="abgm-fs-prevval">60%</span>
+      <button id="abgm_fs_prevvol_lock" type="button" class="menu_button abgm-iconbtn abgm-fs-prevlock" title="Lock slider">
+        <i class="fa-solid fa-lock-open"></i>
+      </button>
+      <button id="abgm_fs_emit_json" type="button" class="menu_button abgm-iconbtn abgm-fs-jsonbtn" title="프리소스 JSON 생성">✎</button>
+    </div>
+    <!-- category bar -->
+    <div id="abgm_fs_catbar" class="abgm-fs-catbar">
+      <button type="button" class="menu_button abgm-fs-cat is-active" data-cat="all">ETC</button>
+      <button type="button" class="menu_button abgm-fs-cat" data-cat="bpm">BPM</button>
+      <button type="button" class="menu_button abgm-fs-cat" data-cat="genre">Genre</button>
+      <button type="button" class="menu_button abgm-fs-cat" data-cat="inst">Inst</button>
+      <button type="button" class="menu_button abgm-fs-cat" data-cat="mood">Mood</button>
+      <button type="button" class="menu_button abgm-fs-cat" data-cat="lyric">Lyric</button>
+    </div>
+    <!-- dropdown tag picker -->
+    <div id="abgm_fs_tag_picker" class="abgm-fs-picker" style="display:none;"></div>
+    <!-- list -->
+    <div id="abgm_fs_list" class="abgm-fs-list"></div>
+  </div>
+</div>
+
+<!-- Theme Panel -->
+<div class="myaoplay-tab-panel" role="tabpanel" id="myaoplay-panel-theme" aria-labelledby="myaoplay-tab-theme" tabindex="0">
+  <div class="abgm-card" style="padding:15px;">
+    <b>테마 설정</b>
+    <p style="margin-top:10px; margin-bottom:12px;">테마를 선택하세요.</p>
+    <div class="abgm-theme-btns" style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button type="button" class="menu_button abgm-theme-btn" data-theme="light">
+        ☀️ 라이트
+      </button>
+      <button type="button" class="menu_button abgm-theme-btn" data-theme="dark">
+        🌙 다크
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- About Panel -->
+<div class="myaoplay-tab-panel" role="tabpanel" id="myaoplay-panel-about" aria-labelledby="myaoplay-tab-about" tabindex="0">
+  <div class="abgm-card" style="padding:15px;">
+    <b>MyaoPlay 정보</b>
+    <p style="opacity:.7; margin-top:10px;">버전, 크레딧 등 🚧 준비 중...</p>
+  </div>
+</div>
+  
+  <!-- Bind Overlay (covers modal) -->
+  <div id="abgm_bind_overlay" style="
+  display:none;
+  position:fixed;
+  left:0; top:0;
+  width:100vw;
+  height:100vh;
+  height:100dvh;
+  z-index:9999999;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  padding-top:calc(12px + env(safe-area-inset-top));
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  box-sizing:border-box;
+  background:rgba(0,0,0,.55);
+">
+
+    <div style="width:min(560px, calc(100vw - 24px)); height:min(70dvh, 560px); background:rgba(20,20,20,.98); border:1px solid rgba(255,255,255,.14); border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.55);">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 12px 10px 12px; border-bottom:1px solid rgba(255,255,255,.10); gap:10px;">
+        <b id="abgm_bind_title">Bind Preset</b>
+        <div class="menu_button" id="abgm_bind_close" title="Close">
+          <i class="fa-solid fa-xmark fa-lg"></i>
+        </div>
+      </div>
+
+      <div style="padding:10px 12px; height:calc(100% - 52px); display:flex; flex-direction:column; gap:10px;">
+        <small id="abgm_bind_sub" style="opacity:.75;">Select a character</small>
+        <div id="abgm_bind_list" style="flex:1; overflow:auto; display:flex; flex-direction:column; gap:8px; padding:2px;"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
