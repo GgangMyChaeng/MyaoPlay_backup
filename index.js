@@ -39,10 +39,31 @@ const ABGM_DRAWER_ICON = {
 const _testAudio = new Audio();
 let _testUrl = "";
 
+// preview(테스트 재생)도 audio bus에 등록
+window.__ABGM_AUDIO_BUS__ ??= { engine: null, freesrc: null, preview: null };
+window.__ABGM_AUDIO_BUS__.preview = _testAudio;
+
+// preview 재생 시작하면: 엔진(BGM)은 stop 말고 pause만
+_testAudio.addEventListener("play", () => {
+  const eng = window.__ABGM_AUDIO_BUS__?.engine;
+  if (eng && !eng.paused) {
+    eng.__abgmPausedByPreview = true;
+    eng.pause();
+  }
+});
+
+// preview 끝나면 표시 해제
+const _clearPreviewFlag = () => {
+  const eng = window.__ABGM_AUDIO_BUS__?.engine;
+  if (eng) eng.__abgmPausedByPreview = false;
+};
+_testAudio.addEventListener("ended", _clearPreviewFlag)
+
 // 파일키나 URL로 테스트 재생 (모달에서 Play 버튼 누를 때)
 async function playAsset(fileKey, volume01) {
   const fk = String(fileKey ?? "").trim();
   if (!fk) return;
+  _testAudio.dataset.currentFileKey = fk;
   // 1) URL이면 그대로 재생
   if (isProbablyUrl(fk)) {
     if (_testUrl) URL.revokeObjectURL(_testUrl);
@@ -625,10 +646,3 @@ function bindDepsOnce() {
     console.error("[MyaPl] boot failed", e);
   }
 })();
-
-
-
-
-
-
-
