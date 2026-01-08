@@ -65,6 +65,64 @@ let _ensureBgmNames = (_preset) => {};
 
 
 
+/** ========================= 볼륨 갱신 헬퍼 ========================= */
+function _findEntryByFileKeyAnywhere(settings, fk) {
+  const key = String(fk ?? "").trim();
+  if (!key) return null;
+
+  // 1) 현재 선택 프리셋 우선
+  const ap = _getActivePreset(settings);
+  const hit1 = (ap?.bgms ?? []).find(b => String(b?.fileKey ?? "") === key);
+  if (hit1) return hit1;
+
+  // 2) 전체 프리셋에서 탐색 (프리셋 바인딩 케이스 대비)
+  for (const p of Object.values(settings?.presets ?? {})) {
+    const hit = (p?.bgms ?? []).find(b => String(b?.fileKey ?? "") === key);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+function _calcVol01(settings, fk) {
+  const gv = Number(settings?.globalVolume ?? 0.7);
+  const entry = _findEntryByFileKeyAnywhere(settings, fk);
+  const pv = Number(entry?.volume ?? 1);
+  const vol = (Number.isFinite(gv) ? gv : 0.7) * (Number.isFinite(pv) ? pv : 1);
+  return Math.max(0, Math.min(1, vol));
+}
+
+function _applyLiveVolumeForKey(settings, fk) {
+  const key = String(fk ?? "").trim();
+  if (!key) return;
+  const bus = window.__ABGM_AUDIO_BUS__;
+  if (!bus) return;
+
+  const v = _calcVol01(settings, key);
+
+  try {
+    if (bus.engine && String(bus.engine.dataset?.currentFileKey ?? "") === key) {
+      bus.engine.volume = v;
+    }
+  } catch {}
+
+  try {
+    if (bus.preview && String(bus.preview.dataset?.currentFileKey ?? "") === key) {
+      bus.preview.volume = v;
+    }
+  } catch {}
+}
+
+function _applyLiveVolumeForCurrentAudios(settings) {
+  const bus = window.__ABGM_AUDIO_BUS__;
+  if (!bus) return;
+  const ek = bus.engine?.dataset?.currentFileKey;
+  if (ek) _applyLiveVolumeForKey(settings, ek);
+  const pk = bus.preview?.dataset?.currentFileKey;
+  if (pk) _applyLiveVolumeForKey(settings, pk);
+}
+
+
+
 /** ========================= Tab System Functions ========================= */
 // ===== Tab Configuration =====
 const SETTINGS_TABS = [
@@ -602,6 +660,7 @@ export function initModal(overlay) {
     const v = Number(e.target.value);
     settings.globalVolume = Math.max(0, Math.min(1, v / 100));
     if (gvText) gvText.textContent = String(v);
+    _applyLiveVolumeForCurrentAudios(settings);
     _saveSettingsDebounced();
     _engineTick();
   });
@@ -1005,6 +1064,7 @@ if (e.target.classList.contains("abgm_source")) {
       if (bgm.volLocked) return;
       const v = Math.max(0, Math.min(100, Number(e.target.value || 100)));
       bgm.volume = v / 100;
+      _applyLiveVolumeForKey(settings, bgm.fileKey);
       _engineTick();
       const n = detailRow.querySelector(".abgm_volnum");
       if (n) n.value = String(v);
@@ -1012,6 +1072,7 @@ if (e.target.classList.contains("abgm_source")) {
     if (e.target.classList.contains("abgm_volnum")) {
       const v = Math.max(0, Math.min(100, Number(e.target.value || 100)));
       bgm.volume = v / 100;
+      _applyLiveVolumeForKey(settings, bgm.fileKey);
       _engineTick();
       if (!bgm.volLocked) {
         const r = detailRow.querySelector(".abgm_vol");
