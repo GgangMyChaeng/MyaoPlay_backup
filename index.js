@@ -45,6 +45,7 @@ window.__ABGM_AUDIO_BUS__.preview = _testAudio;
 
 // preview 재생 시작하면: 엔진(BGM)은 stop 말고 pause만
 _testAudio.addEventListener("play", () => {
+  window.abgmStopOtherAudio?.("preview");
   const eng = window.__ABGM_AUDIO_BUS__?.engine;
   if (eng && !eng.paused) {
     eng.__abgmPausedByPreview = true;
@@ -94,11 +95,11 @@ async function playAsset(fileKey, volume01) {
 
 
 /** ====================== 오디오 배타 제어 (index.js에 남김) ====================== */
-// 메인/프리소스 중 하나만 재생되게 (다른 건 페이드아웃)
+// 메인/프리소스/테스트 중 하나만 재생되게 (다른 건 페이드아웃)
 window.abgmStopOtherAudio = function(kind) {
   const bus = window.__ABGM_AUDIO_BUS__;
   if (!bus) return;
-  const FADE_MS = 120; // > 80~200 페이드아웃은 취향
+  const FADE_MS = 120;
   const hardStop = (a) => {
     try {
       if (!a) return;
@@ -122,9 +123,8 @@ window.abgmStopOtherAudio = function(kind) {
         if (a.__abgmFadeToken !== token) return;
         const p = Math.min(1, (now - t0) / ms);
         try { a.volume = Math.max(0, v0 * (1 - p)); } catch {}
-        if (p < 1 && !a.paused) {
-          a.__abgmFadeRAF = requestAnimationFrame(tick);
-        } else {
+        if (p < 1 && !a.paused) a.__abgmFadeRAF = requestAnimationFrame(tick);
+        else {
           hardStop(a);
           try { a.volume = v0; } catch {}
         }
@@ -134,8 +134,13 @@ window.abgmStopOtherAudio = function(kind) {
       hardStop(a);
     }
   };
-  if (kind !== "engine") fadeStop(bus.engine);
+  // rules:
+  // - freesrc가 켜지면 engine은 꺼도 됨(기존 동작)
+  // - preview(test)가 켜질 땐 engine은 "pause"로 따로 처리하니까 여기선 건드리지 말자
+  if (kind !== "engine" && kind !== "preview") fadeStop(bus.engine);
+  // 나머진 다 서로 배타
   if (kind !== "freesrc") fadeStop(bus.freesrc);
+  if (kind !== "preview") fadeStop(bus.preview);
 };
 
 
