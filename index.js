@@ -71,7 +71,8 @@ async function playAsset(fileKey, volume01) {
     _testAudio.pause();
     _testAudio.currentTime = 0;
     _testAudio.src = fk;
-    _testAudio.volume = Math.max(0, Math.min(1, volume01));
+    const v = Number(volume01);
+    _testAudio.volume = Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : 1;
     _testAudio.play().catch(() => {});
     return;
   }
@@ -578,6 +579,7 @@ function bindDepsOnce() {
     getEntryName,
     ensureBgmNames,
     saveSettingsDebounced,
+    playAsset,
     
     uid,
     abgmConfirm,
