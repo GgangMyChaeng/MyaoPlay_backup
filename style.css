@@ -69,10 +69,10 @@
   --abgm-table-row-expanded: rgba(74, 127, 216, 0.06);
   
   /* Floating Menu (glassmorphism - keep semi-transparent) */
-  --abgm-floating-glass: rgba(255, 255, 255, 0.12);
-  --abgm-floating-btn-bg: rgba(255, 255, 255, 0.08);
-  --abgm-floating-btn-border: rgba(255, 255, 255, 0.15);
-  --abgm-floating-btn-hover: rgba(255, 255, 255, 0.18);
+  --abgm-floating-glass: rgba(255, 255, 255, 0.06);
+  --abgm-floating-btn-bg: rgba(255, 255, 255, 0.05);
+  --abgm-floating-btn-border: rgba(255, 255, 255, 0.12);
+  --abgm-floating-btn-hover: rgba(255, 255, 255, 0.10);
   
   /* Debug toast */
   --abgm-toast-bg: rgba(255, 255, 255, 0.92);
@@ -139,10 +139,10 @@
   --abgm-table-row-expanded: rgba(255, 255, 255, 0.02);
   
   /* Floating Menu */
-  --abgm-floating-glass: rgba(255, 255, 255, 0.12);
-  --abgm-floating-btn-bg: rgba(255, 255, 255, 0.06);
-  --abgm-floating-btn-border: rgba(255, 255, 255, 0.12);
-  --abgm-floating-btn-hover: rgba(255, 255, 255, 0.12);
+  --abgm-floating-glass: rgba(0, 0, 0, 0.25);
+  --abgm-floating-btn-bg: rgba(0, 0, 0, 0.18);
+  --abgm-floating-btn-border: rgba(255, 255, 255, 0.08);
+  --abgm-floating-btn-hover: rgba(255, 255, 255, 0.06);
   
   /* Debug toast */
   --abgm-toast-bg: rgba(30, 30, 40, 0.95);
@@ -270,11 +270,11 @@
   background: var(--abgm-floating-glass);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--abgm-floating-btn-border);
   border-radius: 24px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 var(--abgm-floating-btn-border);
 }
 
 .abgm-floating-menu.is-open {
