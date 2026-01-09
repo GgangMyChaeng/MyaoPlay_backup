@@ -278,14 +278,14 @@ overlay.innerHTML = `
       <div class="abgm-np-glass-inner">
         <!-- ===== Page: NP (Home) ===== -->
         <div data-abgm-page="np">
-          <!-- 상단 그룹: art + title + preset -->
+          <!-- 상단 그룹: art -->
           <div class="abgm-np-top-group">
             <div class="abgm-np-art" id="abgm_np_art" data-view="image" style="cursor:pointer;"></div>
+          </div>
+          <!-- 하단 그룹: title + preset + seek + ctrl + bottom -->
+          <div class="abgm-np-bottom-group">
             <div class="abgm-np-title" id="abgm_np_title">(none)</div>
             <div class="abgm-np-sub" id="abgm_np_preset">Preset</div>
-          </div>
-          <!-- 하단 그룹: seek + ctrl + bottom -->
-          <div class="abgm-np-bottom-group">
             <div class="abgm-np-seek-wrap">
               <input id="abgm_np_seek" class="abgm-np-seek" type="range" min="0" max="0" value="0" />
               <div class="abgm-np-time">
@@ -298,7 +298,7 @@ overlay.innerHTML = `
                 <img id="abgm_np_prev_icon" src="${ABGM_NP_CTRL_ICON.prev}" class="abgm-np-icon" alt="prev"/>
               </button>
               <button class="abgm-np-btn abgm-np-btn-main" type="button" id="abgm_np_play" title="Play/Pause">
-               <img src="https://i.postimg.cc/SR9HXrhj/Play.png" class="abgm-np-icon" alt="play"/>
+                <img src="https://i.postimg.cc/SR9HXrhj/Play.png" class="abgm-np-icon" alt="play"/>
               </button>
               <button class="abgm-np-btn" type="button" id="abgm_np_next" title="Next" disabled>
                 <img id="abgm_np_next_icon" src="${ABGM_NP_CTRL_ICON.next}" class="abgm-np-icon" alt="next"/>
@@ -453,12 +453,7 @@ overlay.innerHTML = `
     closeNowPlayingGlass();
     openFloatingMenu();
   });
-  // 1) 사이즈 맞추기
-  try {
-    NP.fitModalToHost(overlay, host);
-    requestAnimationFrame(() => NP.fitModalToHost(overlay, host));
-    setTimeout(() => NP.fitModalToHost(overlay, host), 120);
-  } catch {}
+  // 1) (NP Glass는 CSS aspect-ratio로 자체 사이징 (fitModalToHost 호출 X))
   window.addEventListener("keydown", onNpGlassEsc);
   // 2) 초기 업데이트
   bindNowPlayingEventsOnce();
