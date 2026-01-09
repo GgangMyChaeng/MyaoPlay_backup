@@ -59,6 +59,32 @@ export async function idbDel(key) {
 
 
 
+/** ========================= 이미지 전용 헬퍼 ========================= */
+// 이미지 키 생성 (fileKey 기반으로 충돌 방지)
+export function makeImageKey(bgmId) {
+  return `img_${bgmId}`;
+}
+
+// 이미지 Blob 저장 (bgm.id 기반 키 사용)
+export async function idbPutImage(bgmId, blob) {
+  const key = makeImageKey(bgmId);
+  return idbPut(key, blob);
+}
+
+// 이미지 Blob 가져오기
+export async function idbGetImage(bgmId) {
+  const key = makeImageKey(bgmId);
+  return idbGet(key);
+}
+
+// 이미지 삭제
+export async function idbDelImage(bgmId) {
+  const key = makeImageKey(bgmId);
+  return idbDel(key);
+}
+
+
+
 /** ========================= Settings.assets 보정 (settings.js 안에 비슷한 애 있으니 나중에 하나로 통일 필요) ========================= */
 // settings.assets가 없으면 만들고 그 객체를 리턴 (fileKey -> {fileKey,label})
 export function ensureAssetList(settings) {
