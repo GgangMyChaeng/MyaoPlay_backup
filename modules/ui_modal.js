@@ -344,8 +344,7 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
               <div class="abgm-image-preview" style="
                 width:100%; aspect-ratio:1/1; max-height:200px;
                 display:flex; align-items:center; justify-content:center;
-                background:rgba(0,0,0,.15); border-radius:8px;
-                overflow:hidden; position:relative;
+                border-radius:8px; overflow:hidden; position:relative;
               ">
                 <div class="abgm-image-placeholder" style="opacity:.5; font-size:12px; text-align:center;">
                   이미지 없음
@@ -357,8 +356,7 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
               <div style="display:flex; gap:6px; align-items:center;">
                 <input type="text" class="abgm-image-url" placeholder="이미지 URL 붙여넣기..." 
                   value="${escapeHtml(imageUrl)}"
-                  style="flex:1; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,.14); 
-                         background:rgba(0,0,0,.25); color:inherit; font-size:12px;" />
+                  style="flex:1; padding:8px; border-radius:6px; font-size:12px;" />
                 <button type="button" class="menu_button abgm-image-url-apply" title="URL 적용" 
                   style="padding:6px 10px; font-size:12px;">적용</button>
               </div>
@@ -377,12 +375,7 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
             <textarea class="abgm-entry-textarea" data-field="license" placeholder="예) CC BY 4.0 / 출처 링크 / 사용조건 요약...">${escapeHtml(license)}</textarea>
           </div>
           <div class="abgm-entry-panel" data-panel="lyrics" style="display:none;">
-            <textarea class="abgm-entry-textarea" data-field="lyrics" style="
-              width:100%; min-height:120px; resize:vertical;
-              padding:10px; border-radius:10px;
-              border:1px solid rgba(255,255,255,.14);
-              background:rgba(0,0,0,.25); color:inherit; box-sizing:border-box;
-            " placeholder="가사를 입력하세요...">${escapeHtml(lyrics)}</textarea>
+            <textarea class="abgm-entry-textarea" data-field="lyrics" placeholder="가사를 입력하세요...">${escapeHtml(lyrics)}</textarea>
           </div>
         </div>
         <div class="abgm-confirm-row" style="margin-top:10px;">
@@ -550,9 +543,6 @@ export function abgmPickPreset(containerOrDoc, settings, {
           margin-top:10px;
           padding:10px;
           border-radius:10px;
-          border:1px solid rgba(255,255,255,.14);
-          background:rgba(0,0,0,.25);
-          color:inherit;
           box-sizing:border-box;
         ">
           ${options}
