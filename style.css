@@ -575,7 +575,7 @@ body.autobgm-modal-open {
   border-radius: 10px;
   border: 1px solid var(--abgm-input-border);
   background: var(--abgm-input-bg);
-  color: var(--abgm-text);
+  color: var(--abgm-text) !important;
   min-width: 0;
 }
 
@@ -1463,6 +1463,12 @@ body.autobgm-modal-open {
   color: var(--abgm-text);
   font-family: monospace;
   resize: vertical;
+}
+
+/* 프롬프트 textarea 글자색 강제 (라이트 테마 대응) */
+.abgm-textarea,
+#abgm_kw_prompt_content {
+  color: var(--abgm-text) !important;
 }
 
 .abgm-textarea:focus {
@@ -2546,7 +2552,7 @@ body.autobgm-modal-open {
   padding: 8px 10px;
   border: 1px solid var(--abgm-border);
   border-radius: 12px;
-  background: var(--abgm-surface);
+  background: var(--abgm-bg);
   margin: 10px 0;
   color: var(--abgm-text);
 }
