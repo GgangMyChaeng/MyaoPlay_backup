@@ -510,6 +510,10 @@ function cycleNpArtView() {
 async function renderNpArtView(bgm, view) {
   const art = document.getElementById("abgm_np_art");
   if (!art) return;
+  
+  // view에 따라 클래스 토글 (image=동그라미, lyrics/license=사각형)
+  art.classList.toggle("is-text-view", view === "lyrics" || view === "license");
+  
   if (view === "image") {
     const hasAssetKey = !!bgm?.imageAssetKey;
     const hasUrl = !!String(bgm?.imageUrl ?? "").trim();
@@ -539,30 +543,20 @@ async function renderNpArtView(bgm, view) {
     }
   } else if (view === "lyrics") {
     const lyrics = String(bgm?.lyrics ?? "").trim();
+    art.style.cssText = "cursor:pointer;";
     art.innerHTML = `
-      <div class="abgm-np-art-text" style="
-        width:100%; height:100%; overflow:auto;
-        padding:12px; box-sizing:border-box;
-        font-size:12px; line-height:1.5;
-        white-space:pre-wrap; text-align:center;
-        background:rgba(0,0,0,.08); border-radius:8px;
-      ">
-        <div style="opacity:.6; font-size:10px; margin-bottom:6px;">🎵 Lyrics</div>
-        ${escapeHtml(lyrics)}
+      <div class="abgm-np-art-text">
+        <div class="abgm-np-art-label">🎵 Lyrics</div>
+        <div class="abgm-np-art-content">${escapeHtml(lyrics)}</div>
       </div>
     `;
   } else if (view === "license") {
     const license = String(bgm?.license ?? "").trim();
+    art.style.cssText = "cursor:pointer;";
     art.innerHTML = `
-      <div class="abgm-np-art-text" style="
-        width:100%; height:100%; overflow:auto;
-        padding:12px; box-sizing:border-box;
-        font-size:11px; line-height:1.4;
-        white-space:pre-wrap;
-        background:rgba(0,0,0,.08); border-radius:8px;
-      ">
-        <div style="opacity:.6; font-size:10px; margin-bottom:6px;">📄 License</div>
-        ${escapeHtml(license)}
+      <div class="abgm-np-art-text">
+        <div class="abgm-np-art-label">📄 License</div>
+        <div class="abgm-np-art-content">${escapeHtml(license)}</div>
       </div>
     `;
   }
