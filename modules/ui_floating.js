@@ -370,61 +370,6 @@ function updateFloatingButtonPosition() {
 
 
 
-/** ========================= ST 테마 감지 → 플로팅 메뉴 다크/라이트 대응 ========================= */
-// ST가 다크 테마인지 판별 (1순위: body class/data-theme, 2순위: prefers-color-scheme)
-function detectSTDarkMode() {
-  const body = document.body;
-  // 1) ST가 body에 붙이는 class나 data-* 확인
-  //    ST는 보통 body에 'dark' class 또는 data-theme="dark" 같은 거 붙임
-  const cl = body.classList;
-  if (cl.contains("dark") || cl.contains("theme-dark") || cl.contains("dark-theme")) return true;
-  const dt = body.dataset.theme || body.getAttribute("data-theme") || "";
-  if (dt.toLowerCase().includes("dark")) return true;
-  // 2) ST가 #top-bar 등 주요 영역의 배경색으로 판별 (fallback)
-  const topBar = document.querySelector("#top-bar, #top-settings-holder, header");
-  if (topBar) {
-    const bg = getComputedStyle(topBar).backgroundColor;
-    if (bg && isColorDark(bg)) return true;
-  }
-  // 3) prefers-color-scheme (시스템 다크모드)
-  if (window.matchMedia?.("(prefers-color-scheme: dark)")?.matches) return true;
-  return false;
-}
-
-// rgba/rgb 색상 문자열 → 밝기 계산 (0~255), 127 이하면 다크
-function isColorDark(colorStr) {
-  const m = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-  if (!m) return false;
-  const [, r, g, b] = m.map(Number);
-  const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-  return lum < 127;
-}
-
-// body에 data-abgm-theme="dark" or "light" 세팅 (CSS 변수 전환용)
-function applyFloatingTheme() {
-  const isDark = detectSTDarkMode();
-  document.body.dataset.abgmTheme = isDark ? "dark" : "light";
-}
-// ST 테마 변경 감지 (MutationObserver로 body class/attribute 변화 감시)
-let _themeObserver = null;
-function watchSTTheme() {
-  if (_themeObserver) return;
-  applyFloatingTheme(); // 초기 적용
-  _themeObserver = new MutationObserver(() => {
-    applyFloatingTheme();
-  });
-  _themeObserver.observe(document.body, {
-    attributes: true,
-    attributeFilter: ["class", "data-theme", "style"],
-  });
-  // prefers-color-scheme 변경도 감지
-  window.matchMedia?.("(prefers-color-scheme: dark)")?.addEventListener?.("change", applyFloatingTheme);
-}
-// 모듈 로드 시 바로 감시 시작
-watchSTTheme();
-
-
-
 /** ========================= export ========================= */
 // > 마지막에 필요한 것만 export로 열어주기
 export {
