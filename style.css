@@ -2008,6 +2008,46 @@ body.autobgm-modal-open {
   box-shadow: 0 10px 30px var(--abgm-shadow-strong);
 }
 
+/* NP Art - 가사/라이센스일 때 사각형으로 변환 */
+.abgm-np-art.is-text-view {
+  border-radius: 14px;
+  width: min(280px, 85%);
+  height: 170px;
+  background: var(--abgm-surface);
+  border: 1px solid var(--abgm-border);
+  box-shadow: none;
+}
+
+/* 가사/라이센스 텍스트 컨테이너 */
+.abgm-np-art-text {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 14px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.abgm-np-art-label {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+  color: var(--abgm-text-dim);
+}
+
+.abgm-np-art-content {
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--abgm-text);
+}
+
 .abgm-np-title {
   font-size: 22px;
   font-weight: 800;
