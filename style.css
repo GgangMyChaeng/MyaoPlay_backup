@@ -19,8 +19,8 @@
   --abgm-surface-hover: #e8f0fc;
   
   /* Borders */
-  --abgm-border: rgba(74, 127, 216, 0.15);
-  --abgm-border-strong: rgba(74, 127, 216, 0.35);
+  --abgm-border: rgba(74, 176, 216, 0.15);
+  --abgm-border-strong: rgba(74, 183, 216, 0.35);
   
   /* Text */
   --abgm-text: #1a1a2e;
@@ -28,9 +28,9 @@
   --abgm-text-muted: rgba(26, 26, 46, 0.45);
   
   /* Accent */
-  --abgm-accent: #4a7fd8;
-  --abgm-accent-soft: rgba(74, 127, 216, 0.12);
-  --abgm-accent-hover: #3a6fc8;
+  --abgm-accent: #4ab7d8;
+  --abgm-accent-soft: rgba(74, 183, 216, 0.12);
+  --abgm-accent-hover: #3a9bc8;
   
   /* Danger */
   --abgm-danger: #dc4c4c;
@@ -38,35 +38,35 @@
   
   /* Chips & Tags */
   --abgm-chip-bg: #ffffff;
-  --abgm-chip-border: rgba(74, 127, 216, 0.2);
+  --abgm-chip-border: rgba(74, 183, 216, 0.2);
   --abgm-chip-active-bg: #e8f0fc;
-  --abgm-chip-active-border: #4a7fd8;
+  --abgm-chip-active-border: #4aabd8;
   
   /* Input */
   --abgm-input-bg: #ffffff;
-  --abgm-input-border: rgba(74, 127, 216, 0.2);
+  --abgm-input-border: rgba(74, 176, 216, 0.2);
   
   /* Shadow */
-  --abgm-shadow: rgba(74, 127, 216, 0.08);
+  --abgm-shadow: rgba(74, 171, 216, 0.08);
   --abgm-shadow-strong: rgba(0, 0, 0, 0.12);
   
   /* Glass effect */
   --abgm-glass-bg: rgba(255, 255, 255, 0.95);
-  --abgm-glass-border: rgba(74, 127, 216, 0.12);
+  --abgm-glass-border: rgba(74, 188, 216, 0.12);
   
   /* Overlay */
-  --abgm-overlay: rgba(26, 26, 46, 0.45);
+  --abgm-overlay: rgba(26, 35, 46, 0.45);
   
   /* Modal specific */
   --abgm-modal-bg: #ffffff;
   --abgm-modal-header-bg: #fafbfc;
   --abgm-tabbar-bg: #fafbfc;
-  --abgm-tab-active-color: #4a7fd8;
+  --abgm-tab-active-color: #4aa4d8;
   
   /* Table */
-  --abgm-table-header-bg: #f5f7f9;
-  --abgm-table-row-hover: rgba(74, 127, 216, 0.04);
-  --abgm-table-row-expanded: rgba(74, 127, 216, 0.06);
+  --abgm-table-header-bg: #f5f8f9;
+  --abgm-table-row-hover: rgba(74, 164, 216, 0.04);
+  --abgm-table-row-expanded: rgba(74, 159, 216, 0.06);
   
   /* Floating Menu (glassmorphism - keep semi-transparent) */
   --abgm-floating-glass: rgba(255, 255, 255, 0.06);
