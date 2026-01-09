@@ -1924,8 +1924,9 @@ body.autobgm-modal-open {
   box-shadow: 0 18px 60px var(--abgm-shadow-strong);
   overflow: hidden;
   color: var(--abgm-text);
-  width: min(360px, 75vw);
-  height: min(480px, 80vh);
+  width: min(340px, 72vw);
+  height: auto;
+  max-height: 85vh;
   aspect-ratio: 3/4;
 }
 
@@ -1937,14 +1938,33 @@ body.autobgm-modal-open {
   color: var(--abgm-text);
 }
 
-/* NP Home */
+/* NP Home - 상/하 그룹 분리 레이아웃 */
 .abgm-np-glass-inner > div[data-abgm-page="np"] {
   color: var(--abgm-text);
   padding: 22px 18px 18px;
-  display: grid;
-  grid-template-rows: auto auto auto auto auto;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   overflow: hidden;
+  height: 100%;
+}
+
+/* NP 상단 그룹 (아트/타이틀/프리셋) - 위쪽에 붙음 */
+.abgm-np-top-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+/* NP 하단 그룹 (슬라이더/컨트롤/바텀버튼) - 아래로 밀림 */
+.abgm-np-bottom-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: auto;
+  padding-bottom: 6px;
 }
 
 /* NP Glass buttons */
@@ -2065,8 +2085,11 @@ body.autobgm-modal-open {
 }
 
 @media (max-width: 520px) {
-  .abgm-np-art { width: 150px; height: 150px; }
-  .abgm-np-title { font-size: 20px; }
+  .abgm-np-glass {
+    width: min(300px, 80vw);
+  }
+  .abgm-np-art { width: 130px; height: 130px; }
+  .abgm-np-title { font-size: 18px; }
 }
 
 .abgm-np-icon {
