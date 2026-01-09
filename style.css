@@ -83,8 +83,8 @@
 /* ===== Dark Theme ===== */
 [data-abgm-theme="dark"],
 :root:has([data-abgm-theme="dark"]) {
-  /* Surface & Background */
-  --abgm-bg: #1a1a24;
+  /* Surface & Background 틸/민트 */
+  --abgm-bg: #0d221f;
   --abgm-surface: rgba(255, 255, 255, 0.04);
   --abgm-surface2: rgba(255, 255, 255, 0.06);
   --abgm-surface-hover: rgba(255, 255, 255, 0.08);
@@ -179,17 +179,17 @@
   --abgm-shadow-strong: rgba(0, 0, 0, 0.4);
   
   /* Glass effect */
-  --abgm-glass-bg: rgba(26, 26, 36, 0.95);
+  --abgm-glass-bg: rgba(26, 36, 35, 0.95);
   --abgm-glass-border: rgba(255, 255, 255, 0.12);
   
   /* Overlay */
   --abgm-overlay: rgba(0, 0, 0, 0.55);
   
-  /* Modal specific */
+  /* Modal specific 틸/민트 */
   --abgm-modal-bg: rgba(20, 20, 20, 0.96);
   --abgm-modal-header-bg: rgba(30, 30, 30, 0.98);
   --abgm-tabbar-bg: rgba(20, 20, 20, 0.96);
-  --abgm-tab-active-color: #6ba3ff;
+  --abgm-tab-active-color: #6bffff;
   
   /* Table */
   --abgm-table-header-bg: rgba(255, 255, 255, 0.05);
@@ -202,8 +202,8 @@
   --abgm-floating-btn-border: rgba(255, 255, 255, 0.08);
   --abgm-floating-btn-hover: rgba(255, 255, 255, 0.06);
   
-  /* Debug toast */
-  --abgm-toast-bg: rgba(30, 30, 40, 0.95);
+  /* Debug toast 틸/민트 */
+  --abgm-toast-bg: rgba(30, 39, 40, 0.95);
   --abgm-toast-border: rgba(255, 255, 255, 0.12);
   --abgm-toast-text: rgba(255, 255, 255, 0.88);
 }
