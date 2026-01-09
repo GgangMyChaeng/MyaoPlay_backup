@@ -546,7 +546,8 @@ export function engineTick() {
         }
         return;
       }
-      if (st.currentKey) {
+      // token 모드에서는 토큰 매칭 없으면 기존 곡 유지 안 함
+      if (st.currentKey && subMode !== "token") {
         if (_engineCurrentFileKey !== st.currentKey) {
           _engineCurrentFileKey = st.currentKey;
           ensurePlayFile(st.currentKey, getVol(st.currentKey), true, preset.id);
