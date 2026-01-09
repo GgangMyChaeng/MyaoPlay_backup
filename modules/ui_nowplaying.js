@@ -521,7 +521,7 @@ async function renderNpArtView(bgm, view) {
         const blob = await NP.idbGetImage(bgm.id);
         if (blob) {
           const url = URL.createObjectURL(blob);
-          art.innerHTML = `<img src="${url}" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:6px;" />`;
+          art.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;" />`;
         } else {
           art.innerHTML = "";
         }
@@ -531,7 +531,7 @@ async function renderNpArtView(bgm, view) {
       }
     } else if (hasUrl) {
       const imgUrl = escapeHtml(String(bgm.imageUrl).trim());
-      art.innerHTML = `<img src="${imgUrl}" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:6px;" onerror="this.style.display='none'" />`;
+      art.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;" onerror="this.style.display='none'" />`;
       art.style.cssText = "cursor:pointer; display:flex; align-items:center; justify-content:center;";
     } else {
       art.innerHTML = "";
