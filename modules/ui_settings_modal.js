@@ -49,6 +49,8 @@ let _abgmPickPreset = async () => "";
 let _abgmGetDurationSecFromBlob = async () => 0;
 let _idbPut = async () => {};
 let _idbDel = async () => {};
+let _idbPutImage = async () => {};
+let _idbDelImage = async () => {};
 let _ensureAssetList = (settings) => (settings?.assets ? Object.keys(settings.assets) : []);
 
 let _fitModalToHost = () => {};
@@ -283,6 +285,8 @@ export function abgmBindSettingsModalDeps(deps = {}) {
   if (typeof deps.abgmGetDurationSecFromBlob === "function") _abgmGetDurationSecFromBlob = deps.abgmGetDurationSecFromBlob;
   if (typeof deps.idbPut === "function") _idbPut = deps.idbPut;
   if (typeof deps.idbDel === "function") _idbDel = deps.idbDel;
+  if (typeof deps.idbPutImage === "function") _idbPutImage = deps.idbPutImage;
+  if (typeof deps.idbDelImage === "function") _idbDelImage = deps.idbDelImage;
   if (typeof deps.ensureAssetList === "function") _ensureAssetList = deps.ensureAssetList;
   if (typeof deps.fitModalToHost === "function") _fitModalToHost = deps.fitModalToHost;
   if (typeof deps.getModalHost === "function") _getModalHost = deps.getModalHost;
@@ -1116,10 +1120,29 @@ if (e.target.classList.contains("abgm_source")) {
           cancelText: "취소",
           resetText: "초기화",
         });
-        // 취소면 null
         if (result === null) return;
         bgm.license = String(result.license ?? "").trim();
         bgm.lyrics = String(result.lyrics ?? "").trim();
+        // === 이미지 처리 ===
+        if (result.deleteImage) {
+          if (bgm.imageAssetKey) {
+            try { await _idbDelImage(bgm.id); } catch (e) { console.warn("[MyaPl] Image delete failed:", e); }
+          }
+          bgm.imageAssetKey = "";
+          bgm.imageUrl = "";
+        } else if (result.imageBlob) {
+          try {
+            await _idbPutImage(bgm.id, result.imageBlob);
+            bgm.imageAssetKey = "img_" + bgm.id;
+            bgm.imageUrl = "";
+          } catch (e) { console.error("[MyaPl] Image save failed:", e); }
+        } else if (result.imageUrl) {
+          if (bgm.imageAssetKey) {
+            try { await _idbDelImage(bgm.id); } catch {}
+          }
+          bgm.imageAssetKey = "";
+          bgm.imageUrl = String(result.imageUrl).trim();
+        }
         _saveSettingsDebounced();
         try { _updateNowPlayingUI(); } catch {}
         return;
