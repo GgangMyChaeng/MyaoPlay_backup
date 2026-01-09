@@ -278,38 +278,44 @@ overlay.innerHTML = `
       <div class="abgm-np-glass-inner">
         <!-- ===== Page: NP (Home) ===== -->
         <div data-abgm-page="np">
-          <div class="abgm-np-art" id="abgm_np_art" data-view="image" style="cursor:pointer;"></div>
-          <div class="abgm-np-title" id="abgm_np_title">(none)</div>
-          <div class="abgm-np-sub" id="abgm_np_preset">Preset</div>
-          <div class="abgm-np-seek-wrap">
-            <input id="abgm_np_seek" class="abgm-np-seek" type="range" min="0" max="0" value="0" />
-            <div class="abgm-np-time">
-              <span id="abgm_np_time_cur">0:00</span>
-              <span id="abgm_np_time_dur">0:00</span>
+          <!-- 상단 그룹: art + title + preset -->
+          <div class="abgm-np-top-group">
+            <div class="abgm-np-art" id="abgm_np_art" data-view="image" style="cursor:pointer;"></div>
+            <div class="abgm-np-title" id="abgm_np_title">(none)</div>
+            <div class="abgm-np-sub" id="abgm_np_preset">Preset</div>
+          </div>
+          <!-- 하단 그룹: seek + ctrl + bottom -->
+          <div class="abgm-np-bottom-group">
+            <div class="abgm-np-seek-wrap">
+              <input id="abgm_np_seek" class="abgm-np-seek" type="range" min="0" max="0" value="0" />
+              <div class="abgm-np-time">
+                <span id="abgm_np_time_cur">0:00</span>
+                <span id="abgm_np_time_dur">0:00</span>
+              </div>
             </div>
-          </div>
-          <div class="abgm-np-ctrl">
-            <button class="abgm-np-btn" type="button" id="abgm_np_prev" title="Prev" disabled>
-              <img id="abgm_np_prev_icon" src="${ABGM_NP_CTRL_ICON.prev}" class="abgm-np-icon" alt="prev"/>
-            </button>
-            <button class="abgm-np-btn abgm-np-btn-main" type="button" id="abgm_np_play" title="Play/Pause">
-              <img src="https://i.postimg.cc/SR9HXrhj/Play.png" class="abgm-np-icon" alt="play"/>
-            </button>
-            <button class="abgm-np-btn" type="button" id="abgm_np_next" title="Next" disabled>
-              <img id="abgm_np_next_icon" src="${ABGM_NP_CTRL_ICON.next}" class="abgm-np-icon" alt="next"/>
-            </button>
-          </div>
-          <div class="abgm-np-bottom">
-            <button class="abgm-np-pill" type="button" id="abgm_np_list" title="Playlist">
-              <i class="fa-solid fa-list"></i>
-            </button>
-            <button class="abgm-np-pill" type="button" id="abgm_np_mode" title="Mode">
-              <img id="abgm_np_mode_icon" src="${ABGM_NP_MODE_ICON.manual}" class="abgm-np-icon abgm-np-icon-sm" alt="mode" />
-              <span id="abgm_np_mode_text" class="abgm-np-sr">Manual</span>
-            </button>
-            <button class="abgm-np-pill abgm-np-back" type="button" id="abgm_np_back" title="Back">
-              <i class="fa-solid fa-arrow-left"></i>
-            </button>
+            <div class="abgm-np-ctrl">
+              <button class="abgm-np-btn" type="button" id="abgm_np_prev" title="Prev" disabled>
+                <img id="abgm_np_prev_icon" src="${ABGM_NP_CTRL_ICON.prev}" class="abgm-np-icon" alt="prev"/>
+              </button>
+              <button class="abgm-np-btn abgm-np-btn-main" type="button" id="abgm_np_play" title="Play/Pause">
+               <img src="https://i.postimg.cc/SR9HXrhj/Play.png" class="abgm-np-icon" alt="play"/>
+              </button>
+              <button class="abgm-np-btn" type="button" id="abgm_np_next" title="Next" disabled>
+                <img id="abgm_np_next_icon" src="${ABGM_NP_CTRL_ICON.next}" class="abgm-np-icon" alt="next"/>
+              </button>
+            </div>
+            <div class="abgm-np-bottom">
+              <button class="abgm-np-pill" type="button" id="abgm_np_list" title="Playlist">
+                <i class="fa-solid fa-list"></i>
+              </button>
+              <button class="abgm-np-pill" type="button" id="abgm_np_mode" title="Mode">
+                <img id="abgm_np_mode_icon" src="${ABGM_NP_MODE_ICON.manual}" class="abgm-np-icon abgm-np-icon-sm" alt="mode" />
+                <span id="abgm_np_mode_text" class="abgm-np-sr">Manual</span>
+              </button>
+              <button class="abgm-np-pill abgm-np-back" type="button" id="abgm_np_back" title="Back">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
           </div>
         </div>
         <!-- ===== Page: Playlist ===== -->
