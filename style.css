@@ -2625,3 +2625,152 @@ body.autobgm-modal-open {
   border: 1px solid var(--abgm-border);
   color: var(--abgm-text);
 }
+
+/* =================================================================
+   Bind Overlay - Theme Aware
+   ================================================================= */
+
+#abgm_bind_overlay > div {
+  background: var(--abgm-modal-bg) !important;
+  border-color: var(--abgm-border-strong) !important;
+}
+
+#abgm_bind_overlay > div > div:first-child {
+  border-bottom-color: var(--abgm-border) !important;
+}
+
+#abgm_bind_title {
+  color: var(--abgm-text) !important;
+}
+
+#abgm_bind_sub {
+  color: var(--abgm-text-dim) !important;
+}
+
+/* 바인드 닫기 버튼 크기 */
+#abgm_bind_close {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+}
+
+
+/* =================================================================
+   Confirm Dialog Buttons - Theme Aware
+   ================================================================= */
+
+.abgm-confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.abgm-confirm-left {
+  display: flex;
+  gap: 8px;
+}
+
+.abgm-confirm-right {
+  display: flex;
+  gap: 8px;
+}
+
+.abgm-confirm-row .menu_button {
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+}
+
+.abgm-confirm-row .menu_button:hover {
+  background: var(--abgm-surface-hover) !important;
+}
+
+
+/* =================================================================
+   Entry Detail Dialog (Image/License/Lyrics) - Theme Aware
+   ================================================================= */
+
+.abgm-entry-detail {
+  background: var(--abgm-modal-bg) !important;
+}
+
+.abgm-entry-tabs .menu_button {
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+}
+
+.abgm-entry-tabs .menu_button.is-active {
+  background: var(--abgm-accent-soft) !important;
+  border-color: var(--abgm-accent) !important;
+  color: var(--abgm-accent) !important;
+}
+
+.abgm-image-preview {
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+}
+
+.abgm-image-placeholder {
+  color: var(--abgm-text-muted) !important;
+}
+
+.abgm-image-url {
+  background: var(--abgm-input-bg) !important;
+  border: 1px solid var(--abgm-input-border) !important;
+  color: var(--abgm-text) !important;
+}
+
+.abgm-image-url-apply,
+.abgm-image-upload,
+.abgm-image-delete {
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+}
+
+.abgm-image-status {
+  color: var(--abgm-text-dim) !important;
+}
+
+
+/* =================================================================
+   Preset Picker Select - Theme Aware
+   ================================================================= */
+
+.abgm-pickpreset {
+  background: var(--abgm-input-bg) !important;
+  border: 1px solid var(--abgm-input-border) !important;
+  color: var(--abgm-text) !important;
+}
+
+
+/* =================================================================
+   Keyword Mode Description - Theme Aware
+   ================================================================= */
+
+.abgm-kw-mode-desc {
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+}
+
+.abgm-kw-mode-desc code {
+  background: var(--abgm-accent-soft) !important;
+  color: var(--abgm-accent) !important;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.abgm-kw-mode-desc b {
+  color: var(--abgm-text) !important;
+}
