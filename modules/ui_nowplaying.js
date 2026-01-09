@@ -126,15 +126,15 @@ export function updateNowPlayingUI() {
     const npArt = document.getElementById("abgm_np_art");
     if (npArt) {
       const curView = npArt.dataset.view || "image";
-      if (curView !== "image") {
-        // 곡이 바뀌면 image로 리셋
-        const prevFk = npArt.dataset.prevFk || "";
-        if (prevFk !== fk) {
-          npArt.dataset.view = "image";
-          renderNpArtView(bgm, "image");
-        } else {
-          renderNpArtView(bgm, curView);
-        }
+      const prevFk = npArt.dataset.prevFk || "";
+      
+      // 곡이 바뀌면 image로 리셋, 아니면 현재 view 유지
+      if (prevFk !== fk) {
+        npArt.dataset.view = "image";
+        renderNpArtView(bgm, "image");
+      } else {
+        // 같은 곡이어도 항상 렌더링 (image 포함)
+        renderNpArtView(bgm, curView);
       }
       npArt.dataset.prevFk = fk;
     }
