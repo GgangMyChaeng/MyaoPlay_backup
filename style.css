@@ -84,7 +84,7 @@
 [data-abgm-theme="dark"],
 :root:has([data-abgm-theme="dark"]) {
   /* Surface & Background 틸/민트 */
-  --abgm-bg: #0d221f;
+  --abgm-bg: #0a1111;
   --abgm-surface: rgba(255, 255, 255, 0.04);
   --abgm-surface2: rgba(255, 255, 255, 0.06);
   --abgm-surface-hover: rgba(255, 255, 255, 0.08);
