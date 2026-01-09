@@ -470,6 +470,10 @@ async function init() {
   startEngine();
   // 2) 플로팅 버튼 초기화
   const settings = ensureSettings();
+  // 테마 초기화 (저장된 테마 적용)
+  if (settings.modalTheme === 'dark') {
+    document.body.setAttribute('data-abgm-theme', 'dark');
+  }
   // 3) 디버그: 콘솔에서 설정 확인용
   window.__ABGM_DBG__ = { getSettings: () => ensureSettings() };
   if (settings.floating.enabled) {
