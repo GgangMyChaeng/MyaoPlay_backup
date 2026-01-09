@@ -347,15 +347,17 @@ overlay.innerHTML = `
     const host = NP.getModalHost();
     const cs = getComputedStyle(host);
     if (cs.position === "static") host.style.position = "relative";
-    // 1) overlay 스타일(기존 모달 방식 맞춤)
+    // 1) overlay 스타일 - 중앙정렬용 flex (CSS와 일치)
     const setO = (k, v) => overlay.style.setProperty(k, v, "important");
     setO("position", "absolute");
     setO("inset", "0");
-    setO("display", "block");
+    setO("display", "flex");
+    setO("align-items", "center");
+    setO("justify-content", "center");
     setO("overflow", "hidden");
     setO("background", "rgba(0,0,0,.55)");
     setO("z-index", "2147483647");
-    setO("padding", "0");
+    setO("padding", "12px");
     host.appendChild(overlay);
     // 2) 플리 UI는 페이지 전환 전에 미리 한번 렌더해두기(프리셋 옵션/리스트 초기화)
     try { abgmRenderPlaylistPage(overlay); } catch {}
