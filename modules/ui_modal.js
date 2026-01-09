@@ -2,6 +2,7 @@
 
 import { escapeHtml } from "./utils.js";
 import { openFloatingMenu } from "./ui_floating.js";
+import { idbPutImage, idbGetImage, idbDelImage, makeImageKey } from "./storage.js";
 
 
 
@@ -304,7 +305,7 @@ export function abgmPrompt(containerOrDoc, message, {
   });
 }
 
-// BGM 엔트리 상세정보 편집 (탭형 다이얼로그: License/Description, Lyrics, Image)
+// BGM 엔트리 상세정보 편집 (탭형 다이얼로그: Image, License, Lyrics)
 export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
   title = "Entry Detail",
   okText = "확인",
@@ -314,12 +315,20 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
   const doc = containerOrDoc?.ownerDocument || document;
   const container =
     containerOrDoc && containerOrDoc.nodeType === 1 ? containerOrDoc : doc.body;
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     const wrap = doc.createElement("div");
     wrap.className = "abgm-confirm-wrap";
     if (container !== doc.body) wrap.classList.add("abgm-confirm-in-modal");
     const license = String(bgm?.license ?? "");
     const lyrics = String(bgm?.lyrics ?? "");
+    const imageUrl = String(bgm?.imageUrl ?? "");
+    const hasStoredImage = !!bgm?.imageAssetKey;
+    
+    // 상태 추적용
+    let pendingImageBlob = null;
+    let pendingImageUrl = imageUrl;
+    let deleteImage = false;
+    
     wrap.innerHTML = `
       <div class="abgm-confirm-backdrop"></div>
       <div class="abgm-confirm abgm-entry-detail" role="dialog" aria-modal="true" style="min-width:320px; max-width:480px;">
@@ -331,8 +340,37 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
         </div>
         <div class="abgm-entry-panels">
           <div class="abgm-entry-panel" data-panel="image" style="display:block;">
-            <div style="padding:20px; text-align:center; opacity:.6; font-size:13px;">
-              (이미지 기능 준비 중)
+            <div class="abgm-image-panel" style="display:flex; flex-direction:column; gap:10px;">
+              <div class="abgm-image-preview" style="
+                width:100%; aspect-ratio:1/1; max-height:200px;
+                display:flex; align-items:center; justify-content:center;
+                background:rgba(0,0,0,.15); border-radius:8px;
+                overflow:hidden; position:relative;
+              ">
+                <div class="abgm-image-placeholder" style="opacity:.5; font-size:12px; text-align:center;">
+                  이미지 없음
+                </div>
+                <img class="abgm-image-img" style="
+                  display:none; max-width:100%; max-height:100%; object-fit:contain;
+                " />
+              </div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <input type="text" class="abgm-image-url" placeholder="이미지 URL 붙여넣기..." 
+                  value="${escapeHtml(imageUrl)}"
+                  style="flex:1; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,.14); 
+                         background:rgba(0,0,0,.25); color:inherit; font-size:12px;" />
+                <button type="button" class="menu_button abgm-image-url-apply" title="URL 적용" 
+                  style="padding:6px 10px; font-size:12px;">적용</button>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="menu_button abgm-image-upload" style="flex:1; font-size:12px;">
+                  📁 파일 업로드
+                </button>
+                <input type="file" class="abgm-image-file" accept="image/*" style="display:none;" />
+                <button type="button" class="menu_button abgm-image-delete" style="padding:6px 10px; font-size:12px;" 
+                  title="이미지 삭제">🗑️</button>
+              </div>
+              <div class="abgm-image-status" style="font-size:11px; opacity:.6; text-align:center; min-height:16px;"></div>
             </div>
           </div>
           <div class="abgm-entry-panel" data-panel="license" style="display:none;">
@@ -341,12 +379,9 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
           <div class="abgm-entry-panel" data-panel="lyrics" style="display:none;">
             <textarea class="abgm-entry-textarea" data-field="lyrics" style="
               width:100%; min-height:120px; resize:vertical;
-              padding:10px;
-              border-radius:10px;
+              padding:10px; border-radius:10px;
               border:1px solid rgba(255,255,255,.14);
-              background:rgba(0,0,0,.25);
-              color:inherit;
-              box-sizing:border-box;
+              background:rgba(0,0,0,.25); color:inherit; box-sizing:border-box;
             " placeholder="가사를 입력하세요...">${escapeHtml(lyrics)}</textarea>
           </div>
         </div>
@@ -361,7 +396,85 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
         </div>
       </div>
     `;
-    // 탭 전환 로직
+    
+    const previewImg = wrap.querySelector(".abgm-image-img");
+    const placeholder = wrap.querySelector(".abgm-image-placeholder");
+    const urlInput = wrap.querySelector(".abgm-image-url");
+    const urlApplyBtn = wrap.querySelector(".abgm-image-url-apply");
+    const uploadBtn = wrap.querySelector(".abgm-image-upload");
+    const fileInput = wrap.querySelector(".abgm-image-file");
+    const deleteBtn = wrap.querySelector(".abgm-image-delete");
+    const statusEl = wrap.querySelector(".abgm-image-status");
+    
+    const updatePreview = (src) => {
+      if (src) {
+        previewImg.src = src;
+        previewImg.style.display = "block";
+        placeholder.style.display = "none";
+      } else {
+        previewImg.src = "";
+        previewImg.style.display = "none";
+        placeholder.style.display = "block";
+      }
+    };
+    const setStatus = (msg) => { if (statusEl) statusEl.textContent = msg; };
+    
+    // 초기 미리보기 로드
+    if (hasStoredImage && bgm?.id) {
+      try {
+        const blob = await idbGetImage(bgm.id);
+        if (blob) {
+          updatePreview(URL.createObjectURL(blob));
+          setStatus("저장된 이미지 (업로드됨)");
+        }
+      } catch (e) { console.warn("[MyaPl] Image load failed:", e); }
+    } else if (imageUrl) {
+      updatePreview(imageUrl);
+      setStatus("URL 이미지");
+    }
+    
+    // URL 적용
+    urlApplyBtn?.addEventListener("click", () => {
+      const url = String(urlInput?.value ?? "").trim();
+      pendingImageUrl = url;
+      pendingImageBlob = null;
+      deleteImage = false;
+      if (url) {
+        updatePreview(url);
+        setStatus("URL 적용됨 (저장 시 반영)");
+      } else {
+        updatePreview(null);
+        setStatus("");
+      }
+    });
+    
+    // 파일 업로드
+    uploadBtn?.addEventListener("click", () => fileInput?.click());
+    fileInput?.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setStatus("이미지 파일만 가능합니다");
+        return;
+      }
+      pendingImageBlob = file;
+      pendingImageUrl = "";
+      deleteImage = false;
+      updatePreview(URL.createObjectURL(file));
+      setStatus("업로드됨: " + file.name + " (저장 시 반영)");
+    });
+    
+    // 이미지 삭제
+    deleteBtn?.addEventListener("click", () => {
+      deleteImage = true;
+      pendingImageBlob = null;
+      pendingImageUrl = "";
+      if (urlInput) urlInput.value = "";
+      updatePreview(null);
+      setStatus("이미지 삭제됨 (저장 시 반영)");
+    });
+    
+    // 탭 전환
     const tabs = wrap.querySelectorAll(".abgm-entry-tab");
     const panels = wrap.querySelectorAll(".abgm-entry-panel");
     tabs.forEach(tab => {
@@ -374,6 +487,7 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
     
     const licenseTA = wrap.querySelector('[data-field="license"]');
     const lyricsTA = wrap.querySelector('[data-field="lyrics"]');
+    
     const done = (result) => {
       doc.removeEventListener("keydown", onKey);
       wrap.remove();
@@ -387,11 +501,20 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
       done({
         license: licenseTA ? licenseTA.value : license,
         lyrics: lyricsTA ? lyricsTA.value : lyrics,
+        imageUrl: pendingImageUrl,
+        imageBlob: pendingImageBlob,
+        deleteImage: deleteImage,
       });
     });
     wrap.querySelector(".abgm-confirm-reset")?.addEventListener("click", () => {
       if (licenseTA) licenseTA.value = "";
       if (lyricsTA) lyricsTA.value = "";
+      deleteImage = true;
+      pendingImageBlob = null;
+      pendingImageUrl = "";
+      if (urlInput) urlInput.value = "";
+      updatePreview(null);
+      setStatus("모두 초기화됨");
     });
     container.appendChild(wrap);
     setTimeout(() => { try { licenseTA?.focus(); } catch {} }, 0);
