@@ -98,20 +98,77 @@
   --abgm-text-dim: rgba(255, 255, 255, 0.6);
   --abgm-text-muted: rgba(255, 255, 255, 0.4);
   
-  /* Accent */
-  --abgm-accent: #6ba3ff;
-  --abgm-accent-soft: rgba(107, 163, 255, 0.15);
-  --abgm-accent-hover: #7db3ff;
+  /* Accent - 틸/민트 */
+  --abgm-accent: #5eead4;
+  --abgm-accent-soft: rgba(94, 234, 212, 0.15);
+  --abgm-accent-hover: #72edd9;
+
+  /* Accent - 핑크/로즈
+*   --abgm-accent: #f472b6;
+*   --abgm-accent-soft: rgba(244, 114, 182, 0.15);
+*   --abgm-accent-hover: #f687bf;
+*/
+
+  /* Accent - 코랄/피치
+*   --abgm-accent: #fb923c;
+*   --abgm-accent-soft: rgba(251, 146, 60, 0.15);
+*   --abgm-accent-hover: #fba458;
+*/
+
+  /* Accent - 에메랄드/그린
+*   --abgm-accent: #34d399;
+*   --abgm-accent-soft: rgba(52, 211, 153, 0.15);
+*   --abgm-accent-hover: #4eeaa8;
+*/
+
+  /* Accent - 라벤더
+*   --abgm-accent: #c4b5fd;
+*   --abgm-accent-soft: rgba(196, 181, 253, 0.15);
+*   --abgm-accent-hover: #d0c4fd;
+*/
   
   /* Danger */
   --abgm-danger: #ff6b6b;
   --abgm-danger-soft: rgba(255, 107, 107, 0.15);
   
-  /* Chips & Tags */
+  /* Chips & Tags 틸/민트 */
   --abgm-chip-bg: rgba(255, 255, 255, 0.04);
   --abgm-chip-border: rgba(255, 255, 255, 0.10);
-  --abgm-chip-active-bg: rgba(107, 163, 255, 0.2);
-  --abgm-chip-active-border: #6ba3ff;
+  --abgm-chip-active-bg: rgba(94, 234, 212, 0.2);
+  --abgm-chip-active-border: #5eead4;
+  --abgm-tab-active-color: #5eead4;
+
+  /* Chips & Tags 핑크/로즈
+*  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
+*  --abgm-chip-border: rgba(255, 255, 255, 0.10);
+*  --abgm-chip-active-bg: rgba(244, 114, 182, 0.2);
+*  --abgm-chip-active-border: #f472b6;
+*  --abgm-tab-active-color: #f472b6;
+*/
+
+  /* Chips & Tags 코랄/피치
+*  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
+*  --abgm-chip-border: rgba(255, 255, 255, 0.10);
+*  --abgm-chip-active-bg: rgba(251, 146, 60, 0.2);
+*  --abgm-chip-active-border: #fb923c;
+*  --abgm-tab-active-color: #fb923c;
+*/
+
+  /* Chips & Tags 에메랄드/그린
+*  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
+*  --abgm-chip-border: rgba(255, 255, 255, 0.10);
+*  --abgm-chip-active-bg: rgba(52, 211, 153, 0.2);
+*  --abgm-chip-active-border: #34d399;
+*  --abgm-tab-active-color: #34d399;
+*/
+
+  /* Chips & Tags 라벤더
+*  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
+*  --abgm-chip-border: rgba(255, 255, 255, 0.10);
+*  --abgm-chip-active-bg: rgba(196, 181, 253, 0.2);
+*  --abgm-chip-active-border: #c4b5fd;
+*  --abgm-tab-active-color: #c4b5fd;
+*/
   
   /* Input */
   --abgm-input-bg: rgba(0, 0, 0, 0.25);
