@@ -49,6 +49,9 @@ const NP = {
   // nav actions (index.js 쪽 로직 호출)
   npPrevAction: () => {},
   npNextAction: () => {},
+
+  // image helper
+  idbGetImage: async () => null,
 };
 
 const NP_GLASS_OVERLAY_ID = "ABGM_NP_GLASS_OVERLAY";
@@ -479,34 +482,58 @@ function cycleNpArtView() {
   const bgm = (preset.bgms ?? []).find((b) => String(b?.fileKey ?? "") === fk) || null;
   const hasLicense = !!String(bgm?.license ?? "").trim();
   const hasLyrics = !!String(bgm?.lyrics ?? "").trim();
-  // 둘 다 없으면 아무것도 안 함
+  const hasImage = !!(bgm?.imageAssetKey || String(bgm?.imageUrl ?? "").trim());
+  
+  if (!hasLicense && !hasLyrics && !hasImage) return;
   if (!hasLicense && !hasLyrics) return;
+  
   const cur = art.dataset.view || "image";
   let next = "image";
-  // 순환 로직
+  
   if (hasLicense && hasLyrics) {
-    // 둘 다 있음: image -> lyrics -> license -> image
     if (cur === "image") next = "lyrics";
     else if (cur === "lyrics") next = "license";
     else next = "image";
   } else if (hasLyrics) {
-    // 가사만 있음: image <-> lyrics
     next = (cur === "image") ? "lyrics" : "image";
   } else if (hasLicense) {
-    // 라이센스만 있음: image <-> license
     next = (cur === "image") ? "license" : "image";
   }
   art.dataset.view = next;
   renderNpArtView(bgm, next);
 }
-// NP Art 영역 렌더링
-function renderNpArtView(bgm, view) {
+
+// NP Art 영역 렌더링 (image/lyrics/license)
+async function renderNpArtView(bgm, view) {
   const art = document.getElementById("abgm_np_art");
   if (!art) return;
   if (view === "image") {
-    // 이미지 뷰 (기본 - 현재는 빈 영역)
-    art.innerHTML = "";
-    art.style.cssText = "cursor:pointer;";
+    const hasAssetKey = !!bgm?.imageAssetKey;
+    const hasUrl = !!String(bgm?.imageUrl ?? "").trim();
+    
+    if (hasAssetKey && bgm?.id) {
+      art.innerHTML = `<div style="opacity:.5; font-size:11px;">Loading...</div>`;
+      art.style.cssText = "cursor:pointer; display:flex; align-items:center; justify-content:center;";
+      try {
+        const blob = await NP.idbGetImage(bgm.id);
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          art.innerHTML = `<img src="${url}" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:6px;" />`;
+        } else {
+          art.innerHTML = "";
+        }
+      } catch (e) {
+        console.warn("[MyaPl] NP image load failed:", e);
+        art.innerHTML = "";
+      }
+    } else if (hasUrl) {
+      const imgUrl = escapeHtml(String(bgm.imageUrl).trim());
+      art.innerHTML = `<img src="${imgUrl}" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:6px;" onerror="this.style.display='none'" />`;
+      art.style.cssText = "cursor:pointer; display:flex; align-items:center; justify-content:center;";
+    } else {
+      art.innerHTML = "";
+      art.style.cssText = "cursor:pointer;";
+    }
   } else if (view === "lyrics") {
     const lyrics = String(bgm?.lyrics ?? "").trim();
     art.innerHTML = `
