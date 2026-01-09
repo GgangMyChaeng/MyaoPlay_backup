@@ -8,7 +8,7 @@
 /** =================================================================================== */
 import { abgmNormTags, abgmNormTag, tagVal, tagPretty, tagCat, sortTags } from "./modules/tags.js";
 import { extension_settings, saveSettingsDebounced, __abgmResolveDeps, getSTContextSafe, getBoundPresetIdFromContext, EXT_BIND_KEY } from "./modules/deps.js";
-import { openDb, idbPut, idbGet, idbDel, ensureAssetList, importZip, abgmGetDurationSecFromBlob } from "./modules/storage.js";
+import { openDb, idbPut, idbGet, idbDel, ensureAssetList, importZip, abgmGetDurationSecFromBlob, idbPutImage, idbGetImage, idbDelImage } from "./modules/storage.js";
 import { ensureSettings, migrateLegacyDataUrlsToIDB, ensureEngineFields, exportPresetFile, rekeyPreset, pickPresetFromImportData, getActivePromptContent } from "./modules/settings.js";
 import { abgmBindFloatingActions, createFloatingButton, removeFloatingButton, removeFloatingMenu, openFloatingMenu, closeFloatingMenu, updateFloatingButtonPosition, abgmGetFloatingMenuEl, updateMenuDebugIcon, toggleDebugToast, setDebugToastText } from "./modules/ui_floating.js";
 import { abgmBindNowPlayingDeps, updateNowPlayingUI, bindNowPlayingEventsOnce, openNowPlayingGlass, closeNowPlayingGlass } from "./modules/ui_nowplaying.js";
@@ -571,6 +571,9 @@ function bindDepsOnce() {
     getSTContextSafe: () => getSTContextSafe(),
     getChatKeyFromContext: (ctx) => getChatKeyFromContext(ctx),
     ensureEngineFields: (settings) => ensureEngineFields(settings),
+
+    // 7) 이미지 헬퍼
+    idbGetImage: (bgmId) => idbGetImage(bgmId),
   });
   
   abgmBindFreeSourcesDeps({
@@ -609,6 +612,8 @@ function bindDepsOnce() {
     // > storage / modal 쪽
     idbPut,
     idbDel,
+    idbPutImage,
+    idbDelImage,
     ensureAssetList,
     fitModalToHost,
     getModalHost,
