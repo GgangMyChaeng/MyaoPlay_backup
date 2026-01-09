@@ -1915,6 +1915,24 @@ body.autobgm-modal-open {
    NP Glass (Now Playing Glass UI)
    ================================================================= */
 
+/* NP Glass Overlay - 중앙 정렬 (fitModalToHost 무시) */
+.autobgm-overlay[data-abgm-page] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 12px !important;
+}
+
+.autobgm-overlay[data-abgm-page] .autobgm-modal.abgm-np-glass {
+  /* fitModalToHost의 강제 스타일 무력화 */
+  width: min(340px, 72vw) !important;
+  height: auto !important;
+  max-height: 85vh !important;
+  min-height: auto !important;
+  margin: 0 !important;
+  aspect-ratio: 3/4;
+}
+
 .abgm-np-glass {
   background: var(--abgm-glass-bg);
   backdrop-filter: blur(16px);
@@ -1924,6 +1942,7 @@ body.autobgm-modal-open {
   box-shadow: 0 18px 60px var(--abgm-shadow-strong);
   overflow: hidden;
   color: var(--abgm-text);
+  /* 기본값 (important 버전이 덮어씀) */
   width: min(340px, 72vw);
   height: auto;
   max-height: 85vh;
@@ -1938,33 +1957,32 @@ body.autobgm-modal-open {
   color: var(--abgm-text);
 }
 
-/* NP Home - 상/하 그룹 분리 레이아웃 */
+/* NP Home - flex 레이아웃 (상/하 분리) */
 .abgm-np-glass-inner > div[data-abgm-page="np"] {
   color: var(--abgm-text);
-  padding: 22px 18px 18px;
+  padding: 20px 18px 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   overflow: hidden;
   height: 100%;
 }
 
-/* NP 상단 그룹 (아트/타이틀/프리셋) - 위쪽에 붙음 */
+/* NP 상단 그룹 (art만) */
 .abgm-np-top-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* NP 하단 그룹 (title~bottom) - 아래로 밀림 */
+.abgm-np-bottom-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
-}
-
-/* NP 하단 그룹 (슬라이더/컨트롤/바텀버튼) - 아래로 밀림 */
-.abgm-np-bottom-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
   margin-top: auto;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
 }
 
 /* NP Glass buttons */
@@ -2085,8 +2103,8 @@ body.autobgm-modal-open {
 }
 
 @media (max-width: 520px) {
-  .abgm-np-glass {
-    width: min(300px, 80vw);
+  .autobgm-overlay[data-abgm-page] .autobgm-modal.abgm-np-glass {
+    width: min(300px, 80vw) !important;
   }
   .abgm-np-art { width: 130px; height: 130px; }
   .abgm-np-title { font-size: 18px; }
