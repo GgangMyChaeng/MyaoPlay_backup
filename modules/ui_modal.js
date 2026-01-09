@@ -336,7 +336,7 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
             </div>
           </div>
           <div class="abgm-entry-panel" data-panel="license" style="display:none;">
-            <textarea class="abgm-entry-textarea" data-field="license" placeholder="예) CC BY 4.0 / 출처 링크 / 사용조건 요약..."></textarea>
+            <textarea class="abgm-entry-textarea" data-field="license" placeholder="예) CC BY 4.0 / 출처 링크 / 사용조건 요약...">${escapeHtml(license)}</textarea>
           </div>
           <div class="abgm-entry-panel" data-panel="lyrics" style="display:none;">
             <textarea class="abgm-entry-textarea" data-field="lyrics" style="
