@@ -81,7 +81,7 @@
 }
 
 /* ===== Dark Theme ===== */
-[data-abgm-theme="dark"] {
+[data-abgm-theme="dark"],
 :root:has([data-abgm-theme="dark"]) {
   /* Surface & Background */
   --abgm-bg: #1a1a24;
