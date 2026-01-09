@@ -1988,14 +1988,14 @@ body.autobgm-modal-open {
 /* NP Glass buttons */
 .abgm-np-glass .abgm-np-btn,
 .abgm-np-glass .abgm-np-pill {
-  background: var(--abgm-surface2);
-  border-color: var(--abgm-border-strong);
+  background: transparent;
+  border: none;
   color: var(--abgm-text);
 }
 
 .abgm-np-glass .abgm-np-btn:hover,
 .abgm-np-glass .abgm-np-pill:hover {
-  background: var(--abgm-surface-hover);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .abgm-np-art {
@@ -2061,11 +2061,9 @@ body.autobgm-modal-open {
 .abgm-np-btn {
   height: 44px;
   border-radius: 14px;
-  border: 1px solid var(--abgm-border-strong);
-  background: var(--abgm-surface);
+  border: none;
+  background: transparent;
   color: var(--abgm-text);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .abgm-np-btn-main {
@@ -2085,16 +2083,14 @@ body.autobgm-modal-open {
 .abgm-np-pill {
   height: 42px;
   border-radius: 999px;
-  border: 1px solid var(--abgm-border-strong);
-  background: var(--abgm-surface);
+  border: none;
+  background: transparent;
   color: var(--abgm-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 0 14px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .abgm-np-pill:active,
