@@ -59,6 +59,7 @@ export function exportPresetFile(preset) {
       volLocked: !!b.volLocked,
       license: b.license ?? "",
       lyrics: b.lyrics ?? "",
+      imageUrl: b.imageUrl ?? "",
     })),
   };
   return {
@@ -85,6 +86,8 @@ export function rekeyPreset(preset) {
     volLocked: !!b.volLocked,
     license: b.license ?? "",
     lyrics: b.lyrics ?? "",
+    imageUrl: b.imageUrl ?? "",
+    imageAssetKey: "",
   }));
   if (!p.defaultBgmKey && p.bgms.length && p.bgms[0].fileKey) {
     p.defaultBgmKey = p.bgms[0].fileKey;
@@ -358,6 +361,8 @@ Example B (without keyword):
       b.volLocked ??= false;
       b.license ??= "";
       b.lyrics ??= "";
+      b.imageUrl ??= "";
+      b.imageAssetKey ??= "";
     });
   });
   // > 구버전: settings.defaultBgmId 같은 전역 값 남아있으면 제거 (있어도 안 쓰게)
