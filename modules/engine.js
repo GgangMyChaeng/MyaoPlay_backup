@@ -744,4 +744,15 @@ _bgmAudio.addEventListener("ended", () => {
     try { saveSettingsDebounced?.(); } catch {}
     return;
   }
+  if (mode === "loop_one") {
+    // loop=true인데 어떤 이유로 ended가 불렸으면 → 다시 재생
+    const fk = String(st.currentKey || _engineCurrentFileKey || keys[0] || "");
+    if (fk) {
+      _bgmAudio.loop = true;
+      ensurePlayFile(fk, getVol(fk), true, preset.id);
+      st.currentKey = fk;
+      try { saveSettingsDebounced?.(); } catch {}
+    }
+    return;
+  }
 });
