@@ -2571,45 +2571,121 @@ body.autobgm-modal-open {
   margin-bottom: 12px;
 }
 
-/* ===== FreeSources 드롭다운 메뉴 ===== */
-.abgm-fs-addmenu-wrap {
-  position: relative;
-  display: inline-block;
-}
+/* ===== Add-to 바텀시트 ===== */
+/* ▼ 버튼 스타일 */
 .abgm-fs-addmenu-btn {
   min-width: 28px;
   padding: 2px 6px;
   font-size: 10px;
 }
-.abgm-fs-addmenu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  z-index: 9999;
-  min-width: 160px;
-  max-height: 200px;
-  overflow-y: auto;
-  background: var(--SmartThemeBorderColor, #333);
-  border: 1px solid var(--SmartThemeQuoteColor, #555);
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  padding: 4px 0;
+
+.abgm-addto-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: background 0.2s ease;
+  pointer-events: none;
 }
-.abgm-fs-addmenu-item {
-  display: block;
+.abgm-addto-overlay.is-open {
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.abgm-addto-sheet {
   width: 100%;
-  text-align: left;
-  padding: 6px 10px;
-  font-size: 12px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
+  max-width: 420px;
+  max-height: 70vh;
+  background: var(--abgm-bg, #fff);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.abgm-addto-overlay.is-open .abgm-addto-sheet {
+  transform: translateY(0);
+}
+
+.abgm-addto-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--abgm-border, rgba(0,0,0,0.1));
+  text-align: center;
+}
+.abgm-addto-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--abgm-text, #1a1a2e);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.abgm-fs-addmenu-item:hover {
-  background: var(--SmartThemeQuoteColor, #444);
+.abgm-addto-subtitle {
+  font-size: 13px;
+  color: var(--abgm-text-dim, rgba(0,0,0,0.5));
+  margin-top: 4px;
+}
+
+.abgm-addto-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0 20px;
+}
+
+.abgm-addto-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 20px;
+  background: transparent;
+  border: none;
+  color: var(--abgm-text, #1a1a2e);
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.abgm-addto-item:hover {
+  background: var(--abgm-surface-hover, rgba(0,0,0,0.05));
+}
+.abgm-addto-item:active {
+  background: var(--abgm-accent-soft, rgba(74,183,216,0.15));
+}
+.abgm-addto-item i {
+  width: 20px;
+  text-align: center;
+  color: var(--abgm-accent, #4ab7d8);
+  font-size: 14px;
+}
+.abgm-addto-item span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.abgm-addto-divider {
+  padding: 12px 20px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--abgm-text-muted, rgba(0,0,0,0.4));
+}
+
+/* 다크 테마 대응 */
+[data-abgm-theme="dark"] .abgm-addto-sheet {
+  background: var(--abgm-bg, #1a1a2e);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+}
+[data-abgm-theme="dark"] .abgm-addto-overlay.is-open {
+  background: rgba(0, 0, 0, 0.65);
 }
 
 
