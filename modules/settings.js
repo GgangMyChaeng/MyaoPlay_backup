@@ -212,6 +212,11 @@ Example B (without keyword):
         { id: "pm", keywords: "오후, PM, afternoon", start: "12:00", end: "23:59" }
       ]
     },
+    // SFX Mode 기본 설정
+    sfxMode: {
+      overlay: true,        // true: BGM 위에 겹쳐 재생, false: BGM 일시정지 후 재생
+      skipInOtherModes: true, // 키워드 모드 아닐 때 SFX 타입 곡 건너뛰기
+    },
   };
   const s = extension_settings[SETTINGS_KEY];
   s.globalVolLocked ??= false;
@@ -332,7 +337,10 @@ Example B (without keyword):
       { id: "pm", keywords: "오후, PM, afternoon", start: "12:00", end: "23:59" }
     ];
   }
-
+  // SFX Mode 보정
+  s.sfxMode ??= {};
+  s.sfxMode.overlay ??= true;
+  s.sfxMode.skipInOtherModes ??= true;
   s.activeKwPromptPresetId ??= "default";
   if (!s.kwPromptPresets[s.activeKwPromptPresetId]) {
     s.activeKwPromptPresetId = Object.keys(s.kwPromptPresets)[0] || "default";
