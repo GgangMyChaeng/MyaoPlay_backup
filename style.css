@@ -2685,7 +2685,7 @@ body.autobgm-modal-open {
 }
 .abgm-tags-empty {
   text-align: center;
-  color: var(--abgm-text-muted, rgba(0,0,0,0.4));
+  color: var(--abgm-text-muted);
   font-size: 14px;
   padding: 20px 0;
 }
@@ -2697,8 +2697,8 @@ body.autobgm-modal-open {
 .abgm-tag-chip {
   display: inline-block;
   padding: 6px 12px;
-  background: var(--abgm-accent-soft, rgba(74,183,216,0.12));
-  color: var(--abgm-accent, #4ab7d8);
+  background: var(--abgm-accent-soft);
+  color: var(--abgm-accent);
   border-radius: 16px;
   font-size: 13px;
   font-weight: 500;
