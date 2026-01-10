@@ -395,21 +395,8 @@ function openAddToBottomSheet(root, settings, item) {
   // 옵션 리스트
   const list = document.createElement("div");
   list.className = "abgm-addto-list";
-  // (0) 클립보드에 복사
-  const clipBtn = document.createElement("button");
-  clipBtn.type = "button";
-  clipBtn.className = "abgm-addto-item";
-  clipBtn.dataset.action = "clipboard";
-  clipBtn.innerHTML = `<i class="fa-solid fa-clipboard"></i><span>클립보드에 복사</span>`;
-  list.appendChild(clipBtn);
-  // (1) 마이소스에 복사
-  const myBtn = document.createElement("button");
-  myBtn.type = "button";
-  myBtn.className = "abgm-addto-item";
-  myBtn.dataset.action = "mysources";
-  myBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>마이소스에 복사</span>`;
-  list.appendChild(myBtn);
-  // (2) 태그 보기 섹션
+  
+  // (0) 태그 보기 섹션 (최상단)
   const itemTags = item.tags || [];
   const tagSection = document.createElement("div");
   tagSection.className = "abgm-addto-tags-section";
@@ -435,7 +422,24 @@ function openAddToBottomSheet(root, settings, item) {
     tagSection.appendChild(chips);
   }
   list.appendChild(tagSection);
-  // (2) 프리셋 목록 (A-Z 정렬)
+  
+  // (1) 클립보드에 복사
+  const clipBtn = document.createElement("button");
+  clipBtn.type = "button";
+  clipBtn.className = "abgm-addto-item";
+  clipBtn.dataset.action = "clipboard";
+  clipBtn.innerHTML = `<i class="fa-solid fa-clipboard"></i><span>클립보드에 복사</span>`;
+  list.appendChild(clipBtn);
+  
+  // (2) 마이소스에 복사
+  const myBtn = document.createElement("button");
+  myBtn.type = "button";
+  myBtn.className = "abgm-addto-item";
+  myBtn.dataset.action = "mysources";
+  myBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>마이소스에 복사</span>`;
+  list.appendChild(myBtn);
+  
+  // (3) 프리셋 목록 (A-Z 정렬)
   const presetIds = Object.keys(settings.presets || {}).sort((a, b) => {
     const na = settings.presets[a]?.name || a;
     const nb = settings.presets[b]?.name || b;
@@ -539,77 +543,6 @@ function closeAddToBottomSheet() {
 
 
 
-/** ========================= 태그 보기 바텀시트 ========================= */
-function openTagsBottomSheet(item) {
-  closeTagsBottomSheet();
-  const overlay = document.createElement("div");
-  overlay.id = "abgm_tags_overlay";
-  overlay.className = "abgm-addto-overlay";
-  const sheet = document.createElement("div");
-  sheet.className = "abgm-addto-sheet";
-  const header = document.createElement("div");
-  header.className = "abgm-addto-header";
-  header.innerHTML = `
-    <div class="abgm-addto-title">${escapeHtml(item.title)}</div>
-    <div class="abgm-addto-subtitle">태그 목록</div>
-  `;
-  sheet.appendChild(header);
-  const list = document.createElement("div");
-  list.className = "abgm-addto-list abgm-tags-list";
-  const tags = item.tags || [];
-  if (tags.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "abgm-tags-empty";
-    empty.textContent = "(no tags)";
-    list.appendChild(empty);
-  } else {
-    const chips = document.createElement("div");
-    chips.className = "abgm-tags-chips";
-    for (const t of tags) {
-      const chip = document.createElement("span");
-      chip.className = "abgm-tag-chip";
-      chip.textContent = `#${tagPretty(t)}`;
-      chip.title = t;
-      chips.appendChild(chip);
-    }
-    list.appendChild(chips);
-  }
-  sheet.appendChild(list);
-  overlay.appendChild(sheet);
-  const modalOverlay = document.getElementById("abgm_modal_overlay") || document.getElementById("abgm_fs_overlay");
-  const host = modalOverlay || document.body;
-  const setO = (k, v) => overlay.style.setProperty(k, v, "important");
-  setO("z-index", "2147483648");
-  if (modalOverlay) {
-    const cs = getComputedStyle(modalOverlay);
-    if (cs.position === "static") modalOverlay.style.position = "relative";
-    setO("position", "absolute");
-    setO("inset", "0");
-  } else {
-    setO("position", "fixed");
-    setO("inset", "0");
-  }
-  host.appendChild(overlay);
-  requestAnimationFrame(() => overlay.classList.add("is-open"));
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeTagsBottomSheet();
-  });
-  const onEsc = (e) => {
-    if (e.key === "Escape") {
-      closeTagsBottomSheet();
-      window.removeEventListener("keydown", onEsc);
-    }
-  };
-  window.addEventListener("keydown", onEsc);
-}
-
-function closeTagsBottomSheet() {
-  const overlay = document.getElementById("abgm_tags_overlay");
-  if (!overlay) return;
-  overlay.classList.remove("is-open");
-  setTimeout(() => overlay.remove(), 200);
-}
-
 // 모달 내부 이벤트 전부 연결하는 애
 // - 탭 전환(Free/My) 시 검색/태그/카테고리 초기화 + 렌더
 // - 카테고리 클릭 시 태그피커 토글(같은 카테고리 재클릭이면 닫기)
@@ -689,16 +622,6 @@ async function initFreeSourcesModal(overlay) {
   });
   // ===== event delegation =====
   root.addEventListener("click", (e) => {
-    // 타이틀/시간 영역 클릭 → 태그 바텀시트
-    const mainBtn = e.target.closest(".abgm-fs-main");
-    if (mainBtn) {
-      e.stopPropagation();
-      const title = mainBtn.dataset.title || "Untitled";
-      let tags = [];
-      try { tags = JSON.parse(mainBtn.dataset.tags || "[]"); } catch {}
-      openTagsBottomSheet({ title, tags });
-      return;
-    }
     // 0) ▼ 버튼 클릭 → 바텀시트 열기
     const addMenuBtn = e.target.closest(".abgm-fs-addmenu-btn");
     if (addMenuBtn) {
@@ -718,7 +641,7 @@ async function initFreeSourcesModal(overlay) {
     if (pick && pick.dataset.tag) {
       const t = abgmNormTag(pick.dataset.tag);
       const { inc, exc } = fsGetTagSets(settings);
-      // > 0:none -> 1:include -> 2:exclude -> 0:none
+      // 2) 0:none -> 1:include -> 2:exclude -> 0:none
       if (inc.has(t)) {
         inc.delete(t);
         exc.add(t);
@@ -732,16 +655,6 @@ async function initFreeSourcesModal(overlay) {
       _saveSettingsDebounced();
       renderFsList(root, settings);
       renderFsTagPicker(root, settings);
-      return;
-    }
-    // 2) item main click => 태그 바텀시트 열기
-    const main = e.target.closest(".abgm-fs-main");
-    if (main) {
-      e.stopPropagation();
-      const title = main.dataset.title || "Untitled";
-      let tags = [];
-      try { tags = JSON.parse(main.dataset.tags || "[]"); } catch {}
-      openTagsBottomSheet({ title, tags });
       return;
     }
     // 3) Preview Vol
