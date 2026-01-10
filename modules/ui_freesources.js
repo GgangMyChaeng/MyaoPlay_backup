@@ -1,6 +1,7 @@
 import { abgmNormTag, abgmNormTags, tagCat, sortTags, tagPretty } from "./tags.js";
 import { getModalHost } from "./ui_modal.js";
 import { escapeHtml } from "./utils.js";
+import { addToMySources, addUrlToPreset } from "./storage.js";
 
 // 프리뷰 재생
 let _testAudio = null;
@@ -289,7 +290,11 @@ function renderFsList(root, settings) {
       <div class="abgm-fs-side">
         <div class="abgm-fs-actions">
           <button type="button" class="menu_button abgm-fs-play" title="Play" data-src="${escapeHtml(src)}">▶</button>
-          <button type="button" class="menu_button abgm-fs-copy" title="Copy" data-src="${escapeHtml(src)}">Copy</button>
+          <button type="button" class="menu_button abgm-fs-copy" title="Copy to clipboard" data-src="${escapeHtml(src)}">Copy</button>
+          <div class="abgm-fs-addmenu-wrap">
+            <button type="button" class="menu_button abgm-fs-addmenu-btn" title="Add to..." data-id="${escapeHtml(id)}">▼</button>
+            <div class="abgm-fs-addmenu" data-id="${escapeHtml(id)}" style="display:none;"></div>
+          </div>
         </div>
         <div class="abgm-fs-tagpanel">
           ${tags.map(t => `<button type="button" class="abgm-fs-tag menu_button" data-tag="${escapeHtml(t)}" title="${escapeHtml(t)}">#${escapeHtml(tagPretty(t))}</button>`).join("")}
@@ -508,6 +513,78 @@ async function initFreeSourcesModal(overlay) {
       navigator.clipboard?.writeText?.(src).catch(() => {});
       return;
     }
+    // 5-1) 드롭다운 ▼ 버튼 클릭
+    const addMenuBtn = e.target.closest(".abgm-fs-addmenu-btn");
+    if (addMenuBtn) {
+      e.stopPropagation();
+      const id = addMenuBtn.dataset.id;
+      const menu = root.querySelector(`.abgm-fs-addmenu[data-id="${id}"]`);
+      if (!menu) return;
+      // 다른 열린 메뉴 닫기
+      root.querySelectorAll(".abgm-fs-addmenu").forEach(m => {
+        if (m !== menu) m.style.display = "none";
+      });
+      // 토글
+      const isOpen = menu.style.display !== "none";
+      if (isOpen) {
+        menu.style.display = "none";
+        return;
+      }
+      // 메뉴 내용 생성
+      menu.innerHTML = "";
+      // (1) 마이소스에 복사
+      const myBtn = document.createElement("button");
+      myBtn.type = "button";
+      myBtn.className = "menu_button abgm-fs-addmenu-item";
+      myBtn.dataset.action = "mysources";
+      myBtn.dataset.itemId = id;
+      myBtn.textContent = "마이소스에 복사";
+      menu.appendChild(myBtn);
+      // (2) 프리셋 목록 (A-Z 정렬)
+      const presetIds = Object.keys(settings.presets || {}).sort((a, b) => {
+        const na = settings.presets[a]?.name || a;
+        const nb = settings.presets[b]?.name || b;
+        return na.localeCompare(nb, undefined, { sensitivity: "base" });
+      });
+      for (const pid of presetIds) {
+        const p = settings.presets[pid];
+        const pBtn = document.createElement("button");
+        pBtn.type = "button";
+        pBtn.className = "menu_button abgm-fs-addmenu-item";
+        pBtn.dataset.action = "preset";
+        pBtn.dataset.presetId = pid;
+        pBtn.dataset.itemId = id;
+        pBtn.textContent = `→ ${p.name || pid}`;
+        menu.appendChild(pBtn);
+      }
+      menu.style.display = "block";
+      return;
+    }
+    // 5-2) 드롭다운 메뉴 항목 클릭
+    const menuItem = e.target.closest(".abgm-fs-addmenu-item");
+    if (menuItem) {
+      const action = menuItem.dataset.action;
+      const itemId = menuItem.dataset.itemId;
+      const list = getFsActiveList(settings);
+      const item = list.find(it => it.id === itemId);
+      if (!item) {
+        menuItem.closest(".abgm-fs-addmenu").style.display = "none";
+        return;
+      }
+      if (action === "mysources") {
+        addToMySources(settings, item);
+        _saveSettingsDebounced();
+        if (typeof toastr !== "undefined") toastr.success("마이소스에 추가됨");
+      } else if (action === "preset") {
+        const presetId = menuItem.dataset.presetId;
+        addUrlToPreset(settings, presetId, item);
+        _saveSettingsDebounced();
+        const pName = settings.presets[presetId]?.name || presetId;
+        if (typeof toastr !== "undefined") toastr.success(`"${pName}" 프리셋에 추가됨`);
+      }
+      menuItem.closest(".abgm-fs-addmenu").style.display = "none";
+      return;
+    }
     // 6) tag button inside item tagpanel => 필터에 추가(원하면)
     const tagBtn = e.target.closest(".abgm-fs-tag");
     if (tagBtn && tagBtn.dataset.tag) {
@@ -522,13 +599,19 @@ async function initFreeSourcesModal(overlay) {
       return;
     }
   });
-  // 7) 밖 클릭하면 picker 닫기(원하면)
+  // 7) 밖 클릭하면 picker 닫기 + addmenu 닫기
   root.addEventListener("mousedown", (e) => {
     const picker = root.querySelector("#abgm_fs_tag_picker");
-    if (!picker) return;
-    const inPicker = e.target.closest("#abgm_fs_tag_picker");
-    const inCat = e.target.closest(".abgm-fs-catbar");
-    if (!inPicker && !inCat) picker.style.display = "none";
+    if (picker) {
+      const inPicker = e.target.closest("#abgm_fs_tag_picker");
+      const inCat = e.target.closest(".abgm-fs-catbar");
+      if (!inPicker && !inCat) picker.style.display = "none";
+    }
+    // addmenu 닫기
+    const inAddMenu = e.target.closest(".abgm-fs-addmenu-wrap");
+    if (!inAddMenu) {
+      root.querySelectorAll(".abgm-fs-addmenu").forEach(m => m.style.display = "none");
+    }
   }, true);
   renderFsAll(root, settings);
 } // initFreeSourcesModal 닫기
