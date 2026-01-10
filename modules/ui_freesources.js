@@ -810,7 +810,10 @@ export function initFreeSourcesInPanel(root, settings) {
       const itemId = addMenuBtn.dataset.id;
       const itemTitle = addMenuBtn.dataset.title || "Untitled";
       const itemSrc = addMenuBtn.dataset.src || "";
-      openAddToBottomSheet(root, settings, { id: itemId, title: itemTitle, src: itemSrc });
+      const list = getFsActiveList(settings);
+      const fullItem = list.find(it => it.id === itemId);
+      const itemTags = fullItem?.tags || [];
+      openAddToBottomSheet(root, settings, { id: itemId, title: itemTitle, src: itemSrc, tags: itemTags });
       return;
     }
     // tag pick toggle
@@ -831,13 +834,6 @@ export function initFreeSourcesInPanel(root, settings) {
       _saveSettingsDebounced();
       renderFsList(root, settings);
       renderFsTagPicker(root, settings);
-      return;
-    }
-    // > item main click => toggle show-tags
-    const main = e.target.closest(".abgm-fs-main");
-    if (main) {
-      const row = main.closest(".abgm-fs-item");
-      if (row) row.classList.toggle("show-tags");
       return;
     }
     // > preview vol lock
