@@ -152,3 +152,42 @@ export async function abgmGetDurationSecFromBlob(blob) {
     audio.src = url;
   });
 }
+
+
+
+/** ========================= 프리소스 → 마이소스/프리셋 복사 ========================= */
+// 마이소스에 새 항목 추가 (중복 허용)
+export function addToMySources(settings, item) {
+  settings.mySources ??= [];
+  const newItem = {
+    id: `my_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,6)}`,
+    src: item.src || "",
+    title: item.title || item.name || "Untitled",
+    durationSec: item.durationSec || 0,
+    tags: Array.isArray(item.tags) ? [...item.tags] : [],
+  };
+  settings.mySources.push(newItem);
+  return newItem;
+}
+
+// 프리셋의 bgms 배열에 새 BGM 항목 추가 (URL 기반)
+export function addUrlToPreset(settings, presetId, item) {
+  const preset = settings?.presets?.[presetId];
+  if (!preset) return null;
+  preset.bgms ??= [];
+  const newBgm = {
+    id: `${Date.now().toString(36)}_${Math.random().toString(36).slice(2,6)}`,
+    fileKey: item.src || "",   // URL을 fileKey로 사용
+    name: item.title || item.name || "Untitled",
+    keywords: "",
+    priority: 0,
+    volume: 1.0,
+    volLocked: false,
+    license: "",
+    lyrics: "",
+    imageUrl: "",
+    imageAssetKey: "",
+  };
+  preset.bgms.push(newBgm);
+  return newBgm;
+}
