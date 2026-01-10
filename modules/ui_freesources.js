@@ -283,21 +283,17 @@ function renderFsList(root, settings) {
     row.className = "abgm-fs-item";
     row.dataset.id = id;
     row.innerHTML = `
-      <button type="button" class="abgm-fs-main" title="Toggle tags">
-        <div class="abgm-fs-name">${escapeHtml(title)}</div>
-        <div class="abgm-fs-time">${escapeHtml(dur)}</div>
-      </button>
-      <div class="abgm-fs-side">
-        <div class="abgm-fs-actions">
-          <button type="button" class="menu_button abgm-fs-play" title="Play" data-src="${escapeHtml(src)}">▶</button>
-          <button type="button" class="menu_button abgm-fs-copy" title="Copy to clipboard" data-src="${escapeHtml(src)}">Copy</button>
-          <button type="button" class="menu_button abgm-fs-addmenu-btn" title="Add to..." data-id="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-src="${escapeHtml(src)}">▼</button>
-        </div>
-        <div class="abgm-fs-tagpanel">
-          ${tags.map(t => `<button type="button" class="abgm-fs-tag menu_button" data-tag="${escapeHtml(t)}" title="${escapeHtml(t)}">#${escapeHtml(tagPretty(t))}</button>`).join("")}
-        </div>
-      </div>
-    `;
+  <button type="button" class="abgm-fs-main" title="View tags" data-id="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-tags='${escapeHtml(JSON.stringify(tags))}'>
+    <div class="abgm-fs-name">${escapeHtml(title)}</div>
+    <div class="abgm-fs-time">${escapeHtml(dur)}</div>
+  </button>
+  <div class="abgm-fs-side">
+    <div class="abgm-fs-actions">
+      <button type="button" class="menu_button abgm-fs-play" title="Play" data-src="${escapeHtml(src)}">▶</button>
+      <button type="button" class="menu_button abgm-fs-addmenu-btn" title="More options" data-id="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-src="${escapeHtml(src)}">⋯</button>
+    </div>
+  </div>
+`;
     listEl.appendChild(row);
   }
 }
@@ -399,6 +395,13 @@ function openAddToBottomSheet(root, settings, item) {
   // 옵션 리스트
   const list = document.createElement("div");
   list.className = "abgm-addto-list";
+  // (0) 클립보드에 복사
+  const clipBtn = document.createElement("button");
+  clipBtn.type = "button";
+  clipBtn.className = "abgm-addto-item";
+  clipBtn.dataset.action = "clipboard";
+  clipBtn.innerHTML = `<i class="fa-solid fa-clipboard"></i><span>클립보드에 복사</span>`;
+  list.appendChild(clipBtn);
   // (1) 마이소스에 복사
   const myBtn = document.createElement("button");
   myBtn.type = "button";
@@ -462,6 +465,16 @@ function openAddToBottomSheet(root, settings, item) {
     const itemBtn = e.target.closest(".abgm-addto-item");
     if (itemBtn) {
       const action = itemBtn.dataset.action;
+      if (action === "clipboard") {
+        const src = item.src || "";
+        navigator.clipboard.writeText(src).then(() => {
+          if (typeof toastr !== "undefined") toastr.success("클립보드에 복사됨");
+        }).catch(() => {
+          if (typeof toastr !== "undefined") toastr.error("복사 실패");
+        });
+        closeAddToBottomSheet();
+        return;
+      }
       if (action === "mysources") {
         // 현재 리스트에서 아이템 찾기
         const list = getFsActiveList(settings);
@@ -493,6 +506,83 @@ function openAddToBottomSheet(root, settings, item) {
 
 function closeAddToBottomSheet() {
   const overlay = document.getElementById("abgm_addto_overlay");
+  if (!overlay) return;
+  overlay.classList.remove("is-open");
+  setTimeout(() => overlay.remove(), 200);
+}
+
+
+
+/** ========================= 태그 보기 바텀시트 ========================= */
+function openTagsBottomSheet(item) {
+  // 기존 바텀시트 있으면 제거
+  closeTagsBottomSheet();
+  const overlay = document.createElement("div");
+  overlay.id = "abgm_tags_overlay";
+  overlay.className = "abgm-addto-overlay";
+  const sheet = document.createElement("div");
+  sheet.className = "abgm-addto-sheet";
+  // 헤더
+  const header = document.createElement("div");
+  header.className = "abgm-addto-header";
+  header.innerHTML = `
+    <div class="abgm-addto-title">${escapeHtml(item.title)}</div>
+    <div class="abgm-addto-subtitle">태그 목록</div>
+  `;
+  sheet.appendChild(header);
+  // 태그 리스트
+  const list = document.createElement("div");
+  list.className = "abgm-addto-list abgm-tags-list";
+  const tags = item.tags || [];
+  if (tags.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "abgm-tags-empty";
+    empty.textContent = "(no tags)";
+    list.appendChild(empty);
+  } else {
+    const chips = document.createElement("div");
+    chips.className = "abgm-tags-chips";
+    for (const t of tags) {
+      const chip = document.createElement("span");
+      chip.className = "abgm-tag-chip";
+      chip.textContent = `#${tagPretty(t)}`;
+      chip.title = t;
+      chips.appendChild(chip);
+    }
+    list.appendChild(chips);
+  }
+  sheet.appendChild(list);
+  overlay.appendChild(sheet);
+  const modalOverlay = document.getElementById("abgm_modal_overlay");
+  const host = modalOverlay || document.body;
+  const setO = (k, v) => overlay.style.setProperty(k, v, "important");
+  setO("z-index", "2147483648");
+  if (modalOverlay) {
+    const cs = getComputedStyle(modalOverlay);
+    if (cs.position === "static") modalOverlay.style.position = "relative";
+    setO("position", "absolute");
+    setO("inset", "0");
+  } else {
+    setO("position", "fixed");
+    setO("inset", "0");
+  }
+  host.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add("is-open"));
+  // 이벤트
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeTagsBottomSheet();
+  });
+  const onEsc = (e) => {
+    if (e.key === "Escape") {
+      closeTagsBottomSheet();
+      window.removeEventListener("keydown", onEsc);
+    }
+  };
+  window.addEventListener("keydown", onEsc);
+}
+
+function closeTagsBottomSheet() {
+  const overlay = document.getElementById("abgm_tags_overlay");
   if (!overlay) return;
   overlay.classList.remove("is-open");
   setTimeout(() => overlay.remove(), 200);
@@ -577,6 +667,16 @@ async function initFreeSourcesModal(overlay) {
   });
   // ===== event delegation =====
   root.addEventListener("click", (e) => {
+    // 타이틀/시간 영역 클릭 → 태그 바텀시트
+    const mainBtn = e.target.closest(".abgm-fs-main");
+    if (mainBtn) {
+      e.stopPropagation();
+      const title = mainBtn.dataset.title || "Untitled";
+      let tags = [];
+      try { tags = JSON.parse(mainBtn.dataset.tags || "[]"); } catch {}
+      openTagsBottomSheet({ title, tags });
+      return;
+    }
     // 0) ▼ 버튼 클릭 → 바텀시트 열기
     const addMenuBtn = e.target.closest(".abgm-fs-addmenu-btn");
     if (addMenuBtn) {
