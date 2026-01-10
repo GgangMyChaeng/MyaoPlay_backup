@@ -477,9 +477,16 @@ export function engineTick() {
     if (settings.keywordMode) {
       stopRuntime();
     } else {
-      // 키워드 모드 아니면: 현재 재생 유지 + 새 chatState에 현재곡만 동기화
+      // 키워드 모드 아니면: 현재 재생 유지
+      // 단, 새 chatState에 동기화할 때는 "현재 프리셋에 있는 곡"만 허용
       if (_engineCurrentFileKey) {
-        st.currentKey = _engineCurrentFileKey;
+        const inPreset = (preset?.bgms ?? []).some(b => String(b.fileKey ?? "") === _engineCurrentFileKey);
+        if (inPreset) {
+          st.currentKey = _engineCurrentFileKey;
+        } else {
+          // 현재 프리셋에 없는 곡이면 동기화하지 않고 정리
+          stopRuntime();
+        }
       }
     }
   }
@@ -637,7 +644,9 @@ export function engineTick() {
     return;
   }
   if (mode === "loop_one") {
-    const fk = st.currentKey || defKey || keys[0] || "";
+    // st.currentKey가 현재 프리셋에 있는지 확인
+    const stKeyValid = st.currentKey && keys.includes(st.currentKey);
+    const fk = (stKeyValid ? st.currentKey : "") || defKey || keys[0] || "";
     if (!fk) return;
     if (_engineCurrentFileKey !== fk) {
       ensurePlayFile(fk, getVol(fk), true, preset.id);
