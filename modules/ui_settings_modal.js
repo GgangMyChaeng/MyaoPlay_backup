@@ -1584,8 +1584,10 @@ debugChk?.addEventListener('change', (e) => {
     const mainDbg = root.querySelector('#abgm_debugMode');
     if (mainDbg) mainDbg.checked = settings.debugMode;
   });
-  // ===== Time Mode Panel 초기화 =====
+  // > Time Mode Panel 초기화
   initTimePanel(root, settings);
+  // > SFX Mode Panel 초기화
+  initSfxPanel(root, settings);
 } // initModePanel 닫기
 
 
@@ -1694,3 +1696,34 @@ function initTimePanel(root, settings) {
     });
   });
 } // initTimePanel 닫기
+
+
+
+/** ========================= SFX Mode Panel 초기화 ========================= */
+function initSfxPanel(root, settings) {
+  const sfxPanel = root.querySelector('#abgm-mode-sfx');
+  if (!sfxPanel) return;
+  
+  const sfx = settings.sfxMode || {};
+  
+  // === 요소 참조 ===
+  const overlayChk = sfxPanel.querySelector('#abgm_sfx_overlay');
+  const skipOtherChk = sfxPanel.querySelector('#abgm_sfx_skip_other');
+  
+  // === 초기값 세팅 ===
+  if (overlayChk) overlayChk.checked = sfx.overlay !== false; // 기본값 true
+  if (skipOtherChk) skipOtherChk.checked = sfx.skipInOtherModes !== false; // 기본값 true
+  
+  // === 이벤트 바인딩 ===
+  overlayChk?.addEventListener('change', (e) => {
+    settings.sfxMode ??= {};
+    settings.sfxMode.overlay = !!e.target.checked;
+    _saveSettingsDebounced();
+  });
+  
+  skipOtherChk?.addEventListener('change', (e) => {
+    settings.sfxMode ??= {};
+    settings.sfxMode.skipInOtherModes = !!e.target.checked;
+    _saveSettingsDebounced();
+  });
+} // initSfxPanel 닫기
