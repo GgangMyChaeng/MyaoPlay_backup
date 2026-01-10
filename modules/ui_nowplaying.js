@@ -915,9 +915,22 @@ function abgmPlayFromPlaylist(fileKey) {
   if (!fk) return;
   const settings = ensureSettings();
   if (!settings.enabled) return;
+  
+  // 0) 현재 재생 중인 곡이면 → 일시정지/재생 토글
+  const curKey = String(NP.getEngineCurrentFileKey() || "");
+  const audio = NP.getBgmAudio();
+  if (fk === curKey && audio) {
+    if (!audio.paused) {
+      try { audio.pause(); } catch {}
+    } else {
+      try { audio.play(); } catch {}
+    }
+    try { updateNowPlayingUI(); } catch {}
+    return;
+  }
+  
   // 1) 키워드 모드만 끄고, playMode는 유저가 설정한 그대로 유지
   settings.keywordMode = false;
-  // settings.playMode = "manual";
   // 2) 엔진틱이 참고하는 currentKey를 갱신해서 튕김 방지
   try { NP.ensureEngineFields?.(settings); } catch {}
   const ctx = NP.getSTContextSafe?.();
@@ -945,7 +958,12 @@ function abgmPlayFromPlaylist(fileKey) {
   const gv = Number(settings.globalVolume ?? 0.7);
   const bv = Number(b?.volume ?? 1);
   const vol01 = Math.max(0, Math.min(1, gv * bv));
+  
+  // 4) playMode에 따라 loop 결정
+  const mode = settings.playMode || "manual";
+  const shouldLoop = (mode === "loop_one");
+  
   try { saveSettingsDebounced?.(); } catch {}
-  NP.ensurePlayFile(fk, vol01, false, preset?.id || "");
+  NP.ensurePlayFile(fk, vol01, shouldLoop, preset?.id || "");
   try { updateNowPlayingUI(); } catch {}
 }
