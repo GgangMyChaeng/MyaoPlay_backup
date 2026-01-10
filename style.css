@@ -2679,6 +2679,31 @@ body.autobgm-modal-open {
   color: var(--abgm-text-muted, rgba(0,0,0,0.4));
 }
 
+/* 태그 바텀시트 전용 */
+.abgm-tags-list {
+  padding: 16px 20px 24px;
+}
+.abgm-tags-empty {
+  text-align: center;
+  color: var(--abgm-text-muted, rgba(0,0,0,0.4));
+  font-size: 14px;
+  padding: 20px 0;
+}
+.abgm-tags-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.abgm-tag-chip {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--abgm-accent-soft, rgba(74,183,216,0.12));
+  color: var(--abgm-accent, #4ab7d8);
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 /* 다크 테마 대응 */
 [data-abgm-theme="dark"] .abgm-addto-sheet {
   background: var(--abgm-bg, #1a1a2e);
