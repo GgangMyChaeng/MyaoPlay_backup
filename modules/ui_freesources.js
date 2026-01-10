@@ -758,6 +758,16 @@ export function initFreeSourcesInPanel(root, settings) {
   });
   // 6) 이벤트 델리게이션 (play, copy, tag pick 등)
   root.addEventListener("click", (e) => {
+    // 0) ▼ 버튼 클릭 → 바텀시트 열기
+    const addMenuBtn = e.target.closest(".abgm-fs-addmenu-btn");
+    if (addMenuBtn) {
+      e.stopPropagation();
+      const itemId = addMenuBtn.dataset.id;
+      const itemTitle = addMenuBtn.dataset.title || "Untitled";
+      const itemSrc = addMenuBtn.dataset.src || "";
+      openAddToBottomSheet(root, settings, { id: itemId, title: itemTitle, src: itemSrc });
+      return;
+    }
     // tag pick toggle
     const pick = e.target.closest(".abgm-fs-tagpick");
     if (pick && pick.dataset.tag) {
