@@ -472,6 +472,9 @@ export function engineTick() {
     prevKey: "",
   };
   const st = settings.chatStates[chatKey];
+  let preset = settings.presets?.[settings.activePresetId];
+  if (!preset) preset = Object.values(settings.presets ?? {})[0];
+  if (!preset) return;
   // 채팅 바뀌면 정리 (키워드 모드일 때만)
   if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
     if (settings.keywordMode) {
@@ -491,9 +494,6 @@ export function engineTick() {
     }
   }
   _engineLastChatKey = chatKey;
-  let preset = settings.presets?.[settings.activePresetId];
-  if (!preset) preset = Object.values(settings.presets ?? {})[0];
-  if (!preset) return;
   _engineCurrentPresetId = preset.id;
   // 프리셋 바뀌면 정리
   if (_engineLastPresetId && _engineLastPresetId !== String(preset.id)) {
