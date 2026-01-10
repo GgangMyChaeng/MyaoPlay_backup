@@ -2679,28 +2679,29 @@ body.autobgm-modal-open {
   color: var(--abgm-text-muted, rgba(0,0,0,0.4));
 }
 
-/* 태그 바텀시트 전용 */
-.abgm-tags-list {
-  padding: 16px 20px 24px;
+/* 태그 섹션 (옵션 바텀시트 내) */
+.abgm-addto-tags-section {
+  padding: 0 20px 8px;
 }
 .abgm-tags-empty {
   text-align: center;
   color: var(--abgm-text-muted);
-  font-size: 14px;
-  padding: 20px 0;
+  font-size: 13px;
+  padding: 8px 0 12px;
 }
 .abgm-tags-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+  padding: 4px 0 8px;
 }
 .abgm-tag-chip {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 5px 10px;
   background: var(--abgm-accent-soft);
   color: var(--abgm-accent);
-  border-radius: 16px;
-  font-size: 13px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: 500;
 }
 
