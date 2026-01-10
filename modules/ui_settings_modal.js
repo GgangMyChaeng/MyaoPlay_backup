@@ -1703,26 +1703,23 @@ function initTimePanel(root, settings) {
 function initSfxPanel(root, settings) {
   const sfxPanel = root.querySelector('#abgm-mode-sfx');
   if (!sfxPanel) return;
-  
-  const sfx = settings.sfxMode || {};
-  
+  // sfxMode 보정 (혹시 없으면 여기서도 기본값 세팅)
+  settings.sfxMode ??= {};
+  settings.sfxMode.overlay ??= true;
+  settings.sfxMode.skipInOtherModes ??= true;
+  const sfx = settings.sfxMode;
   // === 요소 참조 ===
   const overlayChk = sfxPanel.querySelector('#abgm_sfx_overlay');
   const skipOtherChk = sfxPanel.querySelector('#abgm_sfx_skip_other');
-  
   // === 초기값 세팅 ===
-  if (overlayChk) overlayChk.checked = sfx.overlay !== false; // 기본값 true
-  if (skipOtherChk) skipOtherChk.checked = sfx.skipInOtherModes !== false; // 기본값 true
-  
+  if (overlayChk) overlayChk.checked = !!sfx.overlay;
+  if (skipOtherChk) skipOtherChk.checked = !!sfx.skipInOtherModes;
   // === 이벤트 바인딩 ===
   overlayChk?.addEventListener('change', (e) => {
-    settings.sfxMode ??= {};
     settings.sfxMode.overlay = !!e.target.checked;
     _saveSettingsDebounced();
   });
-  
   skipOtherChk?.addEventListener('change', (e) => {
-    settings.sfxMode ??= {};
     settings.sfxMode.skipInOtherModes = !!e.target.checked;
     _saveSettingsDebounced();
   });
