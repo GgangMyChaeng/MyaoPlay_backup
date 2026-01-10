@@ -383,14 +383,11 @@ export async function openFreeSourcesModal() {
 function openAddToBottomSheet(root, settings, item) {
   // 기존 바텀시트 있으면 제거
   closeAddToBottomSheet();
-  
   const overlay = document.createElement("div");
   overlay.id = "abgm_addto_overlay";
   overlay.className = "abgm-addto-overlay";
-  
   const sheet = document.createElement("div");
   sheet.className = "abgm-addto-sheet";
-  
   // 헤더
   const header = document.createElement("div");
   header.className = "abgm-addto-header";
@@ -399,11 +396,9 @@ function openAddToBottomSheet(root, settings, item) {
     <div class="abgm-addto-subtitle">추가할 위치 선택</div>
   `;
   sheet.appendChild(header);
-  
   // 옵션 리스트
   const list = document.createElement("div");
   list.className = "abgm-addto-list";
-  
   // (1) 마이소스에 복사
   const myBtn = document.createElement("button");
   myBtn.type = "button";
@@ -411,21 +406,18 @@ function openAddToBottomSheet(root, settings, item) {
   myBtn.dataset.action = "mysources";
   myBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>마이소스에 복사</span>`;
   list.appendChild(myBtn);
-  
   // (2) 프리셋 목록 (A-Z 정렬)
   const presetIds = Object.keys(settings.presets || {}).sort((a, b) => {
     const na = settings.presets[a]?.name || a;
     const nb = settings.presets[b]?.name || b;
     return na.localeCompare(nb, undefined, { sensitivity: "base" });
   });
-  
   if (presetIds.length > 0) {
     const divider = document.createElement("div");
     divider.className = "abgm-addto-divider";
     divider.textContent = "프리셋";
     list.appendChild(divider);
   }
-  
   for (const pid of presetIds) {
     const p = settings.presets[pid];
     const pBtn = document.createElement("button");
@@ -436,11 +428,24 @@ function openAddToBottomSheet(root, settings, item) {
     pBtn.innerHTML = `<i class="fa-solid fa-music"></i><span>${escapeHtml(p.name || pid)}</span>`;
     list.appendChild(pBtn);
   }
-  
   sheet.appendChild(list);
   overlay.appendChild(sheet);
-  document.body.appendChild(overlay);
-  
+  const modalOverlay = document.getElementById("abgm_modal_overlay");
+  const host = modalOverlay || document.body;
+  // 모달 위에 뜨게 강제
+  const setO = (k, v) => overlay.style.setProperty(k, v, "important");
+  setO("z-index", "2147483648");
+  // 모달 안이면 absolute(같은 스택에서 놀게), 아니면 fixed(뷰포트 기준)
+  if (modalOverlay) {
+    const cs = getComputedStyle(modalOverlay);
+    if (cs.position === "static") modalOverlay.style.position = "relative";
+    setO("position", "absolute");
+    setO("inset", "0");
+  } else {
+    setO("position", "fixed");
+    setO("inset", "0");
+  }
+  host.appendChild(overlay);
   // 애니메이션
   requestAnimationFrame(() => {
     overlay.classList.add("is-open");
@@ -476,7 +481,6 @@ function openAddToBottomSheet(root, settings, item) {
       closeAddToBottomSheet();
     }
   });
-  
   // ESC 닫기
   const onEsc = (e) => {
     if (e.key === "Escape") {
