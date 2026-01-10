@@ -291,10 +291,7 @@ function renderFsList(root, settings) {
         <div class="abgm-fs-actions">
           <button type="button" class="menu_button abgm-fs-play" title="Play" data-src="${escapeHtml(src)}">▶</button>
           <button type="button" class="menu_button abgm-fs-copy" title="Copy to clipboard" data-src="${escapeHtml(src)}">Copy</button>
-          <div class="abgm-fs-addmenu-wrap">
-            <button type="button" class="menu_button abgm-fs-addmenu-btn" title="Add to..." data-id="${escapeHtml(id)}">▼</button>
-            <div class="abgm-fs-addmenu" data-id="${escapeHtml(id)}" style="display:none;"></div>
-          </div>
+          <button type="button" class="menu_button abgm-fs-addmenu-btn" title="Add to..." data-id="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-src="${escapeHtml(src)}">▼</button>
         </div>
         <div class="abgm-fs-tagpanel">
           ${tags.map(t => `<button type="button" class="abgm-fs-tag menu_button" data-tag="${escapeHtml(t)}" title="${escapeHtml(t)}">#${escapeHtml(tagPretty(t))}</button>`).join("")}
@@ -380,6 +377,123 @@ export async function openFreeSourcesModal() {
   console.log("[MyaPl] freesources modal opened");
 }
 
+
+
+/** ========================= 바텀시트 (Add to...) ========================= */
+function openAddToBottomSheet(root, settings, item) {
+  // 기존 바텀시트 있으면 제거
+  closeAddToBottomSheet();
+  
+  const overlay = document.createElement("div");
+  overlay.id = "abgm_addto_overlay";
+  overlay.className = "abgm-addto-overlay";
+  
+  const sheet = document.createElement("div");
+  sheet.className = "abgm-addto-sheet";
+  
+  // 헤더
+  const header = document.createElement("div");
+  header.className = "abgm-addto-header";
+  header.innerHTML = `
+    <div class="abgm-addto-title">${escapeHtml(item.title)}</div>
+    <div class="abgm-addto-subtitle">추가할 위치 선택</div>
+  `;
+  sheet.appendChild(header);
+  
+  // 옵션 리스트
+  const list = document.createElement("div");
+  list.className = "abgm-addto-list";
+  
+  // (1) 마이소스에 복사
+  const myBtn = document.createElement("button");
+  myBtn.type = "button";
+  myBtn.className = "abgm-addto-item";
+  myBtn.dataset.action = "mysources";
+  myBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>마이소스에 복사</span>`;
+  list.appendChild(myBtn);
+  
+  // (2) 프리셋 목록 (A-Z 정렬)
+  const presetIds = Object.keys(settings.presets || {}).sort((a, b) => {
+    const na = settings.presets[a]?.name || a;
+    const nb = settings.presets[b]?.name || b;
+    return na.localeCompare(nb, undefined, { sensitivity: "base" });
+  });
+  
+  if (presetIds.length > 0) {
+    const divider = document.createElement("div");
+    divider.className = "abgm-addto-divider";
+    divider.textContent = "프리셋";
+    list.appendChild(divider);
+  }
+  
+  for (const pid of presetIds) {
+    const p = settings.presets[pid];
+    const pBtn = document.createElement("button");
+    pBtn.type = "button";
+    pBtn.className = "abgm-addto-item";
+    pBtn.dataset.action = "preset";
+    pBtn.dataset.presetId = pid;
+    pBtn.innerHTML = `<i class="fa-solid fa-music"></i><span>${escapeHtml(p.name || pid)}</span>`;
+    list.appendChild(pBtn);
+  }
+  
+  sheet.appendChild(list);
+  overlay.appendChild(sheet);
+  document.body.appendChild(overlay);
+  
+  // 애니메이션
+  requestAnimationFrame(() => {
+    overlay.classList.add("is-open");
+  });
+  
+  // 이벤트
+  overlay.addEventListener("click", (e) => {
+    // 바깥 클릭 → 닫기
+    if (e.target === overlay) {
+      closeAddToBottomSheet();
+      return;
+    }
+    // 아이템 클릭
+    const itemBtn = e.target.closest(".abgm-addto-item");
+    if (itemBtn) {
+      const action = itemBtn.dataset.action;
+      if (action === "mysources") {
+        // 현재 리스트에서 아이템 찾기
+        const list = getFsActiveList(settings);
+        const fullItem = list.find(it => it.id === item.id) || item;
+        addToMySources(settings, fullItem);
+        _saveSettingsDebounced();
+        if (typeof toastr !== "undefined") toastr.success("마이소스에 추가됨");
+      } else if (action === "preset") {
+        const presetId = itemBtn.dataset.presetId;
+        const list = getFsActiveList(settings);
+        const fullItem = list.find(it => it.id === item.id) || item;
+        addUrlToPreset(settings, presetId, fullItem);
+        _saveSettingsDebounced();
+        const pName = settings.presets[presetId]?.name || presetId;
+        if (typeof toastr !== "undefined") toastr.success(`"${pName}" 프리셋에 추가됨`);
+      }
+      closeAddToBottomSheet();
+    }
+  });
+  
+  // ESC 닫기
+  const onEsc = (e) => {
+    if (e.key === "Escape") {
+      closeAddToBottomSheet();
+      window.removeEventListener("keydown", onEsc);
+    }
+  };
+  window.addEventListener("keydown", onEsc);
+}
+
+function closeAddToBottomSheet() {
+  const overlay = document.getElementById("abgm_addto_overlay");
+  if (!overlay) return;
+  overlay.classList.remove("is-open");
+  setTimeout(() => overlay.remove(), 200);
+}
+
 // 모달 내부 이벤트 전부 연결하는 애
 // - 탭 전환(Free/My) 시 검색/태그/카테고리 초기화 + 렌더
 // - 카테고리 클릭 시 태그피커 토글(같은 카테고리 재클릭이면 닫기)
@@ -459,76 +573,14 @@ async function initFreeSourcesModal(overlay) {
   });
   // ===== event delegation =====
   root.addEventListener("click", (e) => {
-    // 0) 드롭다운 ▼ 버튼 클릭 (가장 먼저 체크)
+    // 0) ▼ 버튼 클릭 → 바텀시트 열기
     const addMenuBtn = e.target.closest(".abgm-fs-addmenu-btn");
     if (addMenuBtn) {
       e.stopPropagation();
-      const id = addMenuBtn.dataset.id;
-      const menu = root.querySelector(`.abgm-fs-addmenu[data-id="${id}"]`);
-      if (!menu) return;
-      // 다른 열린 메뉴 닫기
-      root.querySelectorAll(".abgm-fs-addmenu").forEach(m => {
-        if (m !== menu) m.style.display = "none";
-      });
-      // 토글
-      const isOpen = menu.style.display !== "none";
-      if (isOpen) {
-        menu.style.display = "none";
-        return;
-      }
-      // 메뉴 내용 생성
-      menu.innerHTML = "";
-      // (1) 마이소스에 복사
-      const myBtn = document.createElement("button");
-      myBtn.type = "button";
-      myBtn.className = "menu_button abgm-fs-addmenu-item";
-      myBtn.dataset.action = "mysources";
-      myBtn.dataset.itemId = id;
-      myBtn.textContent = "마이소스에 복사";
-      menu.appendChild(myBtn);
-      // (2) 프리셋 목록 (A-Z 정렬)
-      const presetIds = Object.keys(settings.presets || {}).sort((a, b) => {
-        const na = settings.presets[a]?.name || a;
-        const nb = settings.presets[b]?.name || b;
-        return na.localeCompare(nb, undefined, { sensitivity: "base" });
-      });
-      for (const pid of presetIds) {
-        const p = settings.presets[pid];
-        const pBtn = document.createElement("button");
-        pBtn.type = "button";
-        pBtn.className = "menu_button abgm-fs-addmenu-item";
-        pBtn.dataset.action = "preset";
-        pBtn.dataset.presetId = pid;
-        pBtn.dataset.itemId = id;
-        pBtn.textContent = `→ ${p.name || pid}`;
-        menu.appendChild(pBtn);
-      }
-      menu.style.display = "block";
-      return;
-    }
-    // 0-1) 드롭다운 메뉴 항목 클릭
-    const menuItem = e.target.closest(".abgm-fs-addmenu-item");
-    if (menuItem) {
-      const action = menuItem.dataset.action;
-      const itemId = menuItem.dataset.itemId;
-      const list = getFsActiveList(settings);
-      const item = list.find(it => it.id === itemId);
-      if (!item) {
-        menuItem.closest(".abgm-fs-addmenu").style.display = "none";
-        return;
-      }
-      if (action === "mysources") {
-        addToMySources(settings, item);
-        _saveSettingsDebounced();
-        if (typeof toastr !== "undefined") toastr.success("마이소스에 추가됨");
-      } else if (action === "preset") {
-        const presetId = menuItem.dataset.presetId;
-        addUrlToPreset(settings, presetId, item);
-        _saveSettingsDebounced();
-        const pName = settings.presets[presetId]?.name || presetId;
-        if (typeof toastr !== "undefined") toastr.success(`"${pName}" 프리셋에 추가됨`);
-      }
-      menuItem.closest(".abgm-fs-addmenu").style.display = "none";
+      const itemId = addMenuBtn.dataset.id;
+      const itemTitle = addMenuBtn.dataset.title || "Untitled";
+      const itemSrc = addMenuBtn.dataset.src || "";
+      openAddToBottomSheet(root, settings, { id: itemId, title: itemTitle, src: itemSrc });
       return;
     }
     // 1) tag pick toggle (in dropdown)
@@ -606,11 +658,6 @@ async function initFreeSourcesModal(overlay) {
       const inPicker = e.target.closest("#abgm_fs_tag_picker");
       const inCat = e.target.closest(".abgm-fs-catbar");
       if (!inPicker && !inCat) picker.style.display = "none";
-    }
-    // addmenu 닫기
-    const inAddMenu = e.target.closest(".abgm-fs-addmenu-wrap");
-    if (!inAddMenu) {
-      root.querySelectorAll(".abgm-fs-addmenu").forEach(m => m.style.display = "none");
     }
   }, true);
   renderFsAll(root, settings);
