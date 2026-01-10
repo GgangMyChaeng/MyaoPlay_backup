@@ -515,14 +515,12 @@ function closeAddToBottomSheet() {
 
 /** ========================= 태그 보기 바텀시트 ========================= */
 function openTagsBottomSheet(item) {
-  // 기존 바텀시트 있으면 제거
   closeTagsBottomSheet();
   const overlay = document.createElement("div");
   overlay.id = "abgm_tags_overlay";
   overlay.className = "abgm-addto-overlay";
   const sheet = document.createElement("div");
   sheet.className = "abgm-addto-sheet";
-  // 헤더
   const header = document.createElement("div");
   header.className = "abgm-addto-header";
   header.innerHTML = `
@@ -530,7 +528,6 @@ function openTagsBottomSheet(item) {
     <div class="abgm-addto-subtitle">태그 목록</div>
   `;
   sheet.appendChild(header);
-  // 태그 리스트
   const list = document.createElement("div");
   list.className = "abgm-addto-list abgm-tags-list";
   const tags = item.tags || [];
@@ -553,7 +550,7 @@ function openTagsBottomSheet(item) {
   }
   sheet.appendChild(list);
   overlay.appendChild(sheet);
-  const modalOverlay = document.getElementById("abgm_modal_overlay");
+  const modalOverlay = document.getElementById("abgm_modal_overlay") || document.getElementById("abgm_fs_overlay");
   const host = modalOverlay || document.body;
   const setO = (k, v) => overlay.style.setProperty(k, v, "important");
   setO("z-index", "2147483648");
@@ -568,7 +565,6 @@ function openTagsBottomSheet(item) {
   }
   host.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add("is-open"));
-  // 이벤트
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeTagsBottomSheet();
   });
@@ -708,12 +704,14 @@ async function initFreeSourcesModal(overlay) {
       renderFsTagPicker(root, settings);
       return;
     }
-    // 2) item main click => toggle show-tags (actions <-> tags panel)
+    // 2) item main click => 태그 바텀시트 열기
     const main = e.target.closest(".abgm-fs-main");
     if (main) {
-      const row = main.closest(".abgm-fs-item");
-      if (!row) return;
-      row.classList.toggle("show-tags");
+      e.stopPropagation();
+      const title = main.dataset.title || "Untitled";
+      let tags = [];
+      try { tags = JSON.parse(main.dataset.tags || "[]"); } catch {}
+      openTagsBottomSheet({ title, tags });
       return;
     }
     // 3) Preview Vol
