@@ -409,6 +409,32 @@ function openAddToBottomSheet(root, settings, item) {
   myBtn.dataset.action = "mysources";
   myBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>마이소스에 복사</span>`;
   list.appendChild(myBtn);
+  // (2) 태그 보기 섹션
+  const itemTags = item.tags || [];
+  const tagSection = document.createElement("div");
+  tagSection.className = "abgm-addto-tags-section";
+  const tagDivider = document.createElement("div");
+  tagDivider.className = "abgm-addto-divider";
+  tagDivider.textContent = "태그";
+  tagSection.appendChild(tagDivider);
+  if (itemTags.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "abgm-tags-empty";
+    empty.textContent = "(no tags)";
+    tagSection.appendChild(empty);
+  } else {
+    const chips = document.createElement("div");
+    chips.className = "abgm-tags-chips";
+    for (const t of itemTags) {
+      const chip = document.createElement("span");
+      chip.className = "abgm-tag-chip";
+      chip.textContent = `#${tagPretty(t)}`;
+      chip.title = t;
+      chips.appendChild(chip);
+    }
+    tagSection.appendChild(chips);
+  }
+  list.appendChild(tagSection);
   // (2) 프리셋 목록 (A-Z 정렬)
   const presetIds = Object.keys(settings.presets || {}).sort((a, b) => {
     const na = settings.presets[a]?.name || a;
@@ -680,7 +706,11 @@ async function initFreeSourcesModal(overlay) {
       const itemId = addMenuBtn.dataset.id;
       const itemTitle = addMenuBtn.dataset.title || "Untitled";
       const itemSrc = addMenuBtn.dataset.src || "";
-      openAddToBottomSheet(root, settings, { id: itemId, title: itemTitle, src: itemSrc });
+      // 리스트에서 전체 아이템 찾아서 tags 가져오기
+      const list = getFsActiveList(settings);
+      const fullItem = list.find(it => it.id === itemId);
+      const itemTags = fullItem?.tags || [];
+      openAddToBottomSheet(root, settings, { id: itemId, title: itemTitle, src: itemSrc, tags: itemTags });
       return;
     }
     // 1) tag pick toggle (in dropdown)
