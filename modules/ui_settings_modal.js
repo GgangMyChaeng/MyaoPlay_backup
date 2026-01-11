@@ -1479,12 +1479,21 @@ function initModePanel(root, settings) {
   const promptSection = modePanel.querySelector('#abgm_kw_prompt_section');
   
   function updateKwSubmodeUI(mode) {
-    if (descMatching) descMatching.style.display = mode === 'matching' ? 'block' : 'none';
-    if (descToken) descToken.style.display = mode === 'token' ? 'block' : 'none';
-    if (descHybrid) descHybrid.style.display = mode === 'hybrid' ? 'block' : 'none';
-    // 토큰/하이브리드일 때만 프롬프트 섹션 표시
-    if (promptSection) promptSection.style.display = (mode === 'token' || mode === 'hybrid') ? 'block' : 'none';
-  }
+  if (descMatching) descMatching.style.display = mode === 'matching' ? 'block' : 'none';
+  if (descToken) descToken.style.display = mode === 'token' ? 'block' : 'none';
+  if (descHybrid) descHybrid.style.display = mode === 'hybrid' ? 'block' : 'none';
+  // 추천 모드 설명
+  const descRecommend = modePanel.querySelector('#abgm_kw_mode_desc_recommend');
+  if (descRecommend) descRecommend.style.display = mode === 'recommend' ? 'block' : 'none';
+  // 토큰/하이브리드일 때만 프롬프트 섹션 표시
+  if (promptSection) promptSection.style.display = (mode === 'token' || mode === 'hybrid') ? 'block' : 'none';
+  // 추천 모드일 때만 추천 섹션 표시
+  const recommendSection = modePanel.querySelector('#abgm_kw_recommend_section');
+  if (recommendSection) recommendSection.style.display = mode === 'recommend' ? 'block' : 'none';
+  // 추천 모드일 때 공통 옵션(키워드 관련) 숨김
+  const commonOptions = modePanel.querySelector('#abgm_kw_common_options');
+  if (commonOptions) commonOptions.style.display = mode === 'recommend' ? 'none' : 'block';
+}
   
   // 초기값 설정
   if (kwSubmodeSel) {
@@ -1497,6 +1506,30 @@ function initModePanel(root, settings) {
       _saveSettingsDebounced();
     });
   }
+
+  // ===== 추천 모드 설정 =====
+  const recProviderSel = modePanel.querySelector('#abgm_rec_provider');
+  const recCooldownSel = modePanel.querySelector('#abgm_rec_cooldown');
+  const recStopOnEnterChk = modePanel.querySelector('#abgm_rec_stop_on_enter');
+
+  // 초기값 로드
+  settings.recommendMode ??= {};
+  if (recProviderSel) recProviderSel.value = settings.recommendMode.provider || 'spotify';
+  if (recCooldownSel) recCooldownSel.value = String(settings.recommendMode.cooldownSec || 60);
+  if (recStopOnEnterChk) recStopOnEnterChk.checked = settings.recommendMode.stopOnEnter !== false;
+
+  recProviderSel?.addEventListener('change', (e) => {
+    settings.recommendMode.provider = e.target.value;
+    _saveSettingsDebounced();
+  });
+  recCooldownSel?.addEventListener('change', (e) => {
+    settings.recommendMode.cooldownSec = parseInt(e.target.value, 10) || 60;
+    _saveSettingsDebounced();
+  });
+  recStopOnEnterChk?.addEventListener('change', (e) => {
+    settings.recommendMode.stopOnEnter = !!e.target.checked;
+    _saveSettingsDebounced();
+  });
 
   // ===== 프롬프트 프리셋 관리 =====
   const promptPresetSel = modePanel.querySelector('#abgm_kw_prompt_preset');
