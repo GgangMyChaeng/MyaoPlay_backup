@@ -1506,7 +1506,11 @@ function initModePanel(root, settings) {
   });
   // 프롬프트 프리셋 추가
   promptAddBtn?.addEventListener('click', async () => {
-    const name = await _abgmPrompt(root, '새 프롬프트 프리셋 이름', { value: 'New Prompt' });
+    const name = await _abgmPrompt(root, '새 프롬프트 프리셋 이름', {
+      title: 'Prompt Preset',
+      initialValue: 'New Prompt',
+      placeholder: 'Preset name...',
+    });
     if (!name || !name.trim()) return;
     const newId = _uid();
     settings.kwPromptPresets ??= {};
@@ -1540,7 +1544,11 @@ function initModePanel(root, settings) {
   promptRenameBtn?.addEventListener('click', async () => {
     const activePreset = settings.kwPromptPresets?.[settings.activeKwPromptPresetId];
     if (!activePreset) return;
-    const newName = await _abgmPrompt(root, '프리셋 이름 변경', { value: activePreset.name || '' });
+    const newName = await _abgmPrompt(root, '프리셋 이름 변경', {
+      title: 'Rename Prompt Preset',
+      initialValue: activePreset.name || '',
+      placeholder: 'Preset name...',
+    });
     if (!newName || !newName.trim()) return;
     activePreset.name = newName.trim();
     _saveSettingsDebounced();
@@ -1550,12 +1558,10 @@ function initModePanel(root, settings) {
   const kwEnabledChk = modePanel.querySelector('#abgm_mode_kw_enabled');
   const kwOnceChk = modePanel.querySelector('#abgm_mode_kw_once');
   const useDefaultChk = modePanel.querySelector('#abgm_mode_use_default');
-  const debugChk = modePanel.querySelector('#abgm_mode_debug');
   // 초기값
   if (kwEnabledChk) kwEnabledChk.checked = !!settings.keywordMode;
   if (kwOnceChk) kwOnceChk.checked = !!settings.keywordOnce;
   if (useDefaultChk) useDefaultChk.checked = !!settings.useDefault;
-  if (debugChk) debugChk.checked = !!settings.debugMode;
   kwEnabledChk?.addEventListener('change', (e) => {
     settings.keywordMode = !!e.target.checked;
     _saveSettingsDebounced();
@@ -1573,16 +1579,6 @@ function initModePanel(root, settings) {
     // 메인 탭의 체크박스도 동기화
     const mainUseDef = root.querySelector('#abgm_useDefault');
     if (mainUseDef) mainUseDef.checked = settings.useDefault;
-  });
-debugChk?.addEventListener('change', (e) => {
-    settings.debugMode = !!e.target.checked;
-    window.__abgmDebugMode = !!settings.debugMode;
-    if (!window.__abgmDebugMode) window.__abgmDebugLine = '';
-    _saveSettingsDebounced();
-    _updateNowPlayingUI();
-    // 메인 탭의 체크박스도 동기화
-    const mainDbg = root.querySelector('#abgm_debugMode');
-    if (mainDbg) mainDbg.checked = settings.debugMode;
   });
   // > Time Mode Panel 초기화
   initTimePanel(root, settings);
