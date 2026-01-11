@@ -479,6 +479,9 @@ export async function ensurePlaySfxFile(fileKey, vol01) {
 }
 
 function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMode, sig, getVol }) {
+  console.log("[SFX DEBUG] maybeTriggerSfxFromKeywordMode called");
+  console.log("[SFX DEBUG] sfxMode:", settings?.sfxMode);
+  console.log("[SFX DEBUG] overlay:", settings?.sfxMode?.overlay);
   // state.js getter/setter 가져오기
   const getLastSfxSig = window.__abgmStateGetters?.getLastSfxSig || (() => "");
   const setLastSfxSig = window.__abgmStateSetters?.setLastSfxSig || (() => {});
@@ -494,12 +497,17 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
   if (sfxSig && getLastSfxSig() === sfxSig) return;
   setLastSfxSig(sfxSig);
   const overlay = !!settings?.sfxMode?.overlay;
+  console.log("[SFX DEBUG] overlay final:", overlay);
   setSfxOverlayWasOff(!overlay);
   // Overlay OFF면 BGM 잠깐 pause (끝나면 _sfxAudio 'ended' 리스너가 복귀)
   if (!overlay && _bgmAudio) {
     const bgmWasPlaying = !_bgmAudio.paused && !_bgmAudio.ended && !!_bgmAudio.src;
+    console.log("[SFX DEBUG] bgmWasPlaying:", bgmWasPlaying);
+    console.log("[SFX DEBUG] _bgmAudio.paused:", _bgmAudio.paused);
+    console.log("[SFX DEBUG] _bgmAudio.src:", _bgmAudio.src);
     setBgmPausedBySfx(bgmWasPlaying);
     if (bgmWasPlaying) {
+      console.log("[SFX DEBUG] >>> PAUSING BGM");
       try { _bgmAudio.pause(); } catch {}
     }
   }
