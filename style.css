@@ -1929,6 +1929,17 @@ body.autobgm-modal-open {
 
 .abgm-fs-playbtn,
 .abgm-fs-addbtn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  aspect-ratio: 1 / 1; /* 혹시 찌그러짐 방지 */
+  border-radius: 10px;
   background: var(--abgm-surface);
   border: 1px solid var(--abgm-border);
   color: var(--abgm-text);
@@ -2679,7 +2690,12 @@ body.autobgm-modal-open {
 }
 
 .abgm-addto-divider {
-  display: none;
+  padding: 12px 20px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--abgm-text-muted, rgba(0,0,0,0.4));
 }
 
 /* 태그 섹션 (옵션 바텀시트 내) */
