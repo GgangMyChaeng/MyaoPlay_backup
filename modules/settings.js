@@ -52,7 +52,7 @@ export function exportPresetFile(preset) {
     bgms: (preset.bgms ?? []).map((b) => ({
       id: b.id,
       fileKey: b.fileKey ?? "",
-      name: b.name ?? "", // > 엔트리 이름 저장
+      name: b.name ?? "",
       keywords: b.keywords ?? "",
       priority: Number(b.priority ?? 0),
       volume: Number(b.volume ?? 1),
@@ -60,11 +60,12 @@ export function exportPresetFile(preset) {
       license: b.license ?? "",
       lyrics: b.lyrics ?? "",
       imageUrl: b.imageUrl ?? "",
+      imageAssetKey: b.imageAssetKey ?? "",
     })),
   };
   return {
     type: "autobgm_preset",
-    version: 3,
+    version: 4,
     exportedAt: new Date().toISOString(),
     preset: clean,
   };
