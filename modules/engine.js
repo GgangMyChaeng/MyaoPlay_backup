@@ -392,7 +392,10 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
     return true;
   }
   const blob = await idbGet(fk);
-  if (!blob) return false;
+  if (!blob) {
+    console.warn("[MyaPl] IDB asset missing:", fk, "- File not found in IDB. May have been lost due to extension update or cache clear.");
+    return false;
+  }
   if (_bgmUrl) URL.revokeObjectURL(_bgmUrl);
   _bgmUrl = URL.createObjectURL(blob);
   _bgmAudio.loop = !!loop;
