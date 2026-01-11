@@ -370,6 +370,7 @@
           <option value="matching">Matching (기존 방식)</option>
           <option value="token">Token (AI 토큰 인식)</option>
           <option value="hybrid">Hybrid (토큰 우선, 매칭 보조)</option>
+          <option value="recommend">Recommend (추천 모드)</option>
         </select>
       </div>
 
@@ -382,6 +383,9 @@
         </div>
         <div id="abgm_kw_mode_desc_hybrid" style="display:none;">
           <b>Hybrid:</b> 토큰을 우선 인식하고, 토큰이 없으면 기존 매칭 방식으로 폴백합니다.
+        </div>
+        <div id="abgm_kw_mode_desc_recommend" style="display:none;">
+          <b>Recommend:</b> AI가 <code>[MP_REC_QUERY: 검색어]</code> 토큰이 인식되면, 해당 검색어로 음악을 추천받습니다. 자동재생은 지원하지 않고, 추천바에서 직접 확인/재생합니다.
         </div>
       </div>
 
@@ -413,8 +417,59 @@
         </div>
       </div>
 
+      <!-- Recommend 전용 설정 -->
+      <div id="abgm_kw_recommend_section" style="display:none; margin-top:15px; border-top:1px solid rgba(255,255,255,.1); padding-top:15px;">
+        <b style="font-size:13px;">🎧 추천 모드 설정 (준비 중... 구상 단계라 확정은 아님)</b>
+  
+        <!-- Provider 선택 -->
+        <div class="abgm-field" style="margin-top:12px;">
+          <small style="opacity:.85;">Provider</small>
+          <select id="abgm_rec_provider" class="abgm-select" style="margin-top:4px;">
+            <option value="spotify">Spotify</option>
+          </select>
+        </div>
+  
+        <!-- Spotify 연결 상태 -->
+        <div id="abgm_rec_spotify_section" style="margin-top:12px;">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <span id="abgm_rec_spotify_status" style="font-size:12px; opacity:.8;">
+              <i class="fa-solid fa-circle-xmark" style="color:#f44;"></i> Not connected
+            </span>
+            <button id="abgm_rec_spotify_connect" class="menu_button" style="padding:6px 12px; font-size:12px;">
+              <i class="fa-brands fa-spotify"></i> Connect
+            </button>
+            <button id="abgm_rec_spotify_disconnect" class="menu_button" style="padding:6px 12px; font-size:12px; display:none;">
+              <i class="fa-solid fa-unlink"></i> Disconnect
+            </button>
+          </div>
+        </div>
+  
+        <!-- 추천 옵션 -->
+        <div style="margin-top:15px;">
+          <small style="opacity:.85;">쿨다운 (초)</small>
+          <select id="abgm_rec_cooldown" class="abgm-select" style="margin-top:4px;">
+            <option value="30">30초</option>
+            <option value="60" selected>60초</option>
+            <option value="120">120초</option>
+          </select>
+        </div>
+  
+        <label class="abgm-check" style="margin-top:10px;">
+          <input type="checkbox" id="abgm_rec_stop_on_enter" checked>
+          <span>추천 시 현재 재생 정지</span>
+        </label>
+  
+        <!-- 안내 -->
+        <div style="margin-top:12px; padding:10px; background:rgba(0,0,0,.25); border-radius:8px; font-size:11px; line-height:1.5;">
+          <b>💡 사용 방법</b><br>
+          • AI가 <code>[MP_REC_QUERY: 검색어]</code>를 출력하면 자동으로 추천<br>
+          • 추천바에서 [Spotify에서 열기], [다른 추천], [닫기] 가능<br>
+          • 이 모드에서는 기존 키워드 자동재생이 비활성화됩니다
+        </div>
+      </div>
+
       <!-- 기존 키워드 모드 옵션들 -->
-      <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,.1); padding-top:15px;">
+      <div id="abgm_kw_common_options" style="margin-top:15px; border-top:1px solid rgba(255,255,255,.1); padding-top:15px;">
         <b style="font-size:13px;">⚙️ 공통 옵션</b>
         
         <label class="abgm-check" style="margin-top:10px;">
@@ -553,7 +608,7 @@
   <!-- SFX Mode Settings -->
   <div class="abgm-mode-subpanel" id="abgm-mode-sfx" data-mode-panel="sfx" style="display:none;">
     <div class="abgm-card" style="padding:15px;">
-      <b>🔊 SFX 모드 설정 (준비 중...)</b>
+      <b>🔊 SFX 모드 설정</b>
       <p style="opacity:.7; margin-top:6px; font-size:12px;">
         효과음(SFX) 타입 엔트리의 재생 방식을 설정합니다.
       </p>
