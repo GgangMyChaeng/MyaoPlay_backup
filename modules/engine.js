@@ -48,6 +48,13 @@ let _engineLastPresetId = "";
 let _enginePausedByLobby = false;
 let _engineLobbyStreak = 0;
 
+// ===== SFX 전용 오디오 =====
+const _sfxAudio = new Audio();
+let _sfxUrl = "";
+let _sfxCurrentFileKey = "";
+let _sfxLastTriggerSig = "";  // 같은 턴 반복 트리거 방지용
+let _bgmPausedBySfx = false;  // Overlay OFF 시 BGM 일시정지 상태 추적
+
 // ===== 외부 접근용 getter =====
 // 메인 BGM Audio 객체를 외부(UI)에서 접근할 수 있게 반환
 export function getBgmAudio() { return _bgmAudio; }
@@ -59,12 +66,25 @@ export function getEngineCurrentPresetId() { return _engineCurrentPresetId; }
 export function setEngineCurrentFileKey(key) { _engineCurrentFileKey = String(key || ""); }
 
 // ===== ABGM audio exclusivity bus =====
-window.__ABGM_AUDIO_BUS__ ??= { engine: null, freesrc: null, preview: null };
+window.__ABGM_AUDIO_BUS__ ??= { engine: null, freesrc: null, preview: null, sfx: null };
 window.__ABGM_AUDIO_BUS__.engine = _bgmAudio;
+window.__ABGM_AUDIO_BUS__.sfx = _sfxAudio;
 
 // 메인 오디오 재생 시작하면 프리소스 끄기
 try {
   _bgmAudio.addEventListener("play", () => window.abgmStopOtherAudio?.("engine"));
+} catch {}
+
+// SFX 끝나면 BGM 복귀 (Overlay OFF 모드용)
+try {
+  _sfxAudio.addEventListener("ended", () => {
+    _sfxCurrentFileKey = "";
+    if (_bgmPausedBySfx && _bgmAudio.paused && _engineCurrentFileKey) {
+      _bgmPausedBySfx = false;
+      try { _bgmAudio.play(); } catch {}
+    }
+    try { _updateNowPlayingUI(); } catch {}
+  });
 } catch {}
 
 
