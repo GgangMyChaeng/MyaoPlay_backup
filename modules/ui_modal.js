@@ -412,20 +412,29 @@ export function abgmEntryDetailPrompt(containerOrDoc, bgm, {
     };
     const setStatus = (msg) => { if (statusEl) statusEl.textContent = msg; };
     
-    // 초기 미리보기 로드
-    if (hasStoredImage && bgm?.id) {
-      try {
-        const blob = await idbGetImage(bgm.id);
+    // 초기 미리보기 로드 (구버전/신버전 둘 다)
+    try {
+      const key = String(bgm?.imageAssetKey || bgm?.id || "").trim();
+      if (key) {
+        const blob = await idbGetImage(key);
         if (blob) {
           updatePreview(URL.createObjectURL(blob));
           setStatus("저장된 이미지 (업로드됨)");
+        } else if (imageUrl) {
+          updatePreview(imageUrl);
+          setStatus("URL 이미지");
         }
-      } catch (e) { console.warn("[MyaPl] Image load failed:", e); }
-    } else if (imageUrl) {
-      updatePreview(imageUrl);
-      setStatus("URL 이미지");
+      } else if (imageUrl) {
+        updatePreview(imageUrl);
+        setStatus("URL 이미지");
+      }
+    } catch (e) {
+      console.warn("[MyaPl] Image load failed:", e);
+      if (imageUrl) {
+        updatePreview(imageUrl);
+        setStatus("URL 이미지");
+      }
     }
-    
     // URL 적용
     urlApplyBtn?.addEventListener("click", () => {
       const url = String(urlInput?.value ?? "").trim();
