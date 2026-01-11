@@ -51,7 +51,10 @@ let _idbPut = async () => {};
 let _idbDel = async () => {};
 let _idbPutImage = async () => {};
 let _idbDelImage = async () => {};
-let _ensureAssetList = (settings) => (settings?.assets ? Object.keys(settings.assets) : []);
+let _ensureAssetList = (settings) => {
+  settings.assets ??= {};
+  return settings.assets; // 반드시 "객체"를 리턴
+};
 
 let _fitModalToHost = () => {};
 let _getModalHost = () => document.body;
