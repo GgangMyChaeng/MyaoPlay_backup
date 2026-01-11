@@ -479,6 +479,11 @@ export async function ensurePlaySfxFile(fileKey, vol01) {
 }
 
 function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMode, sig, getVol }) {
+  // state.js getter/setter 가져오기
+  const getLastSfxSig = window.__abgmStateGetters?.getLastSfxSig || (() => "");
+  const setLastSfxSig = window.__abgmStateSetters?.setLastSfxSig || (() => {});
+  const setBgmPausedBySfx = window.__abgmStateSetters?.setBgmPausedBySfx || (() => {});
+  const setSfxOverlayWasOff = window.__abgmStateSetters?.setSfxOverlayWasOff || (() => {});
   // SFX 후보 선곡 (SFX만)
   const result = pickBySubMode(subMode, preset, textWithTime, "", "", "SFX");
   const hit = result?.bgm || null;
@@ -486,21 +491,19 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
   if (!hitKey) return;
   // 1회 트리거 방지: sig + hitKey
   const sfxSig = `${String(sig || "")}::${hitKey}`;
-  if (sfxSig && _sfxLastTriggerSig === sfxSig) return;
-  _sfxLastTriggerSig = sfxSig;
+  if (sfxSig && getLastSfxSig() === sfxSig) return;
+  setLastSfxSig(sfxSig);
   const overlay = !!settings?.sfxMode?.overlay;
-  _sfxOverlayWasOff = !overlay;
+  setSfxOverlayWasOff(!overlay);
   // Overlay OFF면 BGM 잠깐 pause (끝나면 _sfxAudio 'ended' 리스너가 복귀)
   if (!overlay && _bgmAudio) {
-    // ✅ 판정식을 "키/상태변수"에 의존하지 말고 Audio 자체 상태로 판단
     const bgmWasPlaying = !_bgmAudio.paused && !_bgmAudio.ended && !!_bgmAudio.src;
-    _bgmPausedBySfx = bgmWasPlaying;
-
+    setBgmPausedBySfx(bgmWasPlaying);
     if (bgmWasPlaying) {
-      try { _bgmAudio.pause(); } catch (_) {}
+      try { _bgmAudio.pause(); } catch {}
     }
   }
-  // SFX 재생(비동기, engineTick은 원래 async가 아니라 await 안 씀)
+  // SFX 재생
   ensurePlaySfxFile(hitKey, getVol(hitKey));
 }
 
@@ -619,11 +622,13 @@ export function engineTick() {
   };
   // 키워드 모드가 아닌데 SFX가 재생 중이면 1번 꺼버림
   if (!settings?.keywordMode && _sfxAudio && !_sfxAudio.paused) {
-    try { _sfxAudio.pause(); } catch (_) {}
-    try { _sfxAudio.currentTime = 0; } catch (_) {}
+    try { _sfxAudio.pause(); } catch {}
+    try { _sfxAudio.currentTime = 0; } catch {}
     // BGM pause를 SFX가 걸어둔 상태였다면 해제 플래그도 초기화
-    _bgmPausedBySfx = false;
-    _sfxOverlayWasOff = false;
+    const setBgmPausedBySfx = window.__abgmStateSetters?.setBgmPausedBySfx || (() => {});
+    const setSfxOverlayWasOff = window.__abgmStateSetters?.setSfxOverlayWasOff || (() => {});
+    setBgmPausedBySfx(false);
+    setSfxOverlayWasOff(false);
   }
   // ====== Keyword Mode ON ======
   if (settings.keywordMode) {
