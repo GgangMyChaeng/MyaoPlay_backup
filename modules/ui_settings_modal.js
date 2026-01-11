@@ -416,6 +416,9 @@ function renderBgmTable(root, settings) {
     const tr = document.createElement("tr");
     tr.dataset.id = b.id;
     tr.className = `abgm-bgm-summary${isOpen ? " abgm-expanded" : ""}`;
+    const entryType = b.type || "BGM";
+    const typeLabel = entryType === "SFX" ? "S" : "B";
+    const typeTitle = entryType === "SFX" ? "SFX (클릭하여 BGM으로 변경)" : "BGM (클릭하여 SFX로 변경)";
     tr.innerHTML = `
       <td class="abgm-col-check">
         <input type="checkbox" class="abgm_sel" ${selected.has(b.id) ? "checked" : ""}>
@@ -426,6 +429,11 @@ function renderBgmTable(root, settings) {
       <td>
         <div class="menu_button abgm-iconbtn abgm_test" title="Play">
           <i class="fa-solid fa-play"></i>
+        </div>
+      </td>
+      <td>
+        <div class="menu_button abgm-iconbtn abgm_type_toggle" title="${typeTitle}" data-type="${entryType}">
+          <b>${typeLabel}</b>
         </div>
       </td>
       <td>
@@ -1113,6 +1121,26 @@ if (e.target.classList.contains("abgm_source")) {
   root.querySelector("#abgm_bgm_tbody")?.addEventListener("click", async (e) => {
     const tr = e.target.closest("tr");
     if (!tr) return;
+    // type toggle (BGM <-> SFX)
+    if (e.target.closest(".abgm_type_toggle")) {
+      const id = tr.dataset.id;
+      const preset = _getActivePreset(settings);
+      const bgm = preset.bgms.find((x) => x.id === id);
+      if (!bgm) return;
+      // 토글
+      bgm.type = (bgm.type === "SFX") ? "BGM" : "SFX";
+      _saveSettingsDebounced();
+      // 버튼 UI 즉시 업데이트
+      const btn = e.target.closest(".abgm_type_toggle");
+      if (btn) {
+        const newLabel = bgm.type === "SFX" ? "S" : "B";
+        const newTitle = bgm.type === "SFX" ? "SFX (클릭하여 BGM으로 변경)" : "BGM (클릭하여 SFX로 변경)";
+        btn.dataset.type = bgm.type;
+        btn.title = newTitle;
+        btn.innerHTML = `<b>${newLabel}</b>`;
+      }
+      return;
+    }
     // toggle
     if (e.target.closest(".abgm_toggle")) {
       const summary = tr.classList.contains("abgm-bgm-summary") ? tr : tr.closest("tr.abgm-bgm-summary");
