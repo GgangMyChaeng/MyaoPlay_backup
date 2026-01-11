@@ -458,6 +458,33 @@
           <input type="checkbox" id="abgm_rec_stop_on_enter" checked>
           <span>추천 시 현재 재생 정지</span>
         </label>
+
+        <!-- 추천 프롬프트 프리셋 -->
+        <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,.1); padding-top:15px;">
+         <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+            <b style="font-size:13px;">📝 추천 프롬프트</b>
+            <div style="display:flex; gap:6px;">
+              <select id="abgm_rec_prompt_preset" class="abgm-select" style="min-width:120px;"></select>
+              <div class="menu_button abgm-iconbtn" id="abgm_rec_prompt_add" title="New Preset">
+                <i class="fa-solid fa-plus"></i>
+              </div>
+              <div class="menu_button abgm-iconbtn" id="abgm_rec_prompt_del" title="Delete Preset">
+                <i class="fa-solid fa-trash"></i>
+              </div>
+              <div class="menu_button abgm-iconbtn" id="abgm_rec_prompt_rename" title="Rename Preset">
+                <i class="fa-solid fa-pen"></i>
+              </div>
+            </div>
+          </div>
+  
+          <textarea id="abgm_rec_prompt_content" class="abgm-textarea" rows="12" style="margin-top:10px; width:100%; font-size:12px; line-height:1.4; resize:vertical;" placeholder="추천 프롬프트 내용..."></textarea>
+  
+          <div style="margin-top:10px; padding:10px; background:rgba(0,0,0,.25); border-radius:8px; font-size:11px; line-height:1.5;">
+            <b>💡 매크로 안내</b><br>
+            • <code>{{mya_p}}</code>: SillyTavern 프롬프트에서 이 프롬프트 전체로 치환됩니다.<br>
+            <span style="opacity:.7;">(World Info나 System Prompt 등 원하는 곳에 넣으세요)</span>
+          </div>
+        </div>
   
         <!-- 안내 -->
         <div style="margin-top:12px; padding:10px; background:rgba(0,0,0,.25); border-radius:8px; font-size:11px; line-height:1.5;">
