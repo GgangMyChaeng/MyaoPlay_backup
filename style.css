@@ -2572,11 +2572,19 @@ body.autobgm-modal-open {
 }
 
 /* ===== Add-to 바텀시트 ===== */
-/* ▼ 버튼 스타일 */
-.abgm-fs-addmenu-btn {
-  min-width: 28px;
-  padding: 2px 6px;
-  font-size: 10px;
+/* ▼ options 버튼(정사각 1:1) */
+.abgm-fs-addmenu-btn{
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border-radius: 10px;
+  font-size: 12px; /* 너무 커보이면 10으로 */
 }
 
 .abgm-addto-overlay {
@@ -2671,12 +2679,7 @@ body.autobgm-modal-open {
 }
 
 .abgm-addto-divider {
-  padding: 12px 20px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--abgm-text-muted, rgba(0,0,0,0.4));
+  display: none;
 }
 
 /* 태그 섹션 (옵션 바텀시트 내) */
@@ -2703,6 +2706,13 @@ body.autobgm-modal-open {
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
+}
+
+/* 모바일에서 바텀시트 너무 위로 올라오는 거 방지 */
+@media (max-width: 520px){
+  .abgm-addto-sheet{
+    max-height: 50vh; /* 취향껏 높이 줄이기 */
+  }
 }
 
 /* 다크 테마 대응 */
