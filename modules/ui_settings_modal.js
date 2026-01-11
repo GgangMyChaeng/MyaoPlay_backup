@@ -70,6 +70,26 @@ let _ensureBgmNames = (_preset) => {};
 
 
 
+/** ========================= 이미지 헬퍼 ========================= */
+function _countImageKeyRefs(settings, imageKey) {
+  const key = String(imageKey ?? "").trim();
+  if (!key) return 0;
+
+  let n = 0;
+  for (const p of Object.values(settings?.presets ?? {})) {
+    for (const b of (p?.bgms ?? [])) {
+      if (String(b?.imageAssetKey ?? "") === key) n++;
+    }
+  }
+  return n;
+}
+
+function _newImageAssetKey() {
+  return "img_" + _uid();
+}
+
+
+
 /** ========================= 볼륨 갱신 헬퍼 ========================= */
 function _findEntryByFileKeyAnywhere(settings, fk) {
   const key = String(fk ?? "").trim();
@@ -1127,24 +1147,39 @@ if (e.target.classList.contains("abgm_source")) {
         bgm.license = String(result.license ?? "").trim();
         bgm.lyrics = String(result.lyrics ?? "").trim();
         // === 이미지 처리 ===
+        // === 이미지 처리 (완전 호환 + 공유 안전) ===
+        const prevKey = String(bgm.imageAssetKey ?? "").trim();
+        const prevRefs = prevKey ? _countImageKeyRefs(settings, prevKey) : 0;
         if (result.deleteImage) {
-          if (bgm.imageAssetKey) {
-            try { await _idbDelImage(bgm.id); } catch (e) { console.warn("[MyaPl] Image delete failed:", e); }
+          if (prevKey) {
+            // 공유중이면 실제 파일 삭제 X (다른 엔트리까지 같이 날아가면 안 됨)
+            if (prevRefs <= 1) {
+              try { await _idbDelImage(prevKey); } catch (e) { console.warn("[MyaPl] Image delete failed:", e); }
+            }
           }
           bgm.imageAssetKey = "";
           bgm.imageUrl = "";
         } else if (result.imageBlob) {
+          // 공유중인 키에 덮어쓰면 다른 엔트리 이미지도 바뀜 → 새 키로 분리
+          let nextKey = prevKey;
+          if (!nextKey || prevRefs > 1) nextKey = _newImageAssetKey();
           try {
-            await _idbPutImage(bgm.id, result.imageBlob);
-            bgm.imageAssetKey = "img_" + bgm.id;
+            await _idbPutImage(nextKey, result.imageBlob);
+            bgm.imageAssetKey = nextKey;
             bgm.imageUrl = "";
-          } catch (e) { console.error("[MyaPl] Image save failed:", e); }
+          } catch (e) {
+            console.error("[MyaPl] Image save failed:", e);
+          }
         } else if (result.imageUrl) {
-          if (bgm.imageAssetKey) {
-            try { await _idbDelImage(bgm.id); } catch {}
+          const url = String(result.imageUrl).trim();
+          if (prevKey) {
+            // 공유중이면 실제 파일 삭제 X (그냥 연결만 끊기)
+            if (prevRefs <= 1) {
+              try { await _idbDelImage(prevKey); } catch {}
+            }
           }
           bgm.imageAssetKey = "";
-          bgm.imageUrl = String(result.imageUrl).trim();
+          bgm.imageUrl = url;
         }
         _saveSettingsDebounced();
         try { _updateNowPlayingUI(); } catch {}
