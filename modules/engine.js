@@ -52,8 +52,7 @@ let _engineLobbyStreak = 0;
 const _sfxAudio = new Audio();
 let _sfxUrl = "";
 let _sfxCurrentFileKey = "";
-let _sfxLastTriggerSig = "";  // 같은 턴 반복 트리거 방지용
-let _bgmPausedBySfx = false;  // Overlay OFF 시 BGM 일시정지 상태 추적
+// 참고: SFX 런타임 상태(_lastSfxSig, _bgmPausedBySfx, _sfxOverlayWasOff)는 state.js에서 관리
 
 // ===== 외부 접근용 getter =====
 // 메인 BGM Audio 객체를 외부(UI)에서 접근할 수 있게 반환
@@ -76,12 +75,25 @@ try {
 } catch {}
 
 // SFX 끝나면 BGM 복귀 (Overlay OFF 모드용)
+// state.js의 getter/setter를 나중에 import해서 사용할 예정
+// 지금은 window 전역으로 임시 연결
 try {
   _sfxAudio.addEventListener("ended", () => {
     _sfxCurrentFileKey = "";
-    if (_bgmPausedBySfx && _bgmAudio.paused && _engineCurrentFileKey) {
-      _bgmPausedBySfx = false;
+    // state.js에서 상태 가져오기 (import 순환 방지용 임시 방법)
+    const getBgmPausedBySfx = window.__abgmStateGetters?.getBgmPausedBySfx || (() => false);
+    const setBgmPausedBySfx = window.__abgmStateSetters?.setBgmPausedBySfx || (() => {});
+    const getSfxOverlayWasOff = window.__abgmStateGetters?.getSfxOverlayWasOff || (() => false);
+    const setSfxOverlayWasOff = window.__abgmStateSetters?.setSfxOverlayWasOff || (() => {});
+    
+    // Overlay OFF였고, SFX 때문에 BGM을 pause 했던 경우에만 복귀
+    if (getSfxOverlayWasOff() && getBgmPausedBySfx() && _bgmAudio && !!_bgmAudio.src) {
+      setBgmPausedBySfx(false);
+      setSfxOverlayWasOff(false);
       try { _bgmAudio.play(); } catch {}
+    } else {
+      setBgmPausedBySfx(false);
+      setSfxOverlayWasOff(false);
     }
     try { _updateNowPlayingUI(); } catch {}
   });
@@ -477,12 +489,15 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
   if (sfxSig && _sfxLastTriggerSig === sfxSig) return;
   _sfxLastTriggerSig = sfxSig;
   const overlay = !!settings?.sfxMode?.overlay;
+  _sfxOverlayWasOff = !overlay;
   // Overlay OFF면 BGM 잠깐 pause (끝나면 _sfxAudio 'ended' 리스너가 복귀)
-  if (!overlay) {
-    const bgmWasPlaying = !!_engineCurrentFileKey && !_bgmAudio.paused && !_bgmAudio.ended;
+  if (!overlay && _bgmAudio) {
+    // ✅ 판정식을 "키/상태변수"에 의존하지 말고 Audio 자체 상태로 판단
+    const bgmWasPlaying = !_bgmAudio.paused && !_bgmAudio.ended && !!_bgmAudio.src;
     _bgmPausedBySfx = bgmWasPlaying;
+
     if (bgmWasPlaying) {
-      try { _bgmAudio.pause(); } catch {}
+      try { _bgmAudio.pause(); } catch (_) {}
     }
   }
   // SFX 재생(비동기, engineTick은 원래 async가 아니라 await 안 씀)
@@ -602,6 +617,14 @@ export function engineTick() {
     const b = _findBgmByKey(preset, fk);
     return clamp01((settings.globalVolume ?? 0.7) * (b?.volume ?? 1));
   };
+  // 키워드 모드가 아닌데 SFX가 재생 중이면 1번 꺼버림
+  if (!settings?.keywordMode && _sfxAudio && !_sfxAudio.paused) {
+    try { _sfxAudio.pause(); } catch (_) {}
+    try { _sfxAudio.currentTime = 0; } catch (_) {}
+    // BGM pause를 SFX가 걸어둔 상태였다면 해제 플래그도 초기화
+    _bgmPausedBySfx = false;
+    _sfxOverlayWasOff = false;
+  }
   // ====== Keyword Mode ON ======
   if (settings.keywordMode) {
     const asstText = String(lastAsst ?? "");
@@ -803,7 +826,7 @@ _bgmAudio.addEventListener("ended", () => {
   if (!preset) preset = Object.values(settings.presets ?? {})[0];
   if (!preset) return;
   const sort = _getBgmSort(settings);
-  let keys = _getSortedKeys(preset, sort);
+  let keys = _getSortedKeys(preset, sort, _getNavKeys);
   if (settings?.sfxMode?.skipInOtherModes) {
     keys = keys.filter((k) => _getEntryType(_findBgmByKey(preset, k)) !== "SFX");
   }
