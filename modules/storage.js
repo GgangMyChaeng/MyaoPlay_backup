@@ -99,6 +99,56 @@ export function ensureAssetList(settings) {
 
 
 
+/** ========================= IDB Integrity Check ========================= */
+// Check if all fileKeys and imageAssetKeys in settings actually exist in IDB
+// Returns: { missing: string[], total: number, ok: number }
+export async function checkIdbIntegrity(settings) {
+  const result = { missing: [], total: 0, ok: 0 };
+  const checkedKeys = new Set();
+  
+  for (const preset of Object.values(settings?.presets ?? {})) {
+    for (const bgm of (preset?.bgms ?? [])) {
+      const fk = String(bgm?.fileKey ?? "").trim();
+      if (fk && !fk.startsWith("http://") && !fk.startsWith("https://") && !checkedKeys.has(fk)) {
+        checkedKeys.add(fk);
+        result.total++;
+        const blob = await idbGet(fk);
+        if (blob) {
+          result.ok++;
+        } else {
+          result.missing.push(fk);
+        }
+      }
+      
+      const imgKey = String(bgm?.imageAssetKey ?? "").trim();
+      if (imgKey && !checkedKeys.has(imgKey)) {
+        checkedKeys.add(imgKey);
+        result.total++;
+        const blob = await idbGet(imgKey);
+        if (blob) {
+          result.ok++;
+        } else {
+          result.missing.push(imgKey);
+        }
+      }
+    }
+  }
+  
+  return result;
+}
+
+export async function listIdbKeys() {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_ASSETS, "readonly");
+    const req = tx.objectStore(STORE_ASSETS).getAllKeys();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+
+
 /** ========================= ZIP 임포트 ========================= */
 // (내부) JSZip 라이브러리(window.JSZip) 없으면 vendor/jszip.min.js 동적 로딩
 async function ensureJSZipLoaded() {
