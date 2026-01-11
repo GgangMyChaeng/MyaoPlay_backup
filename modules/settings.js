@@ -461,6 +461,7 @@ Example B (without keyword):
       b.lyrics ??= "";
       b.imageUrl ??= "";
       b.imageAssetKey ??= "";
+      b.type ??= "BGM";  // "BGM" | "SFX"
     });
   });
   // > 구버전: settings.defaultBgmId 같은 전역 값 남아있으면 제거 (있어도 안 쓰게)
