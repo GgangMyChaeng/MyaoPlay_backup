@@ -60,28 +60,31 @@ export async function idbDel(key) {
 
 
 /** ========================= 이미지 전용 헬퍼 ========================= */
-// 이미지 키 생성 (fileKey 기반으로 충돌 방지)
-export function makeImageKey(key) {
-  const k = String(key || "");
+// 이미지 키 생성 (keyOrId: "img_xxx" 또는 "xxx" 둘 다 허용)
+export function makeImageKey(keyOrId) {
+  const k = String(keyOrId ?? "").trim();
   if (!k) return "";
   return k.startsWith("img_") ? k : `img_${k}`;
 }
 
-// 이미지 Blob 저장 (bgm.id 기반 키 사용)
+// 이미지 Blob 저장
 export async function idbPutImage(keyOrId, blob) {
   const key = makeImageKey(keyOrId);
+  if (!key) return;
   return idbPut(key, blob);
 }
 
 // 이미지 Blob 가져오기
 export async function idbGetImage(keyOrId) {
   const key = makeImageKey(keyOrId);
+  if (!key) return null;
   return idbGet(key);
 }
 
 // 이미지 삭제
 export async function idbDelImage(keyOrId) {
   const key = makeImageKey(keyOrId);
+  if (!key) return;
   return idbDel(key);
 }
 
