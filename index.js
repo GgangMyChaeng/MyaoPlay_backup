@@ -8,7 +8,7 @@
 /** =================================================================================== */
 import { abgmNormTags, abgmNormTag, tagVal, tagPretty, tagCat, sortTags } from "./modules/tags.js";
 import { extension_settings, saveSettingsDebounced, __abgmResolveDeps, getSTContextSafe, getBoundPresetIdFromContext, EXT_BIND_KEY } from "./modules/deps.js";
-import { openDb, idbPut, idbGet, idbDel, ensureAssetList, importZip, abgmGetDurationSecFromBlob, idbPutImage, idbGetImage, idbDelImage } from "./modules/storage.js";
+import { openDb, idbPut, idbGet, idbDel, ensureAssetList, importZip, abgmGetDurationSecFromBlob, idbPutImage, idbGetImage, idbDelImage, checkIdbIntegrity, listIdbKeys } from "./modules/storage.js";
 import { ensureSettings, migrateLegacyDataUrlsToIDB, ensureEngineFields, exportPresetFile, rekeyPreset, pickPresetFromImportData, getActivePromptContent } from "./modules/settings.js";
 import { abgmBindFloatingActions, createFloatingButton, removeFloatingButton, removeFloatingMenu, openFloatingMenu, closeFloatingMenu, updateFloatingButtonPosition, abgmGetFloatingMenuEl, updateMenuDebugIcon, toggleDebugToast, setDebugToastText } from "./modules/ui_floating.js";
 import { abgmBindNowPlayingDeps, updateNowPlayingUI, bindNowPlayingEventsOnce, openNowPlayingGlass, closeNowPlayingGlass } from "./modules/ui_nowplaying.js";
@@ -475,7 +475,23 @@ async function init() {
     document.body.setAttribute('data-abgm-theme', 'dark');
   }
   // 3) 디버그: 콘솔에서 설정 확인용
-  window.__ABGM_DBG__ = { getSettings: () => ensureSettings() };
+  window.__ABGM_DBG__ = {
+    getSettings: () => ensureSettings(),
+    checkIdb: async () => {
+      const s = ensureSettings();
+      const result = await checkIdbIntegrity(s);
+      console.log("[MyaPl] IDB integrity check:", result);
+      if (result.missing.length) {
+        console.warn("[MyaPl] Missing files:", result.missing);
+      }
+      return result;
+    },
+    listIdbKeys: async () => {
+      const keys = await listIdbKeys();
+      console.log("[MyaPl] IDB stored keys:", keys);
+      return keys;
+    },
+  };
   if (settings.floating.enabled) {
     createFloatingButton();
   }
