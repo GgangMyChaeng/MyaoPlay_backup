@@ -146,15 +146,59 @@ export function ensureSettings() {
     },
     keywordSubMode: "matching",
     recommendMode: {
-      provider: "spotify",
-      cooldownSec: 60,
-      stopOnEnter: true,
-      spotify: {
-        accessToken: null,
-        refreshToken: null,
-        expiresAt: null,
-      }
-    },
+  provider: "spotify",
+  cooldownSec: 60,
+  stopOnEnter: true,
+  spotify: {
+    accessToken: null,
+    refreshToken: null,
+    expiresAt: null,
+  }
+},
+activeRecPromptPresetId: "default",
+recPromptPresets: {
+  default: {
+    id: "default",
+    name: "Default",
+    content: `# Music Recommendation Prompt
+
+## Goal
+You are an AI that recommends background music fitting the current scene's mood and atmosphere.
+When appropriate, output a music search query using the token format below.
+
+## Token Format (STRICT)
+[MP_REC_QUERY: your search query here]
+
+## Rules
+- Output the token as a STANDALONE LINE, never inside narrative text.
+- Output at most ONE token per message.
+- The search query should be 2-6 words describing mood/genre/style (e.g., "dark ambient tension", "upbeat jazz cafe", "melancholic piano rain").
+- Do NOT include artist names, song titles, or years.
+- Do NOT use quotes inside the query.
+- If no music change is needed, do NOT output the token at all.
+
+## Output Structure
+1) [Other tags if needed]
+   (blank line)
+2) [MP_REC_QUERY: query]  ← only if recommending music
+   (blank line)
+3) Narrative content
+
+## Example A (with recommendation)
+[MP_REC_QUERY: tense orchestral suspense]
+
+*The shadow crept closer...*
+
+## Example B (no recommendation)
+*She smiled softly and continued reading.*
+
+## Query Style Tips
+- Focus on MOOD: tense, calm, romantic, eerie, energetic, melancholic
+- Add GENRE hints: ambient, jazz, classical, electronic, lo-fi, orchestral
+- Add TEXTURE: piano, strings, synth, acoustic, no vocals
+- Keep it simple and searchable on music platforms.`
+  }
+},
     kwPromptPresets: {
       default: {
         id: "default",
@@ -280,6 +324,35 @@ Example B (without keyword):
   s.recommendMode.cooldownSec ??= 60;
   s.recommendMode.stopOnEnter ??= true;
   s.recommendMode.spotify ??= {};
+  // > 추천 프롬프트 프리셋 보정
+s.recPromptPresets ??= {};
+if (!s.recPromptPresets.default) {
+  s.recPromptPresets.default = {
+    id: "default",
+    name: "Default",
+    content: `# Music Recommendation Prompt
+
+## Goal
+You are an AI that recommends background music fitting the current scene's mood and atmosphere.
+When appropriate, output a music search query using the token format below.
+
+## Token Format (STRICT)
+[MP_REC_QUERY: your search query here]
+
+## Rules
+- Output the token as a STANDALONE LINE, never inside narrative text.
+- Output at most ONE token per message.
+- The search query should be 2-6 words describing mood/genre/style.
+- Do NOT include artist names, song titles, or years.
+- If no music change is needed, do NOT output the token at all.
+
+## Output Structure
+1) [Other tags if needed]
+2) [MP_REC_QUERY: query]  ← only if recommending
+3) Narrative content`
+  };
+}
+s.activeRecPromptPresetId ??= Object.keys(s.recPromptPresets)[0] || "default";
   // > 프롬프트 프리셋 보정
   s.kwPromptPresets ??= {};
   if (!s.kwPromptPresets.default) {
