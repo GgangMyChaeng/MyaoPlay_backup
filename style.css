@@ -2792,12 +2792,6 @@ body.autobgm-modal-open {
   color: var(--abgm-text);
 }
 
-#abgm_np_license_text {
-  background: var(--abgm-surface);
-  border: 1px solid var(--abgm-border);
-  color: var(--abgm-text);
-}
-
 
 /* =================================================================
    Theme Toggle Button Style
@@ -2858,42 +2852,6 @@ body.autobgm-modal-open {
   color: var(--abgm-text);
 }
 
-/* =================================================================
-   Bind Overlay - Theme Aware
-   ================================================================= */
-
-#abgm_bind_overlay > div {
-  background: var(--abgm-modal-bg) !important;
-  border-color: var(--abgm-border-strong) !important;
-}
-
-#abgm_bind_overlay > div > div:first-child {
-  border-bottom-color: var(--abgm-border) !important;
-}
-
-#abgm_bind_title {
-  color: var(--abgm-text) !important;
-}
-
-#abgm_bind_sub {
-  color: var(--abgm-text-dim) !important;
-}
-
-/* 바인드 닫기 버튼 크기 */
-#abgm_bind_close {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  min-height: 38px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 12px !important;
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-  color: var(--abgm-text) !important;
-}
-
 
 /* =================================================================
    Confirm Dialog Buttons - Theme Aware
@@ -2928,11 +2886,571 @@ body.autobgm-modal-open {
 
 
 /* =================================================================
-   Entry Detail Dialog (Image/License/Lyrics) - Theme Aware
+   Theme Isolation & Slider Enhancement (2026)
+   - SillyTavern 테마 간섭 방지
+   - 슬라이더 커스텀 스타일링
+   - 바인드/라이센스 등 누락 요소 보완
+   ================================================================= */
+
+
+/* =================================================================
+   SLIDER CUSTOM STYLING - 전체 슬라이더 통합
+   ================================================================= */
+
+/* 기본 슬라이더 스타일 (모든 range input) */
+.autobgm-modal input[type="range"],
+.abgm-np-seek,
+.abgm-fs-prevvol,
+.abgm_vol,
+#abgm_globalVol {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  height: 20px !important;
+}
+
+/* 슬라이더 트랙 - Webkit (Chrome, Safari, Edge) */
+.autobgm-modal input[type="range"]::-webkit-slider-runnable-track,
+.abgm-np-seek::-webkit-slider-runnable-track,
+.abgm-fs-prevvol::-webkit-slider-runnable-track,
+.abgm_vol::-webkit-slider-runnable-track,
+#abgm_globalVol::-webkit-slider-runnable-track {
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--abgm-border-strong) !important;
+  border: none !important;
+}
+
+/* 슬라이더 썸(핸들) - Webkit */
+.autobgm-modal input[type="range"]::-webkit-slider-thumb,
+.abgm-np-seek::-webkit-slider-thumb,
+.abgm-fs-prevvol::-webkit-slider-thumb,
+.abgm_vol::-webkit-slider-thumb,
+#abgm_globalVol::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background: var(--abgm-accent) !important;
+  border: 2px solid var(--abgm-bg) !important;
+  box-shadow: 0 2px 6px var(--abgm-shadow-strong) !important;
+  margin-top: -5px !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.autobgm-modal input[type="range"]:hover::-webkit-slider-thumb,
+.abgm-np-seek:hover::-webkit-slider-thumb,
+.abgm-fs-prevvol:hover::-webkit-slider-thumb,
+.abgm_vol:hover::-webkit-slider-thumb,
+#abgm_globalVol:hover::-webkit-slider-thumb {
+  transform: scale(1.15) !important;
+  box-shadow: 0 3px 10px var(--abgm-shadow-strong) !important;
+}
+
+.autobgm-modal input[type="range"]:active::-webkit-slider-thumb,
+.abgm-np-seek:active::-webkit-slider-thumb,
+.abgm-fs-prevvol:active::-webkit-slider-thumb,
+.abgm_vol:active::-webkit-slider-thumb,
+#abgm_globalVol:active::-webkit-slider-thumb {
+  transform: scale(1.05) !important;
+}
+
+/* 슬라이더 트랙 - Firefox */
+.autobgm-modal input[type="range"]::-moz-range-track,
+.abgm-np-seek::-moz-range-track,
+.abgm-fs-prevvol::-moz-range-track,
+.abgm_vol::-moz-range-track,
+#abgm_globalVol::-moz-range-track {
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--abgm-border-strong) !important;
+  border: none !important;
+}
+
+/* 슬라이더 썸(핸들) - Firefox */
+.autobgm-modal input[type="range"]::-moz-range-thumb,
+.abgm-np-seek::-moz-range-thumb,
+.abgm-fs-prevvol::-moz-range-thumb,
+.abgm_vol::-moz-range-thumb,
+#abgm_globalVol::-moz-range-thumb {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background: var(--abgm-accent) !important;
+  border: 2px solid var(--abgm-bg) !important;
+  box-shadow: 0 2px 6px var(--abgm-shadow-strong) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+/* 비활성화된 슬라이더 */
+.autobgm-modal input[type="range"]:disabled,
+.abgm-np-seek:disabled,
+.abgm-fs-prevvol:disabled,
+.abgm_vol:disabled,
+#abgm_globalVol:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.autobgm-modal input[type="range"]:disabled::-webkit-slider-thumb,
+.abgm-np-seek:disabled::-webkit-slider-thumb,
+.abgm-fs-prevvol:disabled::-webkit-slider-thumb,
+.abgm_vol:disabled::-webkit-slider-thumb,
+#abgm_globalVol:disabled::-webkit-slider-thumb {
+  background: var(--abgm-text-muted) !important;
+}
+
+
+/* =================================================================
+   BGM LIST - 키워드 입력칸 텍스트 강화
+   ================================================================= */
+
+.abgm-keywords textarea.abgm_keywords,
+.abgm-table textarea,
+.abgm-table input[type="text"],
+.abgm-table input[type="number"] {
+  color: var(--abgm-text) !important;
+  background: var(--abgm-input-bg) !important;
+  border-color: var(--abgm-input-border) !important;
+}
+
+.abgm-keywords textarea.abgm_keywords::placeholder,
+.abgm-table textarea::placeholder,
+.abgm-table input::placeholder {
+  color: var(--abgm-text-muted) !important;
+  opacity: 1 !important;
+}
+
+.abgm-keywords textarea.abgm_keywords:focus,
+.abgm-table textarea:focus,
+.abgm-table input:focus {
+  border-color: var(--abgm-accent) !important;
+  outline: none !important;
+}
+
+
+/* =================================================================
+   LICENSE & LYRICS 입력창 - 테마 강화
+   ================================================================= */
+
+#abgm_np_license_text,
+.abgm-entry-textarea,
+.abgm-prompt-text,
+textarea.abgm-license-input,
+textarea.abgm-lyrics-input {
+  background: var(--abgm-input-bg) !important;
+  border: 1px solid var(--abgm-input-border) !important;
+  color: var(--abgm-text) !important;
+  border-radius: 10px !important;
+}
+
+#abgm_np_license_text:focus,
+.abgm-entry-textarea:focus,
+.abgm-prompt-text:focus,
+textarea.abgm-license-input:focus,
+textarea.abgm-lyrics-input:focus {
+  border-color: var(--abgm-accent) !important;
+  outline: none !important;
+}
+
+/* Entry Detail 다이얼로그 내부 textarea */
+.abgm-entry-detail textarea {
+  background: var(--abgm-input-bg) !important;
+  border: 1px solid var(--abgm-input-border) !important;
+  color: var(--abgm-text) !important;
+}
+
+.abgm-entry-detail textarea:focus {
+  border-color: var(--abgm-accent) !important;
+  outline: none !important;
+}
+
+/* Entry Detail 라벨/텍스트 */
+.abgm-entry-detail label,
+.abgm-entry-detail span,
+.abgm-entry-detail p {
+  color: var(--abgm-text) !important;
+}
+
+.abgm-entry-detail small {
+  color: var(--abgm-text-dim) !important;
+}
+
+
+/* =================================================================
+   MODE 설명 블록 (Keyword, Time, SFX) - 테마 강화
+   ================================================================= */
+
+.abgm-kw-mode-desc,
+.abgm-time-mode-desc,
+.abgm-sfx-mode-desc,
+.abgm-mode-desc,
+.abgm-minihelp {
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+}
+
+.abgm-kw-mode-desc code,
+.abgm-time-mode-desc code,
+.abgm-sfx-mode-desc code,
+.abgm-mode-desc code {
+  background: var(--abgm-accent-soft) !important;
+  color: var(--abgm-accent) !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-family: 'Consolas', 'Monaco', monospace !important;
+}
+
+.abgm-kw-mode-desc b,
+.abgm-time-mode-desc b,
+.abgm-sfx-mode-desc b,
+.abgm-mode-desc b,
+.abgm-minihelp b {
+  color: var(--abgm-text) !important;
+}
+
+.abgm-kw-mode-desc ul,
+.abgm-minihelp ul {
+  margin: 8px 0 0 0 !important;
+  padding-left: 18px !important;
+  color: var(--abgm-text) !important;
+}
+
+.abgm-kw-mode-desc li,
+.abgm-minihelp li {
+  margin: 6px 0 !important;
+  color: var(--abgm-text) !important;
+}
+
+
+/* =================================================================
+   BIND 오버레이 - 캐릭터 선택 UI 강화
+   ================================================================= */
+
+#abgm_bind_overlay {
+  background: var(--abgm-overlay) !important;
+}
+
+#abgm_bind_overlay > div {
+  background: var(--abgm-modal-bg) !important;
+  border: 1px solid var(--abgm-border-strong) !important;
+  border-radius: 14px !important;
+  color: var(--abgm-text) !important;
+  box-shadow: 0 10px 40px var(--abgm-shadow-strong) !important;
+}
+
+/* 바인드 헤더 */
+#abgm_bind_overlay > div > div:first-child {
+  border-bottom: 1px solid var(--abgm-border) !important;
+  padding: 12px 14px !important;
+  background: var(--abgm-modal-header-bg) !important;
+}
+
+#abgm_bind_title {
+  color: var(--abgm-text) !important;
+  font-weight: 700 !important;
+}
+
+#abgm_bind_sub {
+  color: var(--abgm-text-dim) !important;
+  font-size: 13px !important;
+}
+
+/* 바인드 캐릭터 이름 버튼 */
+#abgm_bind_overlay .menu_button,
+.abgm-bind-char-btn {
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  transition: all 0.15s ease !important;
+}
+
+#abgm_bind_overlay .menu_button:hover,
+.abgm-bind-char-btn:hover {
+  background: var(--abgm-surface-hover) !important;
+  border-color: var(--abgm-border-strong) !important;
+}
+
+/* 선택된 캐릭터 */
+#abgm_bind_overlay .menu_button.is-selected,
+.abgm-bind-char-btn.is-selected {
+  background: var(--abgm-accent-soft) !important;
+  border-color: var(--abgm-accent) !important;
+  color: var(--abgm-accent) !important;
+}
+
+/* Unbind 버튼 */
+#abgm_bind_overlay .abgm-unbind-btn,
+.abgm-unbind-btn {
+  background: var(--abgm-danger-soft) !important;
+  border: 1px solid var(--abgm-danger) !important;
+  color: var(--abgm-danger) !important;
+  border-radius: 10px !important;
+}
+
+#abgm_bind_overlay .abgm-unbind-btn:hover,
+.abgm-unbind-btn:hover {
+  background: var(--abgm-danger) !important;
+  color: #ffffff !important;
+}
+
+/* 바인드 닫기 버튼 */
+#abgm_bind_close {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+  transition: all 0.15s ease !important;
+}
+
+#abgm_bind_close:hover {
+  background: var(--abgm-surface-hover) !important;
+  color: var(--abgm-text) !important;
+}
+
+
+/* =================================================================
+   SillyTavern 테마 간섭 완전 차단
+   ================================================================= */
+
+/* 모달 전체 요소 격리 */
+.autobgm-modal,
+.autobgm-modal *,
+.autobgm-overlay,
+.autobgm-overlay *,
+#abgm_bind_overlay,
+#abgm_bind_overlay *,
+.abgm-floating-menu,
+.abgm-floating-menu *,
+.abgm-confirm-wrap,
+.abgm-confirm-wrap *,
+.abgm-np-glass,
+.abgm-np-glass *,
+.abgm-addto-overlay,
+.abgm-addto-overlay * {
+  font-family: inherit !important;
+}
+
+/* 텍스트 색상 강제 */
+.autobgm-modal,
+.autobgm-modal p,
+.autobgm-modal span,
+.autobgm-modal label,
+.autobgm-modal div {
+  color: var(--abgm-text) !important;
+}
+
+.autobgm-modal small,
+.autobgm-modal .text-dim {
+  color: var(--abgm-text-dim) !important;
+}
+
+.autobgm-modal b,
+.autobgm-modal strong {
+  color: var(--abgm-text) !important;
+}
+
+/* 입력 필드 완전 격리 */
+.autobgm-modal input[type="text"],
+.autobgm-modal input[type="number"],
+.autobgm-modal input[type="url"],
+.autobgm-modal input[type="search"],
+.autobgm-modal textarea,
+.autobgm-modal select {
+  background: var(--abgm-input-bg) !important;
+  border: 1px solid var(--abgm-input-border) !important;
+  color: var(--abgm-text) !important;
+  border-radius: 10px !important;
+  padding: 8px 10px !important;
+}
+
+.autobgm-modal input:focus,
+.autobgm-modal textarea:focus,
+.autobgm-modal select:focus {
+  border-color: var(--abgm-accent) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--abgm-accent-soft) !important;
+}
+
+/* 체크박스/라디오 */
+.autobgm-modal input[type="checkbox"],
+.autobgm-modal input[type="radio"] {
+  accent-color: var(--abgm-accent) !important;
+}
+
+/* 버튼 격리 */
+.autobgm-modal button,
+.autobgm-modal .menu_button {
+  background: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+  border-radius: 10px !important;
+  transition: all 0.15s ease !important;
+}
+
+.autobgm-modal button:hover,
+.autobgm-modal .menu_button:hover {
+  background: var(--abgm-surface-hover) !important;
+}
+
+/* 액센트 버튼 (저장, 확인 등) */
+.autobgm-modal button.is-primary,
+.autobgm-modal .menu_button.is-primary,
+.autobgm-modal button.abgm-primary,
+.autobgm-modal .menu_button.abgm-primary {
+  background: var(--abgm-accent) !important;
+  border-color: var(--abgm-accent) !important;
+  color: #ffffff !important;
+}
+
+.autobgm-modal button.is-primary:hover,
+.autobgm-modal .menu_button.is-primary:hover,
+.autobgm-modal button.abgm-primary:hover,
+.autobgm-modal .menu_button.abgm-primary:hover {
+  background: var(--abgm-accent-hover) !important;
+}
+
+/* 위험 버튼 (삭제 등) */
+.autobgm-modal button.is-danger,
+.autobgm-modal .menu_button.is-danger,
+.autobgm-modal .abgm_del {
+  background: var(--abgm-danger-soft) !important;
+  border-color: var(--abgm-danger) !important;
+  color: var(--abgm-danger) !important;
+}
+
+.autobgm-modal button.is-danger:hover,
+.autobgm-modal .menu_button.is-danger:hover,
+.autobgm-modal .abgm_del:hover {
+  background: var(--abgm-danger) !important;
+  color: #ffffff !important;
+}
+
+
+/* =================================================================
+   Select 드롭다운 완전 격리
+   ================================================================= */
+
+.autobgm-modal select,
+.abgm-select,
+.abgm-pl-select,
+.abgm-pickpreset {
+  background: var(--abgm-input-bg) !important;
+  border: 1px solid var(--abgm-input-border) !important;
+  color: var(--abgm-text) !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+}
+
+.autobgm-modal select:focus,
+.abgm-select:focus,
+.abgm-pl-select:focus,
+.abgm-pickpreset:focus {
+  border-color: var(--abgm-accent) !important;
+  outline: none !important;
+}
+
+/* select option - 일부 브라우저 지원 */
+.autobgm-modal select option,
+.abgm-select option,
+.abgm-pl-select option,
+.abgm-pickpreset option {
+  background: var(--abgm-bg) !important;
+  color: var(--abgm-text) !important;
+}
+
+
+/* =================================================================
+   NP 홈 슬라이더 추가 스타일
+   ================================================================= */
+
+.abgm-np-seek-wrap {
+  width: min(360px, 86%) !important;
+  margin: 2px auto 0 !important;
+}
+
+.abgm-np-seek {
+  width: 100% !important;
+  height: 20px !important;
+}
+
+/* NP 타임 표시 */
+.abgm-np-time {
+  color: var(--abgm-text-dim) !important;
+}
+
+.abgm-np-time span {
+  color: var(--abgm-text-dim) !important;
+}
+
+
+/* =================================================================
+   Free Sources 프리뷰 볼륨 슬라이더
+   ================================================================= */
+
+.abgm-fs-prevrow {
+  color: var(--abgm-text) !important;
+}
+
+.abgm-fs-prevlabel {
+  color: var(--abgm-text-dim) !important;
+}
+
+.abgm-fs-prevval {
+  color: var(--abgm-text-dim) !important;
+}
+
+.abgm-fs-prevvol {
+  width: min(360px, 100%) !important;
+}
+
+
+/* =================================================================
+   글로벌 볼륨 영역
+   ================================================================= */
+
+.abgm-vol-row {
+  color: var(--abgm-text) !important;
+}
+
+#abgm_globalVolText {
+  color: var(--abgm-text-dim) !important;
+}
+
+#abgm_globalVol {
+  width: 180px !important;
+}
+
+
+/* =================================================================
+   Entry Detail 다이얼로그 (이미지/라이센스/가사)
    ================================================================= */
 
 .abgm-entry-detail {
   background: var(--abgm-modal-bg) !important;
+  border: 1px solid var(--abgm-border-strong) !important;
+  border-radius: 14px !important;
+  color: var(--abgm-text) !important;
+}
+
+.abgm-entry-detail .abgm-entry-tabs {
+  border-bottom: 1px solid var(--abgm-border) !important;
+  background: var(--abgm-modal-header-bg) !important;
 }
 
 .abgm-entry-tabs .menu_button {
@@ -2947,21 +3465,29 @@ body.autobgm-modal-open {
   color: var(--abgm-accent) !important;
 }
 
+/* 이미지 프리뷰 영역 */
 .abgm-image-preview {
   background: var(--abgm-surface) !important;
   border: 1px solid var(--abgm-border) !important;
+  border-radius: 12px !important;
 }
 
 .abgm-image-placeholder {
   color: var(--abgm-text-muted) !important;
 }
 
+/* 이미지 URL 입력 */
 .abgm-image-url {
   background: var(--abgm-input-bg) !important;
   border: 1px solid var(--abgm-input-border) !important;
   color: var(--abgm-text) !important;
 }
 
+.abgm-image-url:focus {
+  border-color: var(--abgm-accent) !important;
+}
+
+/* 이미지 버튼들 */
 .abgm-image-url-apply,
 .abgm-image-upload,
 .abgm-image-delete {
@@ -2970,39 +3496,18 @@ body.autobgm-modal-open {
   color: var(--abgm-text) !important;
 }
 
+.abgm-image-url-apply:hover,
+.abgm-image-upload:hover {
+  background: var(--abgm-surface-hover) !important;
+}
+
+.abgm-image-delete:hover {
+  background: var(--abgm-danger-soft) !important;
+  border-color: var(--abgm-danger) !important;
+  color: var(--abgm-danger) !important;
+}
+
+/* 이미지 상태 텍스트 */
 .abgm-image-status {
   color: var(--abgm-text-dim) !important;
-}
-
-
-/* =================================================================
-   Preset Picker Select - Theme Aware
-   ================================================================= */
-
-.abgm-pickpreset {
-  background: var(--abgm-input-bg) !important;
-  border: 1px solid var(--abgm-input-border) !important;
-  color: var(--abgm-text) !important;
-}
-
-
-/* =================================================================
-   Keyword Mode Description - Theme Aware
-   ================================================================= */
-
-.abgm-kw-mode-desc {
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-  color: var(--abgm-text) !important;
-}
-
-.abgm-kw-mode-desc code {
-  background: var(--abgm-accent-soft) !important;
-  color: var(--abgm-accent) !important;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.abgm-kw-mode-desc b {
-  color: var(--abgm-text) !important;
 }
