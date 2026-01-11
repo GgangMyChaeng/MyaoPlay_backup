@@ -159,3 +159,29 @@ export function isFileKeyReferenced(settings, fileKey) {
   }
   return false;
 }
+
+
+
+/** ========================= SFX 런타임 상태 ========================= */
+let _lastSfxSig = "";
+let _bgmPausedBySfx = false;
+let _sfxOverlayWasOff = false;
+
+export function getLastSfxSig() { return _lastSfxSig; }
+export function setLastSfxSig(v) { _lastSfxSig = String(v || ""); }
+
+export function getBgmPausedBySfx() { return _bgmPausedBySfx; }
+export function setBgmPausedBySfx(v) { _bgmPausedBySfx = !!v; }
+
+export function getSfxOverlayWasOff() { return _sfxOverlayWasOff; }
+export function setSfxOverlayWasOff(v) { _sfxOverlayWasOff = !!v; }
+
+// engine.js에서 import 순환 없이 접근할 수 있도록 전역 등록
+window.__abgmStateGetters ??= {};
+window.__abgmStateSetters ??= {};
+window.__abgmStateGetters.getBgmPausedBySfx = getBgmPausedBySfx;
+window.__abgmStateGetters.getSfxOverlayWasOff = getSfxOverlayWasOff;
+window.__abgmStateGetters.getLastSfxSig = getLastSfxSig;
+window.__abgmStateSetters.setBgmPausedBySfx = setBgmPausedBySfx;
+window.__abgmStateSetters.setSfxOverlayWasOff = setSfxOverlayWasOff;
+window.__abgmStateSetters.setLastSfxSig = setLastSfxSig;
