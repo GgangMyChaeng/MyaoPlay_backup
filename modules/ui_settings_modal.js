@@ -1537,6 +1537,105 @@ function initModePanel(root, settings) {
   const promptAddBtn = modePanel.querySelector('#abgm_kw_prompt_add');
   const promptDelBtn = modePanel.querySelector('#abgm_kw_prompt_del');
   const promptRenameBtn = modePanel.querySelector('#abgm_kw_prompt_rename');
+
+  // ===== 추천 프롬프트 프리셋 관리 =====
+  const recPromptPresetSel = modePanel.querySelector('#abgm_rec_prompt_preset');
+  const recPromptContent = modePanel.querySelector('#abgm_rec_prompt_content');
+  const recPromptAddBtn = modePanel.querySelector('#abgm_rec_prompt_add');
+  const recPromptDelBtn = modePanel.querySelector('#abgm_rec_prompt_del');
+  const recPromptRenameBtn = modePanel.querySelector('#abgm_rec_prompt_rename');
+
+  function renderRecPromptPresetSelect() {
+    if (!recPromptPresetSel) return;
+    recPromptPresetSel.innerHTML = '';
+    const presets = settings.recPromptPresets || {};
+    const sorted = Object.values(presets).sort((a, b) => 
+      (a.name || '').localeCompare(b.name || '', undefined, { numeric: true })
+    );
+    sorted.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name || p.id;
+      if (p.id === settings.activeRecPromptPresetId) opt.selected = true;
+      recPromptPresetSel.appendChild(opt);
+    });
+  }
+
+  function loadActiveRecPromptContent() {
+    if (!recPromptContent) return;
+    const activePreset = settings.recPromptPresets?.[settings.activeRecPromptPresetId];
+    recPromptContent.value = activePreset?.content || '';
+  }
+
+  renderRecPromptPresetSelect();
+  loadActiveRecPromptContent();
+
+  recPromptPresetSel?.addEventListener('change', (e) => {
+    settings.activeRecPromptPresetId = e.target.value;
+    loadActiveRecPromptContent();
+    _saveSettingsDebounced();
+  });
+
+  recPromptContent?.addEventListener('input', () => {
+    const activePreset = settings.recPromptPresets?.[settings.activeRecPromptPresetId];
+    if (activePreset) {
+      activePreset.content = recPromptContent.value;
+      _saveSettingsDebounced();
+    }
+  });
+
+  // 프롬프트 프리셋 추가
+  recPromptAddBtn?.addEventListener('click', async () => {
+    const name = await _abgmPrompt(root, '새 추천 프롬프트 프리셋 이름', {
+      title: 'Recommend Prompt Preset',
+      initialValue: 'New Prompt',
+      placeholder: 'Preset name...',
+    });
+    if (!name || !name.trim()) return;
+    const newId = _uid();
+    settings.recPromptPresets ??= {};
+    settings.recPromptPresets[newId] = {
+      id: newId,
+      name: name.trim(),
+      content: ''
+    };
+    settings.activeRecPromptPresetId = newId;
+    _saveSettingsDebounced();
+    renderRecPromptPresetSelect();
+    loadActiveRecPromptContent();
+  });
+
+  // 프롬프트 프리셋 삭제
+  recPromptDelBtn?.addEventListener('click', async () => {
+    const presets = settings.recPromptPresets || {};
+    if (Object.keys(presets).length <= 1) {
+      alert('마지막 프리셋은 삭제할 수 없습니다.');
+      return;
+    }
+    const activePreset = presets[settings.activeRecPromptPresetId];
+    const ok = await _abgmConfirm(root, '"' + (activePreset?.name || settings.activeRecPromptPresetId) + '" 프리셋을 삭제할까요?');
+    if (!ok) return;
+    delete presets[settings.activeRecPromptPresetId];
+    settings.activeRecPromptPresetId = Object.keys(presets)[0];
+    _saveSettingsDebounced();
+    renderRecPromptPresetSelect();
+    loadActiveRecPromptContent();
+  });
+
+  // 프롬프트 프리셋 이름 변경
+  recPromptRenameBtn?.addEventListener('click', async () => {
+    const activePreset = settings.recPromptPresets?.[settings.activeRecPromptPresetId];
+    if (!activePreset) return;
+    const newName = await _abgmPrompt(root, '프리셋 이름 변경', {
+      title: 'Rename Prompt Preset',
+      initialValue: activePreset.name || '',
+      placeholder: 'Preset name...',
+    });
+    if (!newName || !newName.trim()) return;
+    activePreset.name = newName.trim();
+    _saveSettingsDebounced();
+    renderRecPromptPresetSelect();
+  });
   
   function renderPromptPresetSelect() {
     if (!promptPresetSel) return;
