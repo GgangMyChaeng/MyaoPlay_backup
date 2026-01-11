@@ -518,14 +518,19 @@ async function renderNpArtView(bgm, view) {
     const hasAssetKey = !!bgm?.imageAssetKey;
     const hasUrl = !!String(bgm?.imageUrl ?? "").trim();
     
-    if (hasAssetKey && bgm?.id) {
+    const key = String(bgm?.imageAssetKey || bgm?.id || "").trim();
+
+    if (key) {
       art.innerHTML = `<div style="opacity:.5; font-size:11px;">Loading...</div>`;
       art.style.cssText = "cursor:pointer; display:flex; align-items:center; justify-content:center;";
       try {
-        const blob = await NP.idbGetImage(bgm.id);
+        const blob = await NP.idbGetImage(key);
         if (blob) {
           const url = URL.createObjectURL(blob);
           art.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;" />`;
+        } else if (hasUrl) {
+          const imgUrl = escapeHtml(String(bgm.imageUrl).trim());
+          art.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;" onerror="this.style.display='none'" />`;
         } else {
           art.innerHTML = "";
         }
