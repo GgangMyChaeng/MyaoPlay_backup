@@ -145,6 +145,16 @@ export function ensureSettings() {
       y: null,
     },
     keywordSubMode: "matching",
+    recommendMode: {
+      provider: "spotify",
+      cooldownSec: 60,
+      stopOnEnter: true,
+      spotify: {
+        accessToken: null,
+        refreshToken: null,
+        expiresAt: null,
+      }
+    },
     kwPromptPresets: {
       default: {
         id: "default",
@@ -261,9 +271,15 @@ Example B (without keyword):
   s.chatStates ??= {};
   s.debugMode ??= false;
   // > 키워드 서브모드 보정
-  if (!["matching", "token", "hybrid"].includes(s.keywordSubMode)) {
+  if (!["matching", "token", "hybrid", "recommend"].includes(s.keywordSubMode)) {
     s.keywordSubMode = "matching";
   }
+  // > 추천 모드 보정
+  s.recommendMode ??= {};
+  s.recommendMode.provider ??= "spotify";
+  s.recommendMode.cooldownSec ??= 60;
+  s.recommendMode.stopOnEnter ??= true;
+  s.recommendMode.spotify ??= {};
   // > 프롬프트 프리셋 보정
   s.kwPromptPresets ??= {};
   if (!s.kwPromptPresets.default) {
