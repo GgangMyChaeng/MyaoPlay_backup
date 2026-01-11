@@ -111,6 +111,11 @@ function parseKeywords(s) {
     .filter(Boolean);
 }
 
+// 타입 판정 헬퍼
+function _getEntryType(b) {
+  return (String(b?.type ?? "BGM").toUpperCase() === "SFX") ? "SFX" : "BGM";
+}
+
 // 이번 어시스턴트 텍스트에서 “트리거된 키워드들”을 모아서(중복 제거) 반환(디버그용)
 function collectTriggeredKeywords(preset, text) {
   const t = String(text ?? "").toLowerCase();
@@ -145,14 +150,13 @@ function extractTokenKeyword(text) {
 }
 
 // 토큰 기반 선곡: 토큰에서 추출한 키워드로 BGM 매칭
-function pickByToken(preset, text, preferKey = "", avoidKey = "") {
+function pickByToken(preset, text, preferKey = "", avoidKey = "", typeWanted = "BGM") {
   const tokenKw = extractTokenKeyword(text);
   if (!tokenKw) return null;
-  
   let bestPri = -Infinity;
   let candidates = [];
-  
   for (const b of preset.bgms ?? []) {
+    if (_getEntryType(b) !== typeWanted) continue;
     const fk = String(b.fileKey ?? "");
     if (!fk) continue;
     if (avoidKey && fk === avoidKey) continue;
@@ -183,15 +187,13 @@ function pickByToken(preset, text, preferKey = "", avoidKey = "") {
 }
 
 // 하이브리드 선곡: 토큰 우선 -> 매칭 폴백
-function pickByHybrid(preset, text, preferKey = "", avoidKey = "") {
+function pickByHybrid(preset, text, preferKey = "", avoidKey = "", typeWanted = "BGM") {
   // 1) 토큰 먼저 시도
-  const tokenHit = pickByToken(preset, text, preferKey, avoidKey);
+  const tokenHit = pickByToken(preset, text, preferKey, avoidKey, typeWanted);
   if (tokenHit) return { bgm: tokenHit, source: 'token' };
-  
   // 2) 토큰 없으면 기존 매칭
-  const matchHit = pickByKeyword(preset, text, preferKey, avoidKey);
+  const matchHit = pickByKeyword(preset, text, preferKey, avoidKey, typeWanted);
   if (matchHit) return { bgm: matchHit, source: 'matching' };
-  
   return null;
 }
 
@@ -203,16 +205,16 @@ function getTokenDebugInfo(text) {
 
 // 서브모드에 따른 통합 선곡 함수
 // 반환: { bgm, source } 또는 null
-function pickBySubMode(subMode, preset, text, preferKey = "", avoidKey = "") {
+function pickBySubMode(subMode, preset, text, preferKey = "", avoidKey = "", typeWanted = "BGM") {
   if (subMode === "token") {
-    const hit = pickByToken(preset, text, preferKey, avoidKey);
+    const hit = pickByToken(preset, text, preferKey, avoidKey, typeWanted);
     return hit ? { bgm: hit, source: "token" } : null;
   }
   if (subMode === "hybrid") {
-    return pickByHybrid(preset, text, preferKey, avoidKey);
+    return pickByHybrid(preset, text, preferKey, avoidKey, typeWanted);
   }
   // 기본: matching
-  const hit = pickByKeyword(preset, text, preferKey, avoidKey);
+  const hit = pickByKeyword(preset, text, preferKey, avoidKey, typeWanted);
   return hit ? { bgm: hit, source: "matching" } : null;
 }
 
@@ -319,12 +321,13 @@ function applyTimeMode(settings, text) {
 
 /** ========================= 선곡 헬퍼 (키워드/랜덤) ========================= */
 // 키워드 매칭 + priority 기준으로 후보를 뽑고(동점이면 랜덤), preferKey면 우선 유지
-function pickByKeyword(preset, text, preferKey = "", avoidKey = "") {
+function pickByKeyword(preset, text, preferKey = "", avoidKey = "", typeWanted = "BGM") {
   const t = String(text ?? "").toLowerCase();
   if (!t) return null;
   let bestPri = -Infinity;
   let candidates = [];
   for (const b of preset.bgms ?? []) {
+    if (_getEntryType(b) !== typeWanted) continue;
     const fk = String(b.fileKey ?? "");
     if (!fk) continue;
     if (avoidKey && fk === avoidKey) continue;
@@ -429,6 +432,63 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
   return true;
 }
 
+export async function ensurePlaySfxFile(fileKey, vol01) {
+  // SFX는 engine(BGM) 위에 얹을 수도 있으니 "sfx"로만 bus 주장
+  window.abgmStopOtherAudio?.("sfx");
+  const fk = String(fileKey ?? "").trim();
+  if (!fk) return false;
+  // 이전 SFX 정리
+  try { _sfxAudio.pause(); } catch {}
+  _sfxAudio.currentTime = 0;
+  if (_sfxUrl) URL.revokeObjectURL(_sfxUrl);
+  _sfxUrl = "";
+  _sfxAudio.loop = false;
+  _sfxAudio.volume = clamp01(vol01);
+  // URL이면 바로 재생
+  if (isProbablyUrl(fk)) {
+    _sfxAudio.src = fk;
+    _sfxCurrentFileKey = fk;
+    try { await _sfxAudio.play(); } catch {}
+    try { _updateNowPlayingUI(); } catch {}
+    return true;
+  }
+  // IDB blob이면 objectURL로
+  const blob = await idbGet(fk);
+  if (!blob) {
+    console.warn("[MyaPl][SFX] IDB asset missing:", fk, "- File not found in IDB.");
+    return false;
+  }
+  _sfxUrl = URL.createObjectURL(blob);
+  _sfxAudio.src = _sfxUrl;
+  _sfxCurrentFileKey = fk;
+  try { await _sfxAudio.play(); } catch {}
+  try { _updateNowPlayingUI(); } catch {}
+  return true;
+}
+
+function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMode, sig, getVol }) {
+  // SFX 후보 선곡 (SFX만)
+  const result = pickBySubMode(subMode, preset, textWithTime, "", "", "SFX");
+  const hit = result?.bgm || null;
+  const hitKey = hit?.fileKey ? String(hit.fileKey) : "";
+  if (!hitKey) return;
+  // 1회 트리거 방지: sig + hitKey
+  const sfxSig = `${String(sig || "")}::${hitKey}`;
+  if (sfxSig && _sfxLastTriggerSig === sfxSig) return;
+  _sfxLastTriggerSig = sfxSig;
+  const overlay = !!settings?.sfxMode?.overlay;
+  // Overlay OFF면 BGM 잠깐 pause (끝나면 _sfxAudio 'ended' 리스너가 복귀)
+  if (!overlay) {
+    const bgmWasPlaying = !!_engineCurrentFileKey && !_bgmAudio.paused && !_bgmAudio.ended;
+    _bgmPausedBySfx = bgmWasPlaying;
+    if (bgmWasPlaying) {
+      try { _bgmAudio.pause(); } catch {}
+    }
+  }
+  // SFX 재생(비동기, engineTick은 원래 async가 아니라 await 안 씀)
+  ensurePlaySfxFile(hitKey, getVol(hitKey));
+}
+
 
 
 /** ========================= 메인 엔진 루프 ========================= */
@@ -530,7 +590,11 @@ export function engineTick() {
   }
   _engineLastPresetId = String(preset.id);
   const sort = _getBgmSort(settings);
-  const keys = _getSortedKeys(preset, sort);
+  let keys = _getSortedKeys(preset, sort);
+  // 키워드 모드 아닐 때는 SFX를 BGM 재생 후보에서 제외 (옵션)
+  if (!settings.keywordMode && settings?.sfxMode?.skipInOtherModes) {
+    keys = keys.filter((k) => _getEntryType(_findBgmByKey(preset, k)) !== "SFX");
+  }
   const as = String(lastAsst ?? "");
   const useDefault = !!settings.useDefault;
   const defKey = String(preset.defaultBgmKey ?? "");
@@ -546,6 +610,7 @@ export function engineTick() {
     // Time Mode: 시간 키워드를 텍스트에 추가 (매칭 검색용)
     const timeKws = applyTimeMode(settings, asstText);
     const textWithTime = timeKws.length ? asstText + " " + timeKws.join(" ") : asstText;
+    maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMode, sig, getVol });
     if (!settings.keywordOnce) {
       // 무한 유지 로직
       const prefer = st.currentKey || _engineCurrentFileKey || "";
@@ -738,7 +803,10 @@ _bgmAudio.addEventListener("ended", () => {
   if (!preset) preset = Object.values(settings.presets ?? {})[0];
   if (!preset) return;
   const sort = _getBgmSort(settings);
-  const keys = _getSortedKeys(preset, sort);
+  let keys = _getSortedKeys(preset, sort);
+  if (settings?.sfxMode?.skipInOtherModes) {
+    keys = keys.filter((k) => _getEntryType(_findBgmByKey(preset, k)) !== "SFX");
+  }
   if (!keys.length) return;
   const getVol = (fk) => {
     const b = _findBgmByKey(preset, fk);
