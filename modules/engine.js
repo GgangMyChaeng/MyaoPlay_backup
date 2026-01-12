@@ -472,6 +472,7 @@ export async function ensurePlaySfxFile(fileKey, vol01) {
   if (isProbablyUrl(fk)) {
     _sfxAudio.src = fk;
     _sfxCurrentFileKey = fk;
+    _sfxAudio.dataset.currentFileKey = fk;
     try { await _sfxAudio.play(); } catch {}
     try { _updateNowPlayingUI(); } catch {}
     _isSfxPending = false;
@@ -487,6 +488,7 @@ export async function ensurePlaySfxFile(fileKey, vol01) {
   _sfxUrl = URL.createObjectURL(blob);
   _sfxAudio.src = _sfxUrl;
   _sfxCurrentFileKey = fk;
+  _sfxAudio.dataset.currentFileKey = fk;
   try { await _sfxAudio.play(); } catch {}
   try { _updateNowPlayingUI(); } catch {}
   _isSfxPending = false;
