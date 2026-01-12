@@ -590,6 +590,13 @@ export function engineTick() {
   let preset = settings.presets?.[settings.activePresetId];
   if (!preset) preset = Object.values(settings.presets ?? {})[0];
   if (!preset) return;
+  const mode = settings.playMode ?? "manual";
+  const sort = _getBgmSort(settings);
+  let keys = _getSortedKeys(preset, sort);
+  // 키워드 모드 아닐 때는 SFX를 BGM 재생 후보에서 제외 (옵션)
+  if (!settings.keywordMode && settings?.sfxMode?.skipInOtherModes) {
+    keys = keys.filter((k) => _getEntryType(_findBgmByKey(preset, k)) !== "SFX");
+  }
   // 채팅 바뀌면 정리 (키워드 모드일 때만)
   if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
     if (settings.keywordMode) {
@@ -634,12 +641,6 @@ export function engineTick() {
     _engineCurrentFileKey = "";
   }
   _engineLastPresetId = String(preset.id);
-  const sort = _getBgmSort(settings);
-  let keys = _getSortedKeys(preset, sort);
-  // 키워드 모드 아닐 때는 SFX를 BGM 재생 후보에서 제외 (옵션)
-  if (!settings.keywordMode && settings?.sfxMode?.skipInOtherModes) {
-    keys = keys.filter((k) => _getEntryType(_findBgmByKey(preset, k)) !== "SFX");
-  }
   const as = String(lastAsst ?? "");
   const useDefault = !!settings.useDefault;
   const defKey = String(preset.defaultBgmKey ?? "");
@@ -764,7 +765,6 @@ export function engineTick() {
     return;
   }
   // ====== Keyword Mode OFF ======
-  const mode = settings.playMode ?? "manual";
   // 키워드 모드가 아닌데 SFX가 재생 중이면 1번 꺼버림
   if (!settings?.keywordMode && _sfxAudio && !_sfxAudio.paused) {
     try { _sfxAudio.pause(); } catch {}
