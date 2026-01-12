@@ -496,9 +496,9 @@ export async function ensurePlaySfxFile(fileKey, vol01) {
 }
 
 function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMode, sig, getVol }) {
-  // console.log("[SFX DEBUG] maybeTriggerSfxFromKeywordMode called"); 시끄러워서 잠깐 끔
-  console.log("[SFX DEBUG] sfxMode:", settings?.sfxMode);
-  console.log("[SFX DEBUG] overlay:", settings?.sfxMode?.overlay);
+  // console.log("[SFX DEBUG] maybeTriggerSfxFromKeywordMode called"); 시끄러워서 셋은 끔
+  // console.log("[SFX DEBUG] sfxMode:", settings?.sfxMode);
+  // console.log("[SFX DEBUG] overlay:", settings?.sfxMode?.overlay);
   // state.js getter/setter 가져오기
   const getLastSfxSig = window.__abgmStateGetters?.getLastSfxSig || (() => "");
   const setLastSfxSig = window.__abgmStateSetters?.setLastSfxSig || (() => {});
