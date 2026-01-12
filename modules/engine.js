@@ -49,6 +49,7 @@ let _enginePausedByLobby = false;
 let _engineLobbyStreak = 0;
 // 재생 로딩 중 플래그 (비동기 갭 방지)
 let _isPlayPending = false;
+let _isSfxPending = false;
 
 // ===== SFX 전용 오디오 =====
 const _sfxAudio = new Audio();
@@ -455,6 +456,7 @@ export async function ensurePlaySfxFile(fileKey, vol01) {
   window.abgmStopOtherAudio?.("sfx");
   const fk = String(fileKey ?? "").trim();
   if (!fk) return false;
+  _isSfxPending = true;
   // 이전 SFX 정리
   try { _sfxAudio.pause(); } catch {}
   _sfxAudio.currentTime = 0;
@@ -468,12 +470,14 @@ export async function ensurePlaySfxFile(fileKey, vol01) {
     _sfxCurrentFileKey = fk;
     try { await _sfxAudio.play(); } catch {}
     try { _updateNowPlayingUI(); } catch {}
+    _isSfxPending = false;
     return true;
   }
   // IDB blob이면 objectURL로
   const blob = await idbGet(fk);
   if (!blob) {
     console.warn("[MyaPl][SFX] IDB asset missing:", fk, "- File not found in IDB.");
+    _isSfxPending = false;
     return false;
   }
   _sfxUrl = URL.createObjectURL(blob);
@@ -481,6 +485,7 @@ export async function ensurePlaySfxFile(fileKey, vol01) {
   _sfxCurrentFileKey = fk;
   try { await _sfxAudio.play(); } catch {}
   try { _updateNowPlayingUI(); } catch {}
+  _isSfxPending = false;
   return true;
 }
 
@@ -506,6 +511,7 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
   console.log("[SFX DEBUG] overlay final:", overlay);
   setSfxOverlayWasOff(!overlay);
   // Overlay OFF면 BGM 잠깐 pause (끝나면 _sfxAudio 'ended' 리스너가 복귀)
+  let bgmWasPausedHere = false;
   if (!overlay && _bgmAudio) {
     const bgmWasPlaying = !_bgmAudio.paused && !_bgmAudio.ended && !!_bgmAudio.src;
     console.log("[SFX DEBUG] bgmWasPlaying:", bgmWasPlaying);
@@ -515,10 +521,18 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
     if (bgmWasPlaying) {
       console.log("[SFX DEBUG] >>> PAUSING BGM");
       try { _bgmAudio.pause(); } catch {}
+      bgmWasPausedHere = true;
     }
   }
   // SFX 재생
-  ensurePlaySfxFile(hitKey, getVol(hitKey));
+  ensurePlaySfxFile(hitKey, getVol(hitKey)).then((ok) => {
+    if (!ok && bgmWasPausedHere) {
+      // SFX 로드 실패 시 BGM 즉시 복구
+      setBgmPausedBySfx(false);
+      setSfxOverlayWasOff(false);
+      try { _bgmAudio.play(); } catch {}
+    }
+  });
 }
 
 
@@ -528,7 +542,7 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
 export function engineTick() {
   // SFX가 재생 중이고 Overlay OFF로 BGM을 pause 해둔 상태면 BGM 로직 스킵
    const getBgmPausedBySfx = window.__abgmStateGetters?.getBgmPausedBySfx || (() => false);
-   if (getBgmPausedBySfx() && _sfxAudio && !_sfxAudio.paused) {
+   if (getBgmPausedBySfx() && (_isSfxPending || (_sfxAudio && !_sfxAudio.paused))) {
     // SFX 재생 중 - BGM 건드리지 않고 SFX만 계속 재생되게 둠
     return;
    }
