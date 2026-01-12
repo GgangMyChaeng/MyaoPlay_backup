@@ -412,7 +412,7 @@ export async function togglePlayPause() {
 }
 
 // fileKey 또는 URL을 실제로 오디오에 연결해서 재생(IDB blob이면 objectURL로 재생)
-export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
+export async function ensurePlayFile(fileKey, vol01, loop, presetId = "", autoplay = true) {
   window.abgmStopOtherAudio?.("engine");
   const fk = String(fileKey ?? "").trim();
   if (!fk) return false;
@@ -424,7 +424,9 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
     _bgmAudio.src = fk;
     _bgmAudio.dataset.currentFileKey = fk;
     _bgmAudio.volume = clamp01(vol01);
-    try { await _bgmAudio.play(); } catch {}
+    if (autoplay) {
+      try { await _bgmAudio.play(); } catch {}
+    }
     _engineCurrentFileKey = fk;
     if (presetId) _engineCurrentPresetId = String(presetId);
     _updateNowPlayingUI();
@@ -443,7 +445,9 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
   _bgmAudio.src = _bgmUrl;
   _bgmAudio.dataset.currentFileKey = fk;
   _bgmAudio.volume = clamp01(vol01);
-  try { await _bgmAudio.play(); } catch {}
+  if (autoplay) {
+    try { await _bgmAudio.play(); } catch {}
+  }
   _engineCurrentFileKey = fk;
   if (presetId) _engineCurrentPresetId = String(presetId);
   _updateNowPlayingUI();
@@ -502,10 +506,10 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
   const result = pickBySubMode(subMode, preset, textWithTime, "", "", "SFX");
   const hit = result?.bgm || null;
   const hitKey = hit?.fileKey ? String(hit.fileKey) : "";
-  if (!hitKey) return;
+  if (!hitKey) return false;
   // 1회 트리거 방지: sig + hitKey
   const sfxSig = `${String(sig || "")}::${hitKey}`;
-  if (sfxSig && getLastSfxSig() === sfxSig) return;
+  if (sfxSig && getLastSfxSig() === sfxSig) return false;
   setLastSfxSig(sfxSig);
   const overlay = !!settings?.sfxMode?.overlay;
   console.log("[SFX DEBUG] overlay final:", overlay);
@@ -533,6 +537,7 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
       try { _bgmAudio.play(); } catch {}
     }
   });
+  return true;
 }
 
 
@@ -739,7 +744,10 @@ export function engineTick() {
     // Time Mode: 시간 키워드를 텍스트에 추가 (매칭 검색용)
     const timeKws = applyTimeMode(settings, asstText);
     const textWithTime = timeKws.length ? asstText + " " + timeKws.join(" ") : asstText;
-    maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMode, sig, getVol });
+    const sfxTriggered = maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMode, sig, getVol });
+    const sfxOverlayOff = sfxTriggered && !settings?.sfxMode?.overlay;
+    const setBgmPausedBySfx = window.__abgmStateSetters?.setBgmPausedBySfx || (() => {});
+
     if (!settings.keywordOnce) {
       // 무한 유지 로직
       const prefer = st.currentKey || _engineCurrentFileKey || "";
@@ -762,7 +770,8 @@ export function engineTick() {
         st.currentKey = desired;
         if (_engineCurrentFileKey !== desired) {
           _engineCurrentFileKey = desired;
-          ensurePlayFile(desired, getVol(desired), true, preset.id);
+          if (sfxOverlayOff) setBgmPausedBySfx(true); // SFX 끝나면 재생하게 예약
+          ensurePlayFile(desired, getVol(desired), true, preset.id, !sfxOverlayOff);
           try { _updateNowPlayingUI(); } catch {}
         } else {
           _bgmAudio.loop = true;
@@ -774,7 +783,8 @@ export function engineTick() {
       if (st.currentKey && subMode !== "token") {
         if (_engineCurrentFileKey !== st.currentKey) {
           _engineCurrentFileKey = st.currentKey;
-          ensurePlayFile(st.currentKey, getVol(st.currentKey), true, preset.id);
+          if (sfxOverlayOff) setBgmPausedBySfx(true);
+          ensurePlayFile(st.currentKey, getVol(st.currentKey), true, preset.id, !sfxOverlayOff);
           try { _updateNowPlayingUI(); } catch {}
         } else {
           _bgmAudio.loop = true;
@@ -832,7 +842,8 @@ export function engineTick() {
       st.currentKey = "";
       st.defaultPlayedSig = "";
       _engineCurrentFileKey = hitKey;
-      ensurePlayFile(hitKey, getVol(hitKey), false, preset.id);
+      if (sfxOverlayOff) setBgmPausedBySfx(true);
+      ensurePlayFile(hitKey, getVol(hitKey), false, preset.id, !sfxOverlayOff);
       try { _updateNowPlayingUI(); } catch {}
       return;
     }
@@ -841,7 +852,8 @@ export function engineTick() {
         st.defaultPlayedSig = sig;
         st.currentKey = "";
         _engineCurrentFileKey = defKey;
-        ensurePlayFile(defKey, getVol(defKey), false, preset.id);
+        if (sfxOverlayOff) setBgmPausedBySfx(true);
+        ensurePlayFile(defKey, getVol(defKey), false, preset.id, !sfxOverlayOff);
         try { _updateNowPlayingUI(); } catch {}
       }
     }
