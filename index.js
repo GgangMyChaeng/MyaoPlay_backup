@@ -607,7 +607,7 @@ function bindDepsOnce() {
     getBgmSort: (settings) => getBgmSort(settings),
     abgmCycleBgmSort: (settings) => abgmCycleBgmSort(settings),
     abgmSortNice: (k) => abgmSortNice(k),
-    ensurePlayFile: (fk, vol01, autoplay, presetId) => ensurePlayFile(fk, vol01, autoplay, presetId),
+    ensurePlayFile: (fk, vol01, loop, presetId, autoplay) => ensurePlayFile(fk, vol01, loop, presetId, autoplay),
 
     // 6) 디버그/컨텍스트
     getDebugMode: () => __abgmDebugMode,
