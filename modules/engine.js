@@ -634,16 +634,6 @@ export function engineTick() {
     const b = _findBgmByKey(preset, fk);
     return clamp01((settings.globalVolume ?? 0.7) * (b?.volume ?? 1));
   };
-  // 키워드 모드가 아닌데 SFX가 재생 중이면 1번 꺼버림
-  if (!settings?.keywordMode && _sfxAudio && !_sfxAudio.paused) {
-    try { _sfxAudio.pause(); } catch {}
-    try { _sfxAudio.currentTime = 0; } catch {}
-    // BGM pause를 SFX가 걸어둔 상태였다면 해제 플래그도 초기화
-    const setBgmPausedBySfx = window.__abgmStateSetters?.setBgmPausedBySfx || (() => {});
-    const setSfxOverlayWasOff = window.__abgmStateSetters?.setSfxOverlayWasOff || (() => {});
-    setBgmPausedBySfx(false);
-    setSfxOverlayWasOff(false);
-  }
   // ====== Keyword Mode ON ======
   if (settings.keywordMode) {
     const asstText = String(lastAsst ?? "");
@@ -762,6 +752,16 @@ export function engineTick() {
   }
   // ====== Keyword Mode OFF ======
   const mode = settings.playMode ?? "manual";
+  // 키워드 모드가 아닌데 SFX가 재생 중이면 1번 꺼버림
+  if (!settings?.keywordMode && _sfxAudio && !_sfxAudio.paused) {
+    try { _sfxAudio.pause(); } catch {}
+    try { _sfxAudio.currentTime = 0; } catch {}
+    // BGM pause를 SFX가 걸어둔 상태였다면 해제 플래그도 초기화
+    const setBgmPausedBySfx = window.__abgmStateSetters?.setBgmPausedBySfx || (() => {});
+    const setSfxOverlayWasOff = window.__abgmStateSetters?.setSfxOverlayWasOff || (() => {});
+    setBgmPausedBySfx(false);
+    setSfxOverlayWasOff(false);
+  }
   if (mode === "manual") {
     if (st.currentKey) {
       if (_engineCurrentFileKey !== st.currentKey) {
@@ -782,7 +782,7 @@ export function engineTick() {
       ensurePlayFile(fk, getVol(fk), true, preset.id);
       st.currentKey = fk;
     } else {
-      _bgmAudio.loop = true;
+      _bgmAudio.loop = true;  // ← 이미 재생 중이면 loop만 true로
       _bgmAudio.volume = getVol(fk);
     }
     return;
@@ -835,19 +835,26 @@ _bgmAudio.addEventListener("ended", () => {
   const chatKey = _getChatKeyFromContext(ctx);
   settings.chatStates[chatKey] ??= { currentKey: "", listIndex: 0, lastSig: "", defaultPlayedSig: "", prevKey: "" };
   const st = settings.chatStates[chatKey];
+  // 키워드 모드 Once면 끝
   if (settings.keywordMode && settings.keywordOnce) {
     _engineCurrentFileKey = "";
     try { _updateNowPlayingUI(); } catch {}
     return;
   }
+  // 키워드 모드 Hold면 engineTick이 알아서 처리
   if (settings.keywordMode && !settings.keywordOnce) return;
+  // 프리셋 가져오기
   let preset = settings.presets?.[settings.activePresetId];
   if (!preset) preset = Object.values(settings.presets ?? {})[0];
   if (!preset) return;
   const sort = _getBgmSort(settings);
-  let keys = _getSortedKeys(preset, sort, _getNavKeys);
+  let keys = _getSortedKeys(preset, sort); // ← _getNavKeys 제거
+  // SFX 타입 필터링 (옵션 켜져있으면)
   if (settings?.sfxMode?.skipInOtherModes) {
-    keys = keys.filter((k) => _getEntryType(_findBgmByKey(preset, k)) !== "SFX");
+    keys = keys.filter((k) => {
+      const b = _findBgmByKey(preset, k);
+      return _getEntryType(b) !== "SFX";
+    });
   }
   if (!keys.length) return;
   const getVol = (fk) => {
@@ -855,6 +862,7 @@ _bgmAudio.addEventListener("ended", () => {
     return clamp01((settings.globalVolume ?? 0.7) * (b?.volume ?? 1));
   };
   const mode = settings.playMode ?? "manual";
+  // === Loop List 모드 ===
   if (mode === "loop_list") {
     st.prevKey = String(st.currentKey || _engineCurrentFileKey || "");
     let idx = Number(st.listIndex ?? 0);
@@ -862,10 +870,11 @@ _bgmAudio.addEventListener("ended", () => {
     st.listIndex = idx;
     const fk = keys[idx];
     st.currentKey = fk;
-    ensurePlayFile(fk, getVol(fk), false, preset.id);
+    ensurePlayFile(fk, getVol(fk), false, preset.id); // loop=false (끝나면 다시 이 ended로 옴)
     try { saveSettingsDebounced?.(); } catch {}
     return;
   }
+  // === Random 모드 ===
   if (mode === "random") {
     st.prevKey = String(st.currentKey || _engineCurrentFileKey || "");
     const cur = String(st.currentKey ?? "");
@@ -873,19 +882,21 @@ _bgmAudio.addEventListener("ended", () => {
     const pickFrom = pool.length ? pool : keys;
     const next = pickFrom[Math.floor(Math.random() * pickFrom.length)];
     st.currentKey = next;
-    ensurePlayFile(next, getVol(next), false, preset.id);
+    ensurePlayFile(next, getVol(next), false, preset.id); // loop=false
     try { saveSettingsDebounced?.(); } catch {}
     return;
   }
+  // === Loop One 모드 ===
   if (mode === "loop_one") {
     // loop=true인데 어떤 이유로 ended가 불렸으면 → 다시 재생
     const fk = String(st.currentKey || _engineCurrentFileKey || keys[0] || "");
     if (fk) {
-      _bgmAudio.loop = true;
-      ensurePlayFile(fk, getVol(fk), true, preset.id);
+      ensurePlayFile(fk, getVol(fk), true, preset.id); // ← loop=true로 재설정
       st.currentKey = fk;
       try { saveSettingsDebounced?.(); } catch {}
     }
     return;
   }
+  // === Manual 모드 ===
+  // 곡 끝나면 그냥 멈춤 (아무것도 안 함)
 });
