@@ -131,6 +131,12 @@ function _applyLiveVolumeForKey(settings, fk) {
   } catch {}
 
   try {
+    if (bus.sfx && String(bus.sfx.dataset?.currentFileKey ?? "") === key) {
+      bus.sfx.volume = v;
+    }
+  } catch {}
+
+  try {
     if (bus.preview && String(bus.preview.dataset?.currentFileKey ?? "") === key) {
       bus.preview.volume = v;
     }
@@ -142,6 +148,8 @@ function _applyLiveVolumeForCurrentAudios(settings) {
   if (!bus) return;
   const ek = bus.engine?.dataset?.currentFileKey;
   if (ek) _applyLiveVolumeForKey(settings, ek);
+  const sk = bus.sfx?.dataset?.currentFileKey;
+  if (sk) _applyLiveVolumeForKey(settings, sk);
   const pk = bus.preview?.dataset?.currentFileKey;
   if (pk) _applyLiveVolumeForKey(settings, pk);
 }
