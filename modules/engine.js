@@ -631,6 +631,15 @@ export function engineTick() {
   if (isChatChanged || isBindMismatch) {
     if (settings.keywordMode) {
       stopRuntime(); // 키워드 모드는 무조건 정리
+      // Bind 프리셋이 있으면 적용
+      if (boundPresetId && settings.activePresetId !== boundPresetId) {
+        console.log(`[MyaPl] 채팅방 전환(키워드): Bind 프리셋 적용 (${boundPresetId})`);
+        settings.activePresetId = boundPresetId;
+        _engineCurrentPresetId = boundPresetId;
+        preset = settings.presets?.[boundPresetId] || preset; // preset 변수 갱신
+        try { saveSettingsDebounced(); } catch {}
+        try { _updateNowPlayingUI(); } catch {}
+      }
     } else {
       // === 일반 모드(Manual/Loop/Random) ===
       const currentFileKey = String(_engineCurrentFileKey || "").trim();
@@ -665,6 +674,7 @@ export function engineTick() {
         settings.activePresetId = targetPresetId;
         _engineCurrentPresetId = targetPresetId;
         st.currentKey = currentFileKey;
+        preset = settings.presets?.[targetPresetId] || preset; // preset 변수 갱신
         try { saveSettingsDebounced(); } catch {}
         try { _updateNowPlayingUI(); } catch {}
       }
