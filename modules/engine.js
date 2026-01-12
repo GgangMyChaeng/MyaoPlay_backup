@@ -591,23 +591,28 @@ export function engineTick() {
   if (!preset) preset = Object.values(settings.presets ?? {})[0];
   if (!preset) return;
   // 채팅 바뀌면 정리 (키워드 모드일 때만)
-  if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
-    if (settings.keywordMode) {
-      stopRuntime();
-    } else {
-      // 키워드 모드 아니면: 현재 재생 유지
-      // 단, 새 chatState에 동기화할 때는 "현재 프리셋에 있는 곡"만 허용
-      if (_engineCurrentFileKey) {
-        const inPreset = (preset?.bgms ?? []).some(b => String(b.fileKey ?? "") === _engineCurrentFileKey);
-        if (inPreset) {
-          st.currentKey = _engineCurrentFileKey;
-        } else {
-          // 현재 프리셋에 없는 곡이면 동기화하지 않고 정리
-          stopRuntime();
+if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
+  if (settings.keywordMode) {
+    stopRuntime();
+  } else {
+    // 키워드 모드 아니면: 현재 재생 유지
+    // 단, 새 chatState에 동기화할 때는 "현재 프리셋에 있는 곡"만 허용
+    if (_engineCurrentFileKey) {
+      const inPreset = (preset?.bgms ?? []).some(b => String(b.fileKey ?? "") === _engineCurrentFileKey);
+      if (inPreset) {
+        st.currentKey = _engineCurrentFileKey;
+        // Loop List 모드면 listIndex도 맞춰주기
+        if (mode === "loop_list") {
+          const idx = keys.indexOf(_engineCurrentFileKey);
+          if (idx >= 0) st.listIndex = idx;
         }
+      } else {
+        // 현재 프리셋에 없는 곡이면 동기화하지 않고 정리
+        stopRuntime();
       }
     }
   }
+}
   _engineLastChatKey = chatKey;
   _engineCurrentPresetId = preset.id;
   // 프리셋 바뀌면 정리
@@ -774,19 +779,27 @@ export function engineTick() {
     return;
   }
   if (mode === "loop_one") {
-    // st.currentKey가 현재 프리셋에 있는지 확인
-    const stKeyValid = st.currentKey && keys.includes(st.currentKey);
-    const fk = (stKeyValid ? st.currentKey : "") || defKey || keys[0] || "";
-    if (!fk) return;
-    if (_engineCurrentFileKey !== fk) {
-      ensurePlayFile(fk, getVol(fk), true, preset.id);
-      st.currentKey = fk;
-    } else {
-      _bgmAudio.loop = true;  // ← 이미 재생 중이면 loop만 true로
-      _bgmAudio.volume = getVol(fk);
-    }
-    return;
+  // 현재 재생 중인 곡이 있고 프리셋에도 있으면 그걸 계속 틀기
+  const currentValid = _engineCurrentFileKey && keys.includes(_engineCurrentFileKey);
+  const stKeyValid = st.currentKey && keys.includes(st.currentKey);
+  let fk = "";
+  if (currentValid) {
+    fk = _engineCurrentFileKey; // 현재 재생곡 우선
+  } else if (stKeyValid) {
+    fk = st.currentKey; // chatState 저장값
+  } else {
+    fk = defKey || keys[0] || ""; // fallback
   }
+  if (!fk) return;
+  if (_engineCurrentFileKey !== fk) {
+    ensurePlayFile(fk, getVol(fk), true, preset.id);
+    st.currentKey = fk;
+  } else {
+    _bgmAudio.loop = true;
+    _bgmAudio.volume = getVol(fk);
+  }
+  return;
+}
   if (mode === "loop_list" || mode === "random") {
     if (_engineCurrentFileKey) {
       const fk = _engineCurrentFileKey;
