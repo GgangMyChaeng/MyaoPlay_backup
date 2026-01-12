@@ -521,11 +521,11 @@ function maybeTriggerSfxFromKeywordMode({ settings, preset, textWithTime, subMod
 // 설정/컨텍스트/채팅 상태를 보고: 키워드모드 or 일반모드에 맞춰 “지금 뭐 틀지” 결정
 export function engineTick() {
   // SFX가 재생 중이고 Overlay OFF로 BGM을 pause 해둔 상태면 BGM 로직 스킵
-  // const getBgmPausedBySfx = window.__abgmStateGetters?.getBgmPausedBySfx || (() => false);
-  // if (getBgmPausedBySfx() && _sfxAudio && !_sfxAudio.paused) {
+   const getBgmPausedBySfx = window.__abgmStateGetters?.getBgmPausedBySfx || (() => false);
+   if (getBgmPausedBySfx() && _sfxAudio && !_sfxAudio.paused) {
     // SFX 재생 중 - BGM 건드리지 않고 SFX만 계속 재생되게 둠
-  //  return;
-  // }
+    return;
+   }
   const settings = ensureSettings();
   _ensureEngineFields(settings);
   if (!settings.enabled) {
