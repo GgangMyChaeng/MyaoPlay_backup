@@ -466,6 +466,23 @@ async function init() {
   window.__AUTOBGM_BOOTED__ = true;
   bindDepsOnce();
   await bootFreeSourcesSync();
+  // === IDB 무결성 체크 추가 ===
+  try {
+    const settings = ensureSettings();
+    const result = await checkIdbIntegrity(settings);
+    if (result.missing.length > 0) {
+      console.warn("[MyaPl] IDB integrity check: missing files:", result.missing);
+      // 유저에게 경고 토스트 띄우기
+      toastr?.warning?.(
+        `${result.missing.length}개 파일이 손실되었습니다. 확장 설정에서 다시 추가해주세요.`,
+        "MyaoPlay - 파일 손실 감지",
+        { timeOut: 10000 }
+      );
+    }
+  } catch (e) {
+    console.error("[MyaPl] IDB integrity check failed:", e);
+  }
+  // === 체크 끝 ===
   mount();
   startEngine();
   // 2) 플로팅 버튼 초기화
@@ -491,6 +508,17 @@ async function init() {
       console.log("[MyaPl] IDB stored keys:", keys);
       return keys;
     },
+    // === 새로 추가: 손실된 파일 목록 보기 ===
+    findMissingFiles: async () => {
+      const s = ensureSettings();
+      const result = await checkIdbIntegrity(s);
+      console.table(result.missing.map(key => ({
+        fileKey: key,
+        type: key.startsWith('img_') ? 'Image' : 'Audio',
+        action: 'Re-upload required'
+      })));
+      return result.missing;
+    }
   };
   if (settings.floating.enabled) {
     createFloatingButton();
