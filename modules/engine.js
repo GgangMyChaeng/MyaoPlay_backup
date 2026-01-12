@@ -893,6 +893,17 @@ _bgmAudio.addEventListener("ended", () => {
     return clamp01((settings.globalVolume ?? 0.7) * (b?.volume ?? 1));
   };
   const mode = settings.playMode ?? "manual";
+    // === Loop One 모드 ===
+  if (mode === "loop_one") {
+    // loop=true인데 어떤 이유로 ended가 불렸으면 → 다시 재생
+    const fk = String(st.currentKey || _engineCurrentFileKey || keys[0] || "");
+    if (fk) {
+      ensurePlayFile(fk, getVol(fk), true, preset.id); // ← loop=true로 재설정
+      st.currentKey = fk;
+      try { saveSettingsDebounced?.(); } catch {}
+    }
+    return;
+  }
   // === Loop List 모드 ===
   if (mode === "loop_list") {
     st.prevKey = String(st.currentKey || _engineCurrentFileKey || "");
@@ -915,17 +926,6 @@ _bgmAudio.addEventListener("ended", () => {
     st.currentKey = next;
     ensurePlayFile(next, getVol(next), false, preset.id); // loop=false
     try { saveSettingsDebounced?.(); } catch {}
-    return;
-  }
-  // === Loop One 모드 ===
-  if (mode === "loop_one") {
-    // loop=true인데 어떤 이유로 ended가 불렸으면 → 다시 재생
-    const fk = String(st.currentKey || _engineCurrentFileKey || keys[0] || "");
-    if (fk) {
-      ensurePlayFile(fk, getVol(fk), true, preset.id); // ← loop=true로 재설정
-      st.currentKey = fk;
-      try { saveSettingsDebounced?.(); } catch {}
-    }
     return;
   }
   // === Manual 모드 ===
