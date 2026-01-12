@@ -591,28 +591,36 @@ export function engineTick() {
   if (!preset) preset = Object.values(settings.presets ?? {})[0];
   if (!preset) return;
   // 채팅 바뀌면 정리 (키워드 모드일 때만)
-if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
-  if (settings.keywordMode) {
-    stopRuntime();
-  } else {
-    // 키워드 모드 아니면: 현재 재생 유지
-    // 단, 새 chatState에 동기화할 때는 "현재 프리셋에 있는 곡"만 허용
-    if (_engineCurrentFileKey) {
-      const inPreset = (preset?.bgms ?? []).some(b => String(b.fileKey ?? "") === _engineCurrentFileKey);
-      if (inPreset) {
-        st.currentKey = _engineCurrentFileKey;
-        // Loop List 모드면 listIndex도 맞춰주기
-        if (mode === "loop_list") {
-          const idx = keys.indexOf(_engineCurrentFileKey);
-          if (idx >= 0) st.listIndex = idx;
+  if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
+    if (settings.keywordMode) {
+      stopRuntime();
+    } else {
+      // ===== 🔥 개선: 프리셋 체크 먼저 =====
+      // 현재 재생 중인 곡이 "지금 활성 프리셋"에 있는지 확인
+      const currentFileKey = String(_engineCurrentFileKey || "").trim();
+      if (currentFileKey) {
+        // 1) 현재 활성 프리셋 가져오기 (바인딩 반영 전)
+        const currentPresetId = String(settings.activePresetId || "");
+        const currentPreset = settings.presets?.[currentPresetId];
+        // 2) 현재 곡이 활성 프리셋에 있는지 체크
+        const inCurrentPreset = (currentPreset?.bgms ?? []).some(
+          b => String(b.fileKey ?? "") === currentFileKey
+        );
+        if (inCurrentPreset) {
+          // ✅ 같은 프리셋 곡이면 → 계속 재생 (chatState만 동기화)
+          st.currentKey = currentFileKey;
+          if (mode === "loop_list") {
+            const idx = keys.indexOf(currentFileKey);
+            if (idx >= 0) st.listIndex = idx;
+          }
+        } else {
+          // ❌ 다른 프리셋 곡이면 → 정리하고 새로 시작
+          console.log(`[MyaPl] 채팅방 전환: 다른 프리셋 곡 감지 → 정리`);
+          stopRuntime();
         }
-      } else {
-        // 현재 프리셋에 없는 곡이면 동기화하지 않고 정리
-        stopRuntime();
       }
     }
   }
-}
   _engineLastChatKey = chatKey;
   _engineCurrentPresetId = preset.id;
   // 프리셋 바뀌면 정리
@@ -779,22 +787,32 @@ if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
     return;
   }
   if (mode === "loop_one") {
-  // 현재 재생 중인 곡이 있고 프리셋에도 있으면 그걸 계속 틀기
-  const currentValid = _engineCurrentFileKey && keys.includes(_engineCurrentFileKey);
-  const stKeyValid = st.currentKey && keys.includes(st.currentKey);
+  // ===== 엿같은 Loop One 개선: 프리셋 일치 체크 강화 =====
+  const currentFileKey = String(_engineCurrentFileKey || "").trim();
+  const stateFileKey = String(st.currentKey || "").trim();
+  // 1) 현재 재생 중 + 현재 프리셋에 있음 → 최우선
+  const currentInPreset = currentFileKey && keys.includes(currentFileKey);
+  // 2) chatState 저장값 + 현재 프리셋에 있음
+  const stateInPreset = stateFileKey && keys.includes(stateFileKey);
   let fk = "";
-  if (currentValid) {
-    fk = _engineCurrentFileKey; // 현재 재생곡 우선
-  } else if (stKeyValid) {
-    fk = st.currentKey; // chatState 저장값
+  if (currentInPreset) {
+    // ✅ 현재 재생곡이 이 프리셋 곡이면 우선
+    fk = currentFileKey;
+  } else if (stateInPreset) {
+    // ✅ chatState에 저장된 곡이 이 프리셋 곡이면 사용
+    fk = stateFileKey;
   } else {
-    fk = defKey || keys[0] || ""; // fallback
+    // ❌ 둘 다 아니면 → 기본곡 or 첫 곡
+    fk = defKey || keys[0] || "";
   }
   if (!fk) return;
-  if (_engineCurrentFileKey !== fk) {
+  // 3) 현재 재생 중인 곡과 다르면 → 새로 재생
+  if (currentFileKey !== fk) {
+    console.log(`[MyaPl] Loop One: ${currentFileKey} → ${fk}`);
     ensurePlayFile(fk, getVol(fk), true, preset.id);
     st.currentKey = fk;
   } else {
+    // 같은 곡이면 → 루프/볼륨만 확인
     _bgmAudio.loop = true;
     _bgmAudio.volume = getVol(fk);
   }
