@@ -1,7 +1,7 @@
 // > 오디오 런타임(재생/정지/틱/선곡/키워드 판정)
 
 import { ensureSettings } from "./settings.js";
-import { saveSettingsDebounced } from "./deps.js";
+import { saveSettingsDebounced, getBoundPresetIdFromContext } from "./deps.js";
 import { idbGet } from "./storage.js";
 
 console.log("[MyaPl] engine loaded");
@@ -597,33 +597,56 @@ export function engineTick() {
   if (!settings.keywordMode && settings?.sfxMode?.skipInOtherModes) {
     keys = keys.filter((k) => _getEntryType(_findBgmByKey(preset, k)) !== "SFX");
   }
-  // 채팅 바뀌면 정리 (키워드 모드일 때만)
+  // 채팅 바뀌면 Bind 체크 + 프리셋 유지 판단
   if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
     if (settings.keywordMode) {
       stopRuntime();
     } else {
-      // ===== 🔥 개선: 프리셋 체크 먼저 =====
-      // 현재 재생 중인 곡이 "지금 활성 프리셋"에 있는지 확인
+      // 1) Bind 체크 먼저
+      const boundPresetId = getBoundPresetIdFromContext(ctx);
+      // 2) 현재 재생 중인 곡 정보
       const currentFileKey = String(_engineCurrentFileKey || "").trim();
-      if (currentFileKey) {
-        // 1) 현재 활성 프리셋 가져오기 (바인딩 반영 전)
-        const currentPresetId = String(settings.activePresetId || "");
-        const currentPreset = settings.presets?.[currentPresetId];
-        // 2) 현재 곡이 활성 프리셋에 있는지 체크
-        const inCurrentPreset = (currentPreset?.bgms ?? []).some(
+      const wasPlaying = currentFileKey && !_bgmAudio.paused && !_bgmAudio.ended;
+      const currentTime = wasPlaying ? _bgmAudio.currentTime : 0;
+      // 3) 타겟 프리셋 결정 (Bind > activePresetId)
+      const targetPresetId = boundPresetId || String(settings.activePresetId || "");
+      const targetPreset = settings.presets?.[targetPresetId];
+      if (targetPreset && currentFileKey) {
+        const inTargetPreset = (targetPreset?.bgms ?? []).some(
           b => String(b.fileKey ?? "") === currentFileKey
         );
-        if (inCurrentPreset) {
-          // ✅ 같은 프리셋 곡이면 → 계속 재생 (chatState만 동기화)
+        if (inTargetPreset) {
+          // 재생 중인 곡이 타겟 프리셋에 있음 → 유지
+          console.log(`[MyaPl] 채팅방 전환: 곡 유지 (${currentFileKey})`);
+          // Bind로 프리셋 바뀌었으면 activePresetId 업데이트
+          if (boundPresetId && settings.activePresetId !== boundPresetId) {
+            settings.activePresetId = boundPresetId;
+            _engineCurrentPresetId = boundPresetId;
+          }
+          // chatState 동기화
           st.currentKey = currentFileKey;
           if (mode === "loop_list") {
+            const keys = _getSortedKeys(targetPreset, _getBgmSort(settings));
             const idx = keys.indexOf(currentFileKey);
             if (idx >= 0) st.listIndex = idx;
           }
+          // 진행도 유지하면서 재생 상태 복원
+          if (wasPlaying && _bgmAudio.paused) {
+            _bgmAudio.currentTime = currentTime;
+            try { _bgmAudio.play(); } catch {}
+          }
         } else {
-          // ❌ 다른 프리셋 곡이면 → 정리하고 새로 시작
-          console.log(`[MyaPl] 채팅방 전환: 다른 프리셋 곡 감지 → 정리`);
+          // ❌ 타겟 프리셋에 없는 곡 → 정리 후 새로 시작
+          console.log(`[MyaPl] 채팅방 전환: 다른 프리셋 곡 감지 → 전환`);
           stopRuntime();
+          // Bind 프리셋으로 전환
+          if (boundPresetId) {
+            settings.activePresetId = boundPresetId;
+            _engineCurrentPresetId = boundPresetId;
+          }
+          // chatState 초기화 (새 프리셋이니까)
+          st.currentKey = "";
+          st.listIndex = 0;
         }
       }
     }
