@@ -728,15 +728,16 @@ export function engineTick() {
   }
   _engineLastChatKey = chatKey;
   _engineCurrentPresetId = preset.id;
-  // 프리셋 바뀌면 정리
-  if (_engineLastPresetId && _engineLastPresetId !== String(preset.id)) {
+  // 채팅 전환이 없었지만, UI 등에서 프리셋이 수동으로 변경된 경우에만 정리
+  if (!(isChatChanged || isBindMismatch) && _engineLastPresetId && _engineLastPresetId !== String(preset.id)) {
+    console.log(`[MyaPl] 수동 프리셋 변경 감지: ${String(_engineLastPresetId)} -> ${String(preset.id)}`);
     stopRuntime();
     st.currentKey = "";
     st.listIndex = 0;
     st.lastSig = "";
     st.defaultPlayedSig = "";
     st.prevKey = "";
-    _engineCurrentFileKey = "";
+    _engineCurrentFileKey = ""; // 현재 재생 키도 초기화
   }
   _engineLastPresetId = String(preset.id);
   const as = String(lastAsst ?? "");
