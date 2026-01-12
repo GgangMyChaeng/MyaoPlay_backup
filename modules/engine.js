@@ -47,6 +47,8 @@ let _engineLastPresetId = "";
 // 로비 pause/resume용
 let _enginePausedByLobby = false;
 let _engineLobbyStreak = 0;
+// 재생 로딩 중 플래그 (비동기 갭 방지)
+let _isPlayPending = false;
 
 // ===== SFX 전용 오디오 =====
 const _sfxAudio = new Audio();
@@ -413,6 +415,7 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
   window.abgmStopOtherAudio?.("engine");
   const fk = String(fileKey ?? "").trim();
   if (!fk) return false;
+  _isPlayPending = true; // 재생 시도 시작 (engineTick에서 wasPlaying으로 간주하게 함)
   if (isProbablyUrl(fk)) {
     if (_bgmUrl) URL.revokeObjectURL(_bgmUrl);
     _bgmUrl = "";
@@ -424,11 +427,13 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
     _engineCurrentFileKey = fk;
     if (presetId) _engineCurrentPresetId = String(presetId);
     _updateNowPlayingUI();
+    _isPlayPending = false;
     return true;
   }
   const blob = await idbGet(fk);
   if (!blob) {
     console.warn("[MyaPl] IDB asset missing:", fk, "- File not found in IDB. May have been lost due to extension update or cache clear.");
+    _isPlayPending = false;
     return false;
   }
   if (_bgmUrl) URL.revokeObjectURL(_bgmUrl);
@@ -441,6 +446,7 @@ export async function ensurePlayFile(fileKey, vol01, loop, presetId = "") {
   _engineCurrentFileKey = fk;
   if (presetId) _engineCurrentPresetId = String(presetId);
   _updateNowPlayingUI();
+  _isPlayPending = false;
   return true;
 }
 
@@ -598,14 +604,19 @@ export function engineTick() {
     keys = keys.filter((k) => _getEntryType(_findBgmByKey(preset, k)) !== "SFX");
   }
   // 채팅 바뀌면 Bind 체크 + 프리셋 유지 판단
-  if (_engineLastChatKey && _engineLastChatKey !== chatKey) {
+  const boundPresetId = getBoundPresetIdFromContext(ctx);
+  const isChatChanged = _engineLastChatKey && _engineLastChatKey !== chatKey;
+  // 초기 진입(LastKey 없음)이어도 Bind가 있고 현재 프리셋과 다르면 진입해야 함 (강제 동기화)
+  const isBindMismatch = !_engineLastChatKey && boundPresetId && settings.activePresetId !== boundPresetId;
+
+  if (isChatChanged || isBindMismatch) {
     if (settings.keywordMode) {
       stopRuntime(); // 키워드 모드는 무조건 정리
     } else {
       // === 일반 모드(Manual/Loop/Random) ===
-      const boundPresetId = getBoundPresetIdFromContext(ctx);
       const currentFileKey = String(_engineCurrentFileKey || "").trim();
-      const wasPlaying = currentFileKey && !_bgmAudio.paused && !_bgmAudio.ended;
+      // 재생 중이었거나, 재생 로딩 중이면 true
+      const wasPlaying = (currentFileKey && !_bgmAudio.paused && !_bgmAudio.ended) || _isPlayPending;
 
       // 타겟 프리셋 결정 (Bind 있으면 무조건 그 프리셋, 없으면 현재 유저가 선택한 activePreset 유지)
       // "Bind 없는 방"은 "기본 프리셋"으로 돌아가는 게 아니라 "현재 듣던 프리셋"을 유지하는 것이 일반적
