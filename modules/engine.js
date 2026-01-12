@@ -606,64 +606,54 @@ export function engineTick() {
       const boundPresetId = getBoundPresetIdFromContext(ctx);
       const currentFileKey = String(_engineCurrentFileKey || "").trim();
       const wasPlaying = currentFileKey && !_bgmAudio.paused && !_bgmAudio.ended;
-      const currentTime = wasPlaying ? _bgmAudio.currentTime : 0;
-      // 타겟 프리셋 결정 (Bind 있으면 우선, 없으면 activePresetId)
-      const targetPresetId = boundPresetId || String(settings.activePresetId || "");
+
+      // 타겟 프리셋 결정 (Bind 있으면 무조건 그 프리셋, 없으면 현재 유저가 선택한 activePreset 유지)
+      // "Bind 없는 방"은 "기본 프리셋"으로 돌아가는 게 아니라 "현재 듣던 프리셋"을 유지하는 것이 일반적
+      const targetPresetId = boundPresetId || settings.activePresetId;
       const targetPreset = settings.presets?.[targetPresetId];
+
       if (!targetPreset) {
         // 프리셋 자체가 없으면 정리
         stopRuntime();
         _engineCurrentPresetId = "";
         return;
       }
-      // === Case 1: 현재 곡 없음 (조용) ===
-      if (!currentFileKey) {
-        // 조용한 상태 → Bind 프리셋으로 바꾸되 조용 유지
-        if (boundPresetId && settings.activePresetId !== boundPresetId) {
-          settings.activePresetId = boundPresetId;
-          _engineCurrentPresetId = boundPresetId;
-        }
-        st.currentKey = "";
-        st.listIndex = 0;
-        return;
-      }
-      // === Case 2: 곡 재생 중 ===
-      const inTargetPreset = (targetPreset?.bgms ?? []).some(
-        b => String(b.fileKey ?? "") === currentFileKey
+
+      // 현재 재생 중인 곡이 타겟 프리셋에 존재하는지 확인
+      const inTargetPreset = currentFileKey && (targetPreset.bgms ?? []).some(
+        b => String(b.fileKey ?? "") === currentFileKey // trim 처리된 키끼리 비교 권장되나 여기선 그대로
       );
-      if (inTargetPreset) {
-        // ✅ 타겟 프리셋에 현재 곡 있음 → 유지
-        console.log(`[MyaPl] 채팅방 전환: 곡 유지 (${currentFileKey})`);
-        // Bind로 프리셋 바뀌었으면 activePresetId 업데이트
-        if (boundPresetId && settings.activePresetId !== boundPresetId) {
-          settings.activePresetId = boundPresetId;
-          _engineCurrentPresetId = boundPresetId;
-        }
-        // chatState 동기화
+
+      // === Case 1: 곡 유지 가능 (타겟 프리셋에 현재 곡이 있음) ===
+      if (inTargetPreset && settings.activePresetId === targetPresetId) {
+        // 프리셋도 같고 곡도 같음 -> 아무것도 안 함 (상태 동기화만)
         st.currentKey = currentFileKey;
-        if (mode === "loop_list") {
-          const keys = _getSortedKeys(targetPreset, _getBgmSort(settings));
-          const idx = keys.indexOf(currentFileKey);
-          if (idx >= 0) st.listIndex = idx;
-        }
-        // 진행도 유지하면서 재생 상태 복원
-        if (wasPlaying && _bgmAudio.paused) {
-          _bgmAudio.currentTime = currentTime;
-          try { _bgmAudio.play(); } catch {}
-        }
-      } else {
-        // ❌ 타겟 프리셋에 없는 곡 → 정리 후 새 곡 재생
-        console.log(`[MyaPl] 채팅방 전환: 다른 프리셋 곡 감지 → 전환`);
+      } 
+      else if (inTargetPreset && settings.activePresetId !== targetPresetId) {
+        // 프리셋은 다르지만(예: Bind됨) 곡이 거기에도 있음 -> 끊지 않고 프리셋 ID만 교체
+        console.log(`[MyaPl] 채팅방 전환: 곡 유지하며 프리셋 변경 (${currentFileKey})`);
+        settings.activePresetId = targetPresetId;
+        _engineCurrentPresetId = targetPresetId;
+        st.currentKey = currentFileKey;
+        try { saveSettingsDebounced(); } catch {}
+        try { _updateNowPlayingUI(); } catch {}
+      }
+      // === Case 2: 곡 유지 불가 (타겟 프리셋에 곡이 없거나, 강제 전환 필요) ===
+      else {
+        console.log(`[MyaPl] 채팅방 전환: 프리셋 변경 및 재생 갱신`);
+        
+        // 1. 일단 멈춤 (이전 곡 정리)
         stopRuntime();
-        // Bind 프리셋으로 전환
-        if (boundPresetId) {
-          settings.activePresetId = boundPresetId;
-          _engineCurrentPresetId = boundPresetId;
-        }
-        // chatState 초기화
+
+        // 2. 프리셋 변경 적용
+        settings.activePresetId = targetPresetId;
+        _engineCurrentPresetId = targetPresetId;
+        
+        // 3. 채팅방 상태 초기화 (이전 방의 잔재 제거)
         st.currentKey = "";
         st.listIndex = 0;
-        // === 재생 중이었으면 새 곡 시작 ===
+
+        // 4. "재생 중이었을 때만" 새 프리셋의 곡 재생
         if (wasPlaying) {
           const keys = _getSortedKeys(targetPreset, _getBgmSort(settings));
           if (keys.length > 0) {
@@ -671,19 +661,28 @@ export function engineTick() {
             if (mode === "random") {
               startKey = pickRandomKey(keys);
             } else {
-              // Manual/Loop: 첫 곡 or Default
+              // Manual/Loop: Default or First
               startKey = String(targetPreset.defaultBgmKey ?? "").trim() || keys[0];
             }
-          
+            
             if (startKey) {
+              // 중요: st.currentKey를 즉시 설정해야 하단 Loop 로직이 꼬이지 않음
               st.currentKey = startKey;
               if (mode === "loop_list") {
                 st.listIndex = Math.max(0, keys.indexOf(startKey));
               }
-              ensurePlayFile(startKey, getVol(startKey), mode === "loop_one", targetPreset.id);
+              // 재생 시작
+              ensurePlayFile(startKey, getVol(startKey), mode === "loop_one", targetPresetId);
             }
           }
         }
+        // wasPlaying이 false면(조용했으면) 그냥 프리셋만 바뀐 채로 조용히 있음.
+        
+        try { saveSettingsDebounced(); } catch {}
+        try { _updateNowPlayingUI(); } catch {}
+        
+        // 중요: 전환 로직을 수행했으면 이번 틱의 나머지(Loop/Manual 유지보수 로직)는 건너뜀
+        return;
       }
     }
   }
