@@ -283,10 +283,10 @@ function renderFsList(root, settings) {
     row.className = "abgm-fs-item";
     row.dataset.id = id;
     row.innerHTML = `
-  <button type="button" class="abgm-fs-main" title="View tags" data-id="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-tags='${escapeHtml(JSON.stringify(tags))}'>
+  <div class="abgm-fs-main" data-id="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-tags='${escapeHtml(JSON.stringify(tags))}'>
     <div class="abgm-fs-name">${escapeHtml(title)}</div>
     <div class="abgm-fs-time">${escapeHtml(dur)}</div>
-  </button>
+  </div>
   <div class="abgm-fs-side">
     <div class="abgm-fs-actions">
       <button type="button" class="menu_button abgm-fs-play" title="Play" data-src="${escapeHtml(src)}">▶</button>
