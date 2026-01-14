@@ -3004,8 +3004,8 @@ textarea.abgm-lyrics-input:focus {
 }
 
 /* --- 4. Force All Button Styles --- */
-#abgm_modal_overlay .menu_button,
-#abgm_modal_overlay button {
+/* Exclude tab buttons from this global override */
+#abgm_modal_overlay .menu_button, #abgm_modal_overlay button:not(.myaoplay-tab-btn) {
   background-color: var(--abgm-surface) !important;
   border: 1px solid var(--abgm-border) !important;
   color: var(--abgm-text) !important;
