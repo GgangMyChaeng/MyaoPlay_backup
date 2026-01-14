@@ -930,6 +930,9 @@ function simpleHash(s) {
 
 // 프리소스 raw 한 건을 {id, src, title, durationSec, tags}로 정규화하는 애
 function normalizeFreeSourceItem(raw) {
+  const MYAOPLAY_FREE_LICENSE = `Music © MyaoPlay
+These tracks are free to use and share for non-commercial purposes only, as long as proper credit is given.
+Credit: “Music by MyaoPlay”`;
   const src = String(raw?.src ?? raw?.url ?? raw?.fileKey ?? "").trim();
   if (!src) return null;
   const title = String(raw?.title ?? raw?.name ?? "").trim() || nameFromSource(src);
@@ -943,7 +946,9 @@ function normalizeFreeSourceItem(raw) {
         .filter(Boolean);
   // > id는 믿지 말고, 없으면 src 기반으로 안정 생성
   const id = String(raw?.id || "").trim() || `fs_${simpleHash(src)}`;
-  return { id, src, title, durationSec, tags };
+  // 핵심: 프리소스는 기본 라이센스를 항상 들고 있게 만들기 (raw.license 있으면 그걸 우선)
+  const license = String(raw?.license ?? MYAOPLAY_FREE_LICENSE);
+  return { id, src, title, durationSec, tags, license };
 }
 
 // 번들 JSON을 “진실”로 보고 settings.freeSources를 src 기준 유니크로 덮어쓰는 애 (중복 src면 마지막 승)
