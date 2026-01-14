@@ -1585,9 +1585,12 @@ function initModePanel(root, settings) {
     if (!recPromptPresetSel) return;
     recPromptPresetSel.innerHTML = '';
     const presets = settings.recPromptPresets || {};
-    const sorted = Object.values(presets).sort((a, b) => 
-      (a.name || '').localeCompare(b.name || '', undefined, { numeric: true })
-    );
+    const list = Object.values(presets);
+    const sorted = list.sort((a, b) => {
+      if (a.id === "default") return -1;
+      if (b.id === "default") return 1;
+      return (a.name || '').localeCompare(b.name || '', undefined, { numeric: true });
+    });
     sorted.forEach(p => {
       const opt = document.createElement('option');
       opt.value = p.id;
@@ -1677,9 +1680,12 @@ function initModePanel(root, settings) {
     if (!promptPresetSel) return;
     promptPresetSel.innerHTML = '';
     const presets = settings.kwPromptPresets || {};
-    const sorted = Object.values(presets).sort((a, b) => 
-      (a.name || '').localeCompare(b.name || '', undefined, { numeric: true })
-    );
+    const list = Object.values(presets);
+    const sorted = list.sort((a, b) => {
+      if (a.id === "default") return -1;
+      if (b.id === "default") return 1;
+      return (a.name || '').localeCompare(b.name || '', undefined, { numeric: true });
+    });
     sorted.forEach(p => {
       const opt = document.createElement('option');
       opt.value = p.id;
@@ -1688,6 +1694,7 @@ function initModePanel(root, settings) {
       promptPresetSel.appendChild(opt);
     });
   }
+
   
   function loadActivePromptContent() {
     if (!promptContent) return;
