@@ -345,8 +345,9 @@ overlay.innerHTML = `
     if (e.target === overlay) closeNowPlayingGlass();
   });
     const host = NP.getModalHost();
-    const cs = getComputedStyle(host);
-    if (cs.position === "static") host.style.position = "relative";
+    // [FIX] body가 아닐 때만 relative 강제
+    if (host !== document.body && getComputedStyle(host).position === "static") 
+      host.style.position = "relative";
     // 1) overlay 스타일 - 중앙정렬용 flex (CSS와 일치)
     const setO = (k, v) => overlay.style.setProperty(k, v, "important");
     setO("position", "absolute");
