@@ -528,6 +528,12 @@ async function init() {
   // 4) 창 크기 변경 리스너
   window.addEventListener("resize", updateFloatingButtonPosition);
   window.addEventListener("orientationchange", updateFloatingButtonPosition);
+  // [ADD] ResizeObserver로 호스트 크기 변화 감지 (다른 확장이 레이아웃 건들 때 대응)
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => updateFloatingButtonPosition());
+    ro.observe(document.body);
+  }
+
   // 5) {{mya_p}} 매크로 등록 (SillyTavern 커스텀 매크로)
   registerMyaoPlayMacros();
 }
