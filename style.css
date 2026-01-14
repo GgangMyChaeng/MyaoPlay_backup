@@ -2616,7 +2616,7 @@ body.autobgm-modal-open {
 .abgm-addto-item i {
   width: 20px;
   text-align: center;
-  color: var(--abgm-accent, #4ab7d8);
+  color: var(--abgm-accent, #4ab7d8) !important;
   font-size: 14px;
 }
 .abgm-addto-item span {
@@ -2655,7 +2655,7 @@ body.autobgm-modal-open {
   display: inline-block;
   padding: 5px 10px;
   background: var(--abgm-accent-soft);
-  color: var(--abgm-accent);
+  color: var(--abgm-accent) !important;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
