@@ -202,10 +202,10 @@ IMPORTANT:
 ### Example A (with recommendation)
 [MP_REC_QUERY: tense orchestral suspense]
 
-*The shadow crept closer...*
+The shadow crept closer.
 
 ### Example B (no recommendation)
-*She smiled softly and continued reading.*
+She smiled softly and continued reading.
 
 ## Query Style Tips
 - Focus on MOOD: tense, calm, romantic, eerie, energetic, melancholic
@@ -385,10 +385,10 @@ IMPORTANT:
 ### Example A (with recommendation)
 [MP_REC_QUERY: tense orchestral suspense]
 
-*The shadow crept closer...*
+The shadow crept closer.
 
 ### Example B (no recommendation)
-*She smiled softly and continued reading.*
+She smiled softly and continued reading.
 
 ## Query Style Tips
 - Focus on MOOD: tense, calm, romantic, eerie, energetic, melancholic
