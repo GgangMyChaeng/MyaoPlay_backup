@@ -3618,3 +3618,109 @@ button.abgm-fs-main {
 .abgm-fs-item {
   border-bottom-color: var(--abgm-border) !important;
 }
+
+
+/* =================================================================
+   [FIX] 테마 미적용 요소 강제 수정 (슬라이더, 입력창, 텍스트)
+   ================================================================= */
+
+/* 1) 슬라이더 (Range) - 테두리 제거 및 테마 색상 강제 */
+.autobgm-modal input[type="range"],
+.abgm-np-seek,
+.abgm-fs-prevvol,
+.abgm_vol,
+#abgm_globalVol {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  background: transparent !important;
+  border: none !important;        /* 외곽 테두리 제거 */
+  outline: none !important;       /* 포커스 라인 제거 */
+  height: 20px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 슬라이더 트랙 (줄) */
+.autobgm-modal input[type="range"]::-webkit-slider-runnable-track,
+.abgm-np-seek::-webkit-slider-runnable-track,
+.abgm-fs-prevvol::-webkit-slider-runnable-track,
+.abgm_vol::-webkit-slider-runnable-track,
+#abgm_globalVol::-webkit-slider-runnable-track {
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--abgm-border-strong) !important;
+  border: none !important;
+}
+
+/* 슬라이더 핸들 (동그라미) */
+.autobgm-modal input[type="range"]::-webkit-slider-thumb,
+.abgm-np-seek::-webkit-slider-thumb,
+.abgm-fs-prevvol::-webkit-slider-thumb,
+.abgm_vol::-webkit-slider-thumb,
+#abgm_globalVol::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background: var(--abgm-accent) !important;
+  border: 2px solid var(--abgm-bg) !important;
+  box-shadow: 0 2px 6px var(--abgm-shadow-strong) !important;
+  margin-top: -5px !important; /* 트랙 중앙 정렬 */
+  transition: transform 0.15s ease !important;
+}
+
+.autobgm-modal input[type="range"]:hover::-webkit-slider-thumb,
+.abgm-np-seek:hover::-webkit-slider-thumb,
+.abgm-fs-prevvol:hover::-webkit-slider-thumb,
+.abgm_vol:hover::-webkit-slider-thumb,
+#abgm_globalVol:hover::-webkit-slider-thumb {
+  transform: scale(1.15) !important;
+}
+
+/* 2) 입력창 (키워드, 라이센스, 가사 등) - 배경/글자색 강제 */
+.autobgm-modal textarea,
+.autobgm-modal input[type="text"],
+.autobgm-modal input[type="number"],
+.abgm-keywords textarea,
+.abgm-entry-textarea,
+.abgm-prompt-text,
+textarea.abgm_keywords {
+  background: var(--abgm-input-bg) !important;
+  color: var(--abgm-text) !important;
+  border: 1px solid var(--abgm-input-border) !important;
+}
+
+.autobgm-modal textarea::placeholder,
+.autobgm-modal input::placeholder {
+  color: var(--abgm-text-muted) !important;
+  opacity: 1 !important;
+}
+
+/* 3) 텍스트 (모드 설명, 라벨, 프리뷰 볼륨 숫자 등) */
+.abgm-kw-mode-desc,
+.abgm-minihelp,
+.abgm-mode-subpanel,
+.abgm-check,
+.abgm-time-slot-label,
+#abgm_kw_prompt_section,
+#abgm_rec_prompt_section {
+  color: var(--abgm-text) !important;
+}
+
+#abgm_fs_prevvol_val,
+.abgm-fs-prevlabel,
+.abgm-fs-prevval {
+  color: var(--abgm-text-dim) !important;
+}
+
+/* 4) 바텀시트 (Add to...) - 다크모드 대응 */
+.abgm-addto-sheet {
+  background: var(--abgm-bg) !important;
+  color: var(--abgm-text) !important;
+}
+.abgm-addto-title { color: var(--abgm-text) !important; }
+.abgm-addto-subtitle { color: var(--abgm-text-dim) !important; }
+.abgm-addto-item { color: var(--abgm-text) !important; }
+.abgm-addto-item:hover { background: var(--abgm-surface-hover) !important; }
