@@ -192,9 +192,9 @@ IMPORTANT:
 
 ## Output Structure
 1) [Other system or metadata tags if already required elsewhere]
-   (blank line)
+   (Single Line Break)
 2) [MP_REC_QUERY: query]  ← only if recommending music
-   (blank line)
+   (Single Line Break)
 3) Narrative / roleplay content
 
 ## Examples
@@ -241,7 +241,7 @@ Your entire message must follow this structure:
 - If nothing fits, or if the same fitting keyword appeared 1–2 times recently, do NOT output the token at all.
 - If you do NOT output the token, then omit section (2) entirely and write:
   (optional other tags line if needed)
-  (blank line)
+  (Single Line Break)
   Narrative content
 - The keyword must be chosen ONLY from "Available Keywords".
 - Do not invent keywords. Do not modify keywords. Use them as-is (case/spacing preserved if possible).
@@ -261,7 +261,7 @@ Example A (with keyword):
 (Narrative Content starts here... no 'mya' token inside)
 Example B (without keyword):
 [any other tags if needed]
-(blank line)
+(Single Line Break)
 (Narrative Content starts here... no 'mya' token anywhere)`
       }
     },
@@ -375,9 +375,9 @@ IMPORTANT:
 
 ## Output Structure
 1) [Other system or metadata tags if already required elsewhere]
-   (blank line)
+   (Single Line Break)
 2) [MP_REC_QUERY: query]  ← only if recommending music
-   (blank line)
+   (Single Line Break)
 3) Narrative / roleplay content
 
 ## Examples
