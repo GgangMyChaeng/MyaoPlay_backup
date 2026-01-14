@@ -3002,6 +3002,11 @@ textarea.abgm-lyrics-input:focus {
   outline: none !important;
   box-shadow: 0 0 0 2px var(--abgm-accent-soft) !important;
 }
+/* Force <option> colors inside dropdowns to follow theme */
+#abgm_modal_overlay select option {
+  background: var(--abgm-input-bg) !important;
+  color: var(--abgm-text) !important;
+}
 
 /* --- 4. Force All Button Styles --- */
 /* Exclude tab buttons from this global override */
