@@ -11,6 +11,7 @@ let _initModal = () => {};
 let _bindNowPlayingEventsOnce = () => {};
 let _updateNowPlayingUI = () => {};
 let _abgmViewportHandler = null;
+let _abgmResizeObserver = null;
 
 const MODAL_OVERLAY_ID = "abgm_modal_overlay";
 
@@ -117,6 +118,11 @@ export function closeModal() {
     window.visualViewport?.removeEventListener("scroll", _abgmViewportHandler);
     _abgmViewportHandler = null;
   }
+  // [ADD] Observer 해제
+  if (_abgmResizeObserver) {
+    _abgmResizeObserver.disconnect();
+    _abgmResizeObserver = null;
+  }
   _updateNowPlayingUI();
 }
 
@@ -173,6 +179,13 @@ export async function openModal() {
   overlay.addEventListener("pointerup", kickFit, { passive: true });
   // 9) window resize도 유지
   window.addEventListener("resize", _abgmViewportHandler);
+  // [ADD] ResizeObserver 추가 (호스트 크기 변화 대응)
+  if (window.ResizeObserver) {
+    _abgmResizeObserver = new ResizeObserver(() => _abgmViewportHandler?.());
+    _abgmResizeObserver.observe(host);
+    // 호스트가 body가 아니면 body도 같이 감시 (안전빵)
+    if (host !== document.body) _abgmResizeObserver.observe(document.body);
+  }
   // 10) visualViewport가 있으면 더 정확히
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", _abgmViewportHandler);
