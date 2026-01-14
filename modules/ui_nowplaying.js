@@ -694,8 +694,9 @@ function updateNowPlayingGlassNavUI(settings, preset) {
       canPrev = keys.length > 0;
       canNext = keys.length > 0;
     } else {
-      canPrev = idx > 0;
-      canNext = idx < keys.length - 1;
+      // [FIX] Manual/Loop One도 버튼으로는 순환 이동 허용 (끝->처음, 처음->끝)
+      canPrev = keys.length > 1;
+      canNext = keys.length > 1;
     }
   }
   prevBtn.disabled = !canPrev;
