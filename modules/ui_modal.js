@@ -58,12 +58,8 @@ export function fitModalToViewport(overlay) {
 
 // 모달 overlay를 어디 컨테이너에 붙일지 host를 찾아주는 애(#app/#sillytavern/main/body 순)
 export function getModalHost() {
-  return (
-    document.querySelector("#app") ||
-    document.querySelector("#sillytavern") ||
-    document.querySelector("main") ||
-    document.body
-  );
+  // [FIX] 모바일/타 확장 충돌 방지: transform 걸린 컨테이너 피해서 무조건 body에 부착
+  return document.body;
 }
 
 // host 기준으로 “PC는 최대폭 제한 + 가운데, 모바일은 꽉 차게” 사이즈를 계산/적용하는 애
@@ -71,8 +67,9 @@ export function fitModalToHost(overlay, host) {
   const modal = overlay?.querySelector?.(".autobgm-modal");
   if (!modal) return;
   const vv = window.visualViewport;
-  const vw = vv?.width || window.innerWidth;
-  const vh = vv?.height || window.innerHeight;
+  // [FIX] vv 값이 0이거나 이상할 때 대비해 폴백 강화
+  const vw = (vv && vv.width > 0) ? vv.width : window.innerWidth;
+  const vh = (vv && vv.height > 0) ? vv.height : window.innerHeight;
   // 1) PC만 여백/최대폭 제한
   const isPc = vw >= 900;
   const pad = isPc ? 18 : 12;          // 2) PC는 살짝 더 여유
@@ -146,8 +143,10 @@ export async function openModal() {
   // 1) 모바일 WebView 강제 스타일 (CSS 씹는 경우 방지) — important 버전
   const host = getModalHost();
   // 2) host가 static이면 absolute overlay가 제대로 안 잡힘
-  const cs = getComputedStyle(host);
-  if (cs.position === "static") host.style.position = "relative";
+  // [FIX] body일 때는 relative 강제하지 않음 (전체 레이아웃 흔들림 방지)
+  if (host !== document.body) {
+    if (getComputedStyle(host).position === "static") host.style.position = "relative";
+  }
   // 3) overlay는 컨테이너 기준 absolute로
   const setO = (k, v) => overlay.style.setProperty(k, v, "important");
   setO("position", "absolute");
@@ -181,7 +180,10 @@ export async function openModal() {
   window.addEventListener("resize", _abgmViewportHandler);
   // [ADD] ResizeObserver 추가 (호스트 크기 변화 대응)
   if (window.ResizeObserver) {
-    _abgmResizeObserver = new ResizeObserver(() => _abgmViewportHandler?.());
+    _abgmResizeObserver = new ResizeObserver(() => {
+      // [FIX] 콜백 내 에러 방지
+      try { _abgmViewportHandler?.(); } catch {}
+    });
     _abgmResizeObserver.observe(host);
     // 호스트가 body가 아니면 body도 같이 감시 (안전빵)
     if (host !== document.body) _abgmResizeObserver.observe(document.body);
