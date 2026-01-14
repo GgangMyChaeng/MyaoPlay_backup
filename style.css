@@ -12,6 +12,7 @@
 
 /* ===== Light Theme (Default) ===== */
 :root {
+  color-scheme: light;
   /* Surface & Background */
   --abgm-bg: #ffffff;
   --abgm-surface: #f8fafd;
@@ -82,6 +83,7 @@
 
 /* ===== Dark Theme ===== */
 body[data-abgm-theme="dark"] {
+  color-scheme: dark;
   /* Surface & Background - Teal/Mint */
   --abgm-bg: #0a1111;
   --abgm-surface: rgba(255, 255, 255, 0.04);
@@ -3020,7 +3022,9 @@ textarea.abgm-lyrics-input:focus {
   box-shadow: 0 0 0 2px var(--abgm-accent-soft) !important;
 }
 /* Force <option> colors inside dropdowns to follow theme */
-#abgm_modal_overlay select option {
+#abgm_modal_overlay select option,
+#ABGM_NP_GLASS_OVERLAY select option,
+.abgm-floating-menu select option {
   background: var(--abgm-input-bg) !important;
   color: var(--abgm-text) !important;
 }
