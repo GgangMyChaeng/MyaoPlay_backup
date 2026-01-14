@@ -83,7 +83,7 @@
 /* ===== Dark Theme ===== */
 [data-abgm-theme="dark"],
 :root:has([data-abgm-theme="dark"]) {
-  /* Surface & Background 틸/민트 */
+  /* Surface & Background í‹¸/ë¯¼íŠ¸ */
   --abgm-bg: #0a1111;
   --abgm-surface: rgba(255, 255, 255, 0.04);
   --abgm-surface2: rgba(255, 255, 255, 0.06);
@@ -98,30 +98,30 @@
   --abgm-text-dim: rgba(255, 255, 255, 0.6);
   --abgm-text-muted: rgba(255, 255, 255, 0.4);
   
-  /* Accent - 틸/민트 */
+  /* Accent - í‹¸/ë¯¼íŠ¸ */
   --abgm-accent: #5eead4;
   --abgm-accent-soft: rgba(94, 234, 212, 0.15);
   --abgm-accent-hover: #72edd9;
 
-  /* Accent - 핑크/로즈
+  /* Accent - í•‘í¬/ë¡œì¦ˆ
 *   --abgm-accent: #f472b6;
 *   --abgm-accent-soft: rgba(244, 114, 182, 0.15);
 *   --abgm-accent-hover: #f687bf;
 */
 
-  /* Accent - 코랄/피치
+  /* Accent - ì½”ëž„/í”¼ì¹˜
 *   --abgm-accent: #fb923c;
 *   --abgm-accent-soft: rgba(251, 146, 60, 0.15);
 *   --abgm-accent-hover: #fba458;
 */
 
-  /* Accent - 에메랄드/그린
+  /* Accent - ì—ë©”ëž„ë“œ/ê·¸ë¦°
 *   --abgm-accent: #34d399;
 *   --abgm-accent-soft: rgba(52, 211, 153, 0.15);
 *   --abgm-accent-hover: #4eeaa8;
 */
 
-  /* Accent - 라벤더
+  /* Accent - ë¼ë²¤ë”
 *   --abgm-accent: #c4b5fd;
 *   --abgm-accent-soft: rgba(196, 181, 253, 0.15);
 *   --abgm-accent-hover: #d0c4fd;
@@ -131,14 +131,14 @@
   --abgm-danger: #ff6b6b;
   --abgm-danger-soft: rgba(255, 107, 107, 0.15);
   
-  /* Chips & Tags 틸/민트 */
+  /* Chips & Tags í‹¸/ë¯¼íŠ¸ */
   --abgm-chip-bg: rgba(255, 255, 255, 0.04);
   --abgm-chip-border: rgba(255, 255, 255, 0.10);
   --abgm-chip-active-bg: rgba(94, 234, 212, 0.2);
   --abgm-chip-active-border: #5eead4;
   --abgm-tab-active-color: #5eead4;
 
-  /* Chips & Tags 핑크/로즈
+  /* Chips & Tags í•‘í¬/ë¡œì¦ˆ
 *  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
 *  --abgm-chip-border: rgba(255, 255, 255, 0.10);
 *  --abgm-chip-active-bg: rgba(244, 114, 182, 0.2);
@@ -146,7 +146,7 @@
 *  --abgm-tab-active-color: #f472b6;
 */
 
-  /* Chips & Tags 코랄/피치
+  /* Chips & Tags ì½”ëž„/í”¼ì¹˜
 *  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
 *  --abgm-chip-border: rgba(255, 255, 255, 0.10);
 *  --abgm-chip-active-bg: rgba(251, 146, 60, 0.2);
@@ -154,7 +154,7 @@
 *  --abgm-tab-active-color: #fb923c;
 */
 
-  /* Chips & Tags 에메랄드/그린
+  /* Chips & Tags ì—ë©”ëž„ë“œ/ê·¸ë¦°
 *  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
 *  --abgm-chip-border: rgba(255, 255, 255, 0.10);
 *  --abgm-chip-active-bg: rgba(52, 211, 153, 0.2);
@@ -162,7 +162,7 @@
 *  --abgm-tab-active-color: #34d399;
 */
 
-  /* Chips & Tags 라벤더
+  /* Chips & Tags ë¼ë²¤ë”
 *  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
 *  --abgm-chip-border: rgba(255, 255, 255, 0.10);
 *  --abgm-chip-active-bg: rgba(196, 181, 253, 0.2);
@@ -185,7 +185,7 @@
   /* Overlay */
   --abgm-overlay: rgba(0, 0, 0, 0.55);
   
-  /* Modal specific 틸/민트 */
+  /* Modal specific í‹¸/ë¯¼íŠ¸ */
   --abgm-modal-bg: rgba(20, 20, 20, 0.96);
   --abgm-modal-header-bg: rgba(30, 30, 30, 0.98);
   --abgm-tabbar-bg: rgba(20, 20, 20, 0.96);
@@ -202,7 +202,7 @@
   --abgm-floating-btn-border: rgba(255, 255, 255, 0.08);
   --abgm-floating-btn-hover: rgba(255, 255, 255, 0.06);
   
-  /* Debug toast 틸/민트 */
+  /* Debug toast í‹¸/ë¯¼íŠ¸ */
   --abgm-toast-bg: rgba(30, 39, 40, 0.95);
   --abgm-toast-border: rgba(255, 255, 255, 0.12);
   --abgm-toast-text: rgba(255, 255, 255, 0.88);
@@ -1522,7 +1522,7 @@ body.autobgm-modal-open {
   resize: vertical;
 }
 
-/* 프롬프트 textarea 글자색 강제 (라이트 테마 대응) */
+/* í”„ë¡¬í”„íŠ¸ textarea ê¸€ìžìƒ‰ ê°•ì œ (ë¼ì´íŠ¸ í…Œë§ˆ ëŒ€ì‘) */
 .abgm-textarea,
 #abgm_kw_prompt_content {
   color: var(--abgm-text) !important;
@@ -1938,7 +1938,7 @@ body.autobgm-modal-open {
   align-items: center;
   justify-content: center;
   line-height: 1;
-  aspect-ratio: 1 / 1; /* 혹시 찌그러짐 방지 */
+  aspect-ratio: 1 / 1; /* í˜¹ì‹œ ì°Œê·¸ëŸ¬ì§ ë°©ì§€ */
   border-radius: 10px;
   background: var(--abgm-surface);
   border: 1px solid var(--abgm-border);
@@ -1989,7 +1989,7 @@ body.autobgm-modal-open {
    NP Glass (Now Playing Glass UI)
    ================================================================= */
 
-/* NP Glass Overlay - 중앙 정렬 (fitModalToHost 무시) */
+/* NP Glass Overlay - ì¤‘ì•™ ì •ë ¬ (fitModalToHost ë¬´ì‹œ) */
 .autobgm-overlay[data-abgm-page] {
   display: flex !important;
   align-items: center !important;
@@ -1998,7 +1998,7 @@ body.autobgm-modal-open {
 }
 
 .autobgm-overlay[data-abgm-page] .autobgm-modal.abgm-np-glass {
-  /* fitModalToHost의 강제 스타일 무력화 */
+  /* fitModalToHostì˜ ê°•ì œ ìŠ¤íƒ€ì¼ ë¬´ë ¥í™” */
   width: min(340px, 72vw) !important;
   height: auto !important;
   max-height: 85vh !important;
@@ -2016,7 +2016,7 @@ body.autobgm-modal-open {
   box-shadow: 0 18px 60px var(--abgm-shadow-strong);
   overflow: hidden;
   color: var(--abgm-text);
-  /* 기본값 (important 버전이 덮어씀) */
+  /* ê¸°ë³¸ê°’ (important ë²„ì „ì´ ë®ì–´ì”€) */
   width: min(340px, 72vw);
   height: auto;
   max-height: 85vh;
@@ -2031,7 +2031,7 @@ body.autobgm-modal-open {
   color: var(--abgm-text);
 }
 
-/* NP Home - flex 레이아웃 (상/하 분리) */
+/* NP Home - flex ë ˆì´ì•„ì›ƒ (ìƒ/í•˜ ë¶„ë¦¬) */
 .abgm-np-glass-inner > div[data-abgm-page="np"] {
   color: var(--abgm-text);
   padding: 20px 18px 16px;
@@ -2042,14 +2042,14 @@ body.autobgm-modal-open {
   height: 100%;
 }
 
-/* NP 상단 그룹 (art만) */
+/* NP ìƒë‹¨ ê·¸ë£¹ (artë§Œ) */
 .abgm-np-top-group {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* NP 하단 그룹 (title~bottom) - 아래로 밀림 */
+/* NP í•˜ë‹¨ ê·¸ë£¹ (title~bottom) - ì•„ëž˜ë¡œ ë°€ë¦¼ */
 .abgm-np-bottom-group {
   display: flex;
   flex-direction: column;
@@ -2082,7 +2082,7 @@ body.autobgm-modal-open {
   box-shadow: 0 10px 30px var(--abgm-shadow-strong);
 }
 
-/* NP Art - 가사/라이센스일 때 사각형으로 변환 */
+/* NP Art - ê°€ì‚¬/ë¼ì´ì„¼ìŠ¤ì¼ ë•Œ ì‚¬ê°í˜•ìœ¼ë¡œ ë³€í™˜ */
 .abgm-np-art.is-text-view {
   border-radius: 14px;
   width: min(280px, 85%);
@@ -2092,7 +2092,7 @@ body.autobgm-modal-open {
   box-shadow: none;
 }
 
-/* 가사/라이센스 텍스트 컨테이너 */
+/* ê°€ì‚¬/ë¼ì´ì„¼ìŠ¤ í…ìŠ¤íŠ¸ ì»¨í…Œì´ë„ˆ */
 .abgm-np-art-text {
   width: 100%;
   height: 100%;
@@ -2582,8 +2582,8 @@ body.autobgm-modal-open {
   margin-bottom: 12px;
 }
 
-/* ===== Add-to 바텀시트 ===== */
-/* ▼ options 버튼(정사각 1:1) */
+/* ===== Add-to ë°”í…€ì‹œíŠ¸ ===== */
+/* â–¼ options ë²„íŠ¼(ì •ì‚¬ê° 1:1) */
 .abgm-fs-addmenu-btn{
   width: 32px;
   height: 32px;
@@ -2595,7 +2595,7 @@ body.autobgm-modal-open {
   justify-content: center;
   line-height: 1;
   border-radius: 10px;
-  font-size: 12px; /* 너무 커보이면 10으로 */
+  font-size: 12px; /* ë„ˆë¬´ ì»¤ë³´ì´ë©´ 10ìœ¼ë¡œ */
 }
 
 .abgm-addto-overlay {
@@ -2698,7 +2698,7 @@ body.autobgm-modal-open {
   color: var(--abgm-text-muted, rgba(0,0,0,0.4));
 }
 
-/* 태그 섹션 (옵션 바텀시트 내) */
+/* íƒœê·¸ ì„¹ì…˜ (ì˜µì…˜ ë°”í…€ì‹œíŠ¸ ë‚´) */
 .abgm-addto-tags-section {
   padding: 0 20px 8px;
 }
@@ -2724,14 +2724,14 @@ body.autobgm-modal-open {
   font-weight: 500;
 }
 
-/* 모바일에서 바텀시트 너무 위로 올라오는 거 방지 */
+/* ëª¨ë°”ì¼ì—ì„œ ë°”í…€ì‹œíŠ¸ ë„ˆë¬´ ìœ„ë¡œ ì˜¬ë¼ì˜¤ëŠ” ê±° ë°©ì§€ */
 @media (max-width: 520px){
   .abgm-addto-sheet{
-    max-height: 50vh; /* 취향껏 높이 줄이기 */
+    max-height: 50vh; /* ì·¨í–¥ê» ë†’ì´ ì¤„ì´ê¸° */
   }
 }
 
-/* 다크 테마 대응 */
+/* ë‹¤í¬ í…Œë§ˆ ëŒ€ì‘ */
 [data-abgm-theme="dark"] .abgm-addto-sheet {
   background: var(--abgm-bg, #1a1a2e);
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
@@ -2887,17 +2887,17 @@ body.autobgm-modal-open {
 
 /* =================================================================
    Theme Isolation & Slider Enhancement (ver.01)
-   - SillyTavern 테마 간섭 방지
-   - 슬라이더 커스텀 스타일링
-   - 바인드/라이센스 등 누락 요소 보완
+   - SillyTavern í…Œë§ˆ ê°„ì„­ ë°©ì§€
+   - ìŠ¬ë¼ì´ë” ì»¤ìŠ¤í…€ ìŠ¤íƒ€ì¼ë§
+   - ë°”ì¸ë“œ/ë¼ì´ì„¼ìŠ¤ ë“± ëˆ„ë½ ìš”ì†Œ ë³´ì™„
    ================================================================= */
 
 
 /* =================================================================
-   SLIDER CUSTOM STYLING - 전체 슬라이더 통합
+   SLIDER CUSTOM STYLING - ì „ì²´ ìŠ¬ë¼ì´ë” í†µí•©
    ================================================================= */
 
-/* 기본 슬라이더 스타일 (모든 range input) */
+/* ê¸°ë³¸ ìŠ¬ë¼ì´ë” ìŠ¤íƒ€ì¼ (ëª¨ë“  range input) */
 .autobgm-modal input[type="range"],
 .abgm-np-seek,
 .abgm-fs-prevvol,
@@ -2910,7 +2910,7 @@ body.autobgm-modal-open {
   height: 20px !important;
 }
 
-/* 슬라이더 트랙 - Webkit (Chrome, Safari, Edge) */
+/* ìŠ¬ë¼ì´ë” íŠ¸ëž™ - Webkit (Chrome, Safari, Edge) */
 .autobgm-modal input[type="range"]::-webkit-slider-runnable-track,
 .abgm-np-seek::-webkit-slider-runnable-track,
 .abgm-fs-prevvol::-webkit-slider-runnable-track,
@@ -2922,7 +2922,7 @@ body.autobgm-modal-open {
   border: none !important;
 }
 
-/* 슬라이더 썸(핸들) - Webkit */
+/* ìŠ¬ë¼ì´ë” ì¸(í•¸ë“¤) - Webkit */
 .autobgm-modal input[type="range"]::-webkit-slider-thumb,
 .abgm-np-seek::-webkit-slider-thumb,
 .abgm-fs-prevvol::-webkit-slider-thumb,
@@ -2957,7 +2957,7 @@ body.autobgm-modal-open {
   transform: scale(1.05) !important;
 }
 
-/* 슬라이더 트랙 - Firefox */
+/* ìŠ¬ë¼ì´ë” íŠ¸ëž™ - Firefox */
 .autobgm-modal input[type="range"]::-moz-range-track,
 .abgm-np-seek::-moz-range-track,
 .abgm-fs-prevvol::-moz-range-track,
@@ -2969,7 +2969,7 @@ body.autobgm-modal-open {
   border: none !important;
 }
 
-/* 슬라이더 썸(핸들) - Firefox */
+/* ìŠ¬ë¼ì´ë” ì¸(í•¸ë“¤) - Firefox */
 .autobgm-modal input[type="range"]::-moz-range-thumb,
 .abgm-np-seek::-moz-range-thumb,
 .abgm-fs-prevvol::-moz-range-thumb,
@@ -2984,7 +2984,7 @@ body.autobgm-modal-open {
   transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-/* 비활성화된 슬라이더 */
+/* ë¹„í™œì„±í™”ëœ ìŠ¬ë¼ì´ë” */
 .autobgm-modal input[type="range"]:disabled,
 .abgm-np-seek:disabled,
 .abgm-fs-prevvol:disabled,
@@ -3004,7 +3004,7 @@ body.autobgm-modal-open {
 
 
 /* =================================================================
-   BGM LIST - 키워드 입력칸 텍스트 강화
+   BGM LIST - í‚¤ì›Œë“œ ìž…ë ¥ì¹¸ í…ìŠ¤íŠ¸ ê°•í™”
    ================================================================= */
 
 .abgm-keywords textarea.abgm_keywords,
@@ -3032,7 +3032,7 @@ body.autobgm-modal-open {
 
 
 /* =================================================================
-   LICENSE & LYRICS 입력창 - 테마 강화
+   LICENSE & LYRICS ìž…ë ¥ì°½ - í…Œë§ˆ ê°•í™”
    ================================================================= */
 
 #abgm_np_license_text,
@@ -3055,7 +3055,7 @@ textarea.abgm-lyrics-input:focus {
   outline: none !important;
 }
 
-/* Entry Detail 다이얼로그 내부 textarea */
+/* Entry Detail ë‹¤ì´ì–¼ë¡œê·¸ ë‚´ë¶€ textarea */
 .abgm-entry-detail textarea {
   background: var(--abgm-input-bg) !important;
   border: 1px solid var(--abgm-input-border) !important;
@@ -3067,7 +3067,7 @@ textarea.abgm-lyrics-input:focus {
   outline: none !important;
 }
 
-/* Entry Detail 라벨/텍스트 */
+/* Entry Detail ë¼ë²¨/í…ìŠ¤íŠ¸ */
 .abgm-entry-detail label,
 .abgm-entry-detail span,
 .abgm-entry-detail p {
@@ -3080,7 +3080,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   MODE 설명 블록 (Keyword, Time, SFX) - 테마 강화
+   MODE ì„¤ëª… ë¸”ë¡ (Keyword, Time, SFX) - í…Œë§ˆ ê°•í™”
    ================================================================= */
 
 .abgm-kw-mode-desc,
@@ -3129,7 +3129,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   BIND 오버레이 - 캐릭터 선택 UI 강화
+   BIND ì˜¤ë²„ë ˆì´ - ìºë¦­í„° ì„ íƒ UI ê°•í™”
    ================================================================= */
 
 #abgm_bind_overlay {
@@ -3144,7 +3144,7 @@ textarea.abgm-lyrics-input:focus {
   box-shadow: 0 10px 40px var(--abgm-shadow-strong) !important;
 }
 
-/* 바인드 헤더 */
+/* ë°”ì¸ë“œ í—¤ë” */
 #abgm_bind_overlay > div > div:first-child {
   border-bottom: 1px solid var(--abgm-border) !important;
   padding: 12px 14px !important;
@@ -3161,7 +3161,7 @@ textarea.abgm-lyrics-input:focus {
   font-size: 13px !important;
 }
 
-/* 바인드 캐릭터 이름 버튼 */
+/* ë°”ì¸ë“œ ìºë¦­í„° ì´ë¦„ ë²„íŠ¼ */
 #abgm_bind_overlay .menu_button,
 .abgm-bind-char-btn {
   background: var(--abgm-surface) !important;
@@ -3178,7 +3178,7 @@ textarea.abgm-lyrics-input:focus {
   border-color: var(--abgm-border-strong) !important;
 }
 
-/* 선택된 캐릭터 */
+/* ì„ íƒëœ ìºë¦­í„° */
 #abgm_bind_overlay .menu_button.is-selected,
 .abgm-bind-char-btn.is-selected {
   background: var(--abgm-accent-soft) !important;
@@ -3186,7 +3186,7 @@ textarea.abgm-lyrics-input:focus {
   color: var(--abgm-accent) !important;
 }
 
-/* Unbind 버튼 */
+/* Unbind ë²„íŠ¼ */
 #abgm_bind_overlay .abgm-unbind-btn,
 .abgm-unbind-btn {
   background: var(--abgm-danger-soft) !important;
@@ -3201,7 +3201,7 @@ textarea.abgm-lyrics-input:focus {
   color: #ffffff !important;
 }
 
-/* 바인드 닫기 버튼 */
+/* ë°”ì¸ë“œ ë‹«ê¸° ë²„íŠ¼ */
 #abgm_bind_close {
   width: 38px !important;
   height: 38px !important;
@@ -3224,10 +3224,10 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   SillyTavern 테마 간섭 완전 차단
+   SillyTavern í…Œë§ˆ ê°„ì„­ ì™„ì „ ì°¨ë‹¨
    ================================================================= */
 
-/* 모달 전체 요소 격리 */
+/* ëª¨ë‹¬ ì „ì²´ ìš”ì†Œ ê²©ë¦¬ */
 .autobgm-modal,
 .autobgm-modal *,
 .autobgm-overlay,
@@ -3245,7 +3245,7 @@ textarea.abgm-lyrics-input:focus {
   font-family: inherit !important;
 }
 
-/* 텍스트 색상 강제 */
+/* í…ìŠ¤íŠ¸ ìƒ‰ìƒ ê°•ì œ */
 .autobgm-modal,
 .autobgm-modal p,
 .autobgm-modal span,
@@ -3264,7 +3264,7 @@ textarea.abgm-lyrics-input:focus {
   color: var(--abgm-text) !important;
 }
 
-/* 입력 필드 완전 격리 */
+/* ìž…ë ¥ í•„ë“œ ì™„ì „ ê²©ë¦¬ */
 .autobgm-modal input[type="text"],
 .autobgm-modal input[type="number"],
 .autobgm-modal input[type="url"],
@@ -3286,13 +3286,13 @@ textarea.abgm-lyrics-input:focus {
   box-shadow: 0 0 0 2px var(--abgm-accent-soft) !important;
 }
 
-/* 체크박스/라디오 */
+/* ì²´í¬ë°•ìŠ¤/ë¼ë””ì˜¤ */
 .autobgm-modal input[type="checkbox"],
 .autobgm-modal input[type="radio"] {
   accent-color: var(--abgm-accent) !important;
 }
 
-/* 버튼 격리 */
+/* ë²„íŠ¼ ê²©ë¦¬ */
 .autobgm-modal button,
 .autobgm-modal .menu_button {
   background: var(--abgm-surface) !important;
@@ -3307,7 +3307,7 @@ textarea.abgm-lyrics-input:focus {
   background: var(--abgm-surface-hover) !important;
 }
 
-/* 액센트 버튼 (저장, 확인 등) */
+/* ì•¡ì„¼íŠ¸ ë²„íŠ¼ (ì €ìž¥, í™•ì¸ ë“±) */
 .autobgm-modal button.is-primary,
 .autobgm-modal .menu_button.is-primary,
 .autobgm-modal button.abgm-primary,
@@ -3324,7 +3324,7 @@ textarea.abgm-lyrics-input:focus {
   background: var(--abgm-accent-hover) !important;
 }
 
-/* 위험 버튼 (삭제 등) */
+/* ìœ„í—˜ ë²„íŠ¼ (ì‚­ì œ ë“±) */
 .autobgm-modal button.is-danger,
 .autobgm-modal .menu_button.is-danger,
 .autobgm-modal .abgm_del {
@@ -3342,7 +3342,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   Select 드롭다운 완전 격리
+   Select ë“œë¡­ë‹¤ìš´ ì™„ì „ ê²©ë¦¬
    ================================================================= */
 
 .autobgm-modal select,
@@ -3365,7 +3365,7 @@ textarea.abgm-lyrics-input:focus {
   outline: none !important;
 }
 
-/* select option - 일부 브라우저 지원 */
+/* select option - ì¼ë¶€ ë¸Œë¼ìš°ì € ì§€ì› */
 .autobgm-modal select option,
 .abgm-select option,
 .abgm-pl-select option,
@@ -3376,7 +3376,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   NP 홈 슬라이더 추가 스타일
+   NP í™ˆ ìŠ¬ë¼ì´ë” ì¶”ê°€ ìŠ¤íƒ€ì¼
    ================================================================= */
 
 .abgm-np-seek-wrap {
@@ -3389,7 +3389,7 @@ textarea.abgm-lyrics-input:focus {
   height: 20px !important;
 }
 
-/* NP 타임 표시 */
+/* NP íƒ€ìž„ í‘œì‹œ */
 .abgm-np-time {
   color: var(--abgm-text-dim) !important;
 }
@@ -3400,7 +3400,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   Free Sources 프리뷰 볼륨 슬라이더
+   Free Sources í”„ë¦¬ë·° ë³¼ë¥¨ ìŠ¬ë¼ì´ë”
    ================================================================= */
 
 .abgm-fs-prevrow {
@@ -3421,7 +3421,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   글로벌 볼륨 영역
+   ê¸€ë¡œë²Œ ë³¼ë¥¨ ì˜ì—­
    ================================================================= */
 
 .abgm-vol-row {
@@ -3438,7 +3438,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   Entry Detail 다이얼로그 (이미지/라이센스/가사)
+   Entry Detail ë‹¤ì´ì–¼ë¡œê·¸ (ì´ë¯¸ì§€/ë¼ì´ì„¼ìŠ¤/ê°€ì‚¬)
    ================================================================= */
 
 .abgm-entry-detail {
@@ -3465,7 +3465,7 @@ textarea.abgm-lyrics-input:focus {
   color: var(--abgm-accent) !important;
 }
 
-/* 이미지 프리뷰 영역 */
+/* ì´ë¯¸ì§€ í”„ë¦¬ë·° ì˜ì—­ */
 .abgm-image-preview {
   background: var(--abgm-surface) !important;
   border: 1px solid var(--abgm-border) !important;
@@ -3476,7 +3476,7 @@ textarea.abgm-lyrics-input:focus {
   color: var(--abgm-text-muted) !important;
 }
 
-/* 이미지 URL 입력 */
+/* ì´ë¯¸ì§€ URL ìž…ë ¥ */
 .abgm-image-url {
   background: var(--abgm-input-bg) !important;
   border: 1px solid var(--abgm-input-border) !important;
@@ -3487,7 +3487,7 @@ textarea.abgm-lyrics-input:focus {
   border-color: var(--abgm-accent) !important;
 }
 
-/* 이미지 버튼들 */
+/* ì´ë¯¸ì§€ ë²„íŠ¼ë“¤ */
 .abgm-image-url-apply,
 .abgm-image-upload,
 .abgm-image-delete {
@@ -3507,19 +3507,19 @@ textarea.abgm-lyrics-input:focus {
   color: var(--abgm-danger) !important;
 }
 
-/* 이미지 상태 텍스트 */
+/* ì´ë¯¸ì§€ ìƒíƒœ í…ìŠ¤íŠ¸ */
 .abgm-image-status {
   color: var(--abgm-text-dim) !important;
 }
 
 
 /* =================================================================
-   PATCH: 최종 수정 (탭 버튼 직사각형 + fs-main 테두리 제거)
+   PATCH: ìµœì¢… ìˆ˜ì • (íƒ­ ë²„íŠ¼ ì§ì‚¬ê°í˜• + fs-main í…Œë‘ë¦¬ ì œê±°)
    ================================================================= */
 
 
 /* =================================================================
-   Settings Modal 메인 탭 버튼 - 직사각형 유지 + 테두리 없음
+   Settings Modal ë©”ì¸ íƒ­ ë²„íŠ¼ - ì§ì‚¬ê°í˜• ìœ ì§€ + í…Œë‘ë¦¬ ì—†ìŒ
    ================================================================= */
 
 .myaoplay-tab-btn,
@@ -3536,7 +3536,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   Free Sources 곡 메인 버튼 - 테두리 없음 유지
+   Free Sources ê³¡ ë©”ì¸ ë²„íŠ¼ - í…Œë‘ë¦¬ ì—†ìŒ ìœ ì§€
    ================================================================= */
 
 .abgm-fs-main,
@@ -3550,10 +3550,10 @@ button.abgm-fs-main {
 
 
 /* =================================================================
-   설명 블록 (💡 매크로 안내, 📝 사용법, SFX 특징 등) - 테마화
+   ì„¤ëª… ë¸”ë¡ (ðŸ’¡ ë§¤í¬ë¡œ ì•ˆë‚´, ðŸ“ ì‚¬ìš©ë²•, SFX íŠ¹ì§• ë“±) - í…Œë§ˆí™”
    ================================================================= */
 
-/* 공통 설명 블록 - 인라인 스타일 덮어쓰기 */
+/* ê³µí†µ ì„¤ëª… ë¸”ë¡ - ì¸ë¼ì¸ ìŠ¤íƒ€ì¼ ë®ì–´ì“°ê¸° */
 .abgm-kw-mode-desc,
 .abgm-minihelp,
 #abgm_kw_prompt_section > div[style*="background"],
@@ -3566,7 +3566,7 @@ button.abgm-fs-main {
   color: var(--abgm-text) !important;
 }
 
-/* 설명 블록 내부 텍스트 */
+/* ì„¤ëª… ë¸”ë¡ ë‚´ë¶€ í…ìŠ¤íŠ¸ */
 .abgm-kw-mode-desc b,
 .abgm-kw-mode-desc code,
 .abgm-minihelp b,
@@ -3577,7 +3577,7 @@ button.abgm-fs-main {
   color: var(--abgm-text) !important;
 }
 
-/* code 태그 스타일 */
+/* code íƒœê·¸ ìŠ¤íƒ€ì¼ */
 .abgm-kw-mode-desc code,
 .abgm-minihelp code,
 #abgm_kw_prompt_section code,
@@ -3588,7 +3588,7 @@ button.abgm-fs-main {
   border-radius: 4px !important;
 }
 
-/* 리스트 항목 */
+/* ë¦¬ìŠ¤íŠ¸ í•­ëª© */
 .abgm-kw-mode-desc li,
 .abgm-minihelp li,
 #abgm_kw_prompt_section li,
@@ -3598,7 +3598,7 @@ button.abgm-fs-main {
   color: var(--abgm-text) !important;
 }
 
-/* 설명 블록 내 span (투명도 있는 것들) */
+/* ì„¤ëª… ë¸”ë¡ ë‚´ span (íˆ¬ëª…ë„ ìžˆëŠ” ê²ƒë“¤) */
 #abgm_kw_prompt_section span[style*="opacity"],
 #abgm-mode-sfx p[style*="opacity"],
 .abgm-mode-subpanel p[style*="opacity"] {
@@ -3607,7 +3607,7 @@ button.abgm-fs-main {
 
 
 /* =================================================================
-   소스 곡 리스트 영역 - 테두리 테마 강화
+   ì†ŒìŠ¤ ê³¡ ë¦¬ìŠ¤íŠ¸ ì˜ì—­ - í…Œë‘ë¦¬ í…Œë§ˆ ê°•í™”
    ================================================================= */
 
 .abgm-fs-list {
@@ -3621,10 +3621,10 @@ button.abgm-fs-main {
 
 
 /* =================================================================
-   [FIX] 테마 미적용 요소 강제 수정 (슬라이더, 입력창, 텍스트)
+   [FIX] í…Œë§ˆ ë¯¸ì ìš© ìš”ì†Œ ê°•ì œ ìˆ˜ì • (ìŠ¬ë¼ì´ë”, ìž…ë ¥ì°½, í…ìŠ¤íŠ¸)
    ================================================================= */
 
-/* 1) 슬라이더 (Range) - 테두리 제거 및 테마 색상 강제 */
+/* 1) ìŠ¬ë¼ì´ë” (Range) - í…Œë‘ë¦¬ ì œê±° ë° í…Œë§ˆ ìƒ‰ìƒ ê°•ì œ */
 .autobgm-modal input[type="range"],
 .abgm-np-seek,
 .abgm-fs-prevvol,
@@ -3633,15 +3633,15 @@ button.abgm-fs-main {
   -webkit-appearance: none !important;
   appearance: none !important;
   background: transparent !important;
-  border: none !important;        /* 외곽 테두리 제거 */
-  outline: none !important;       /* 포커스 라인 제거 */
+  border: none !important;        /* ì™¸ê³½ í…Œë‘ë¦¬ ì œê±° */
+  outline: none !important;       /* í¬ì»¤ìŠ¤ ë¼ì¸ ì œê±° */
   height: 20px !important;
   margin: 0 !important;
   padding: 0 !important;
   box-shadow: none !important;
 }
 
-/* 슬라이더 트랙 (줄) */
+/* ìŠ¬ë¼ì´ë” íŠ¸ëž™ (ì¤„) */
 .autobgm-modal input[type="range"]::-webkit-slider-runnable-track,
 .abgm-np-seek::-webkit-slider-runnable-track,
 .abgm-fs-prevvol::-webkit-slider-runnable-track,
@@ -3653,7 +3653,7 @@ button.abgm-fs-main {
   border: none !important;
 }
 
-/* 슬라이더 핸들 (동그라미) */
+/* ìŠ¬ë¼ì´ë” í•¸ë“¤ (ë™ê·¸ë¼ë¯¸) */
 .autobgm-modal input[type="range"]::-webkit-slider-thumb,
 .abgm-np-seek::-webkit-slider-thumb,
 .abgm-fs-prevvol::-webkit-slider-thumb,
@@ -3667,7 +3667,7 @@ button.abgm-fs-main {
   background: var(--abgm-accent) !important;
   border: 2px solid var(--abgm-bg) !important;
   box-shadow: 0 2px 6px var(--abgm-shadow-strong) !important;
-  margin-top: -5px !important; /* 트랙 중앙 정렬 */
+  margin-top: -5px !important; /* íŠ¸ëž™ ì¤‘ì•™ ì •ë ¬ */
   transition: transform 0.15s ease !important;
 }
 
@@ -3679,7 +3679,7 @@ button.abgm-fs-main {
   transform: scale(1.15) !important;
 }
 
-/* 2) 입력창 (키워드, 라이센스, 가사 등) - 배경/글자색 강제 */
+/* 2) ìž…ë ¥ì°½ (í‚¤ì›Œë“œ, ë¼ì´ì„¼ìŠ¤, ê°€ì‚¬ ë“±) - ë°°ê²½/ê¸€ìžìƒ‰ ê°•ì œ */
 .autobgm-modal textarea,
 .autobgm-modal input[type="text"],
 .autobgm-modal input[type="number"],
@@ -3698,7 +3698,7 @@ textarea.abgm_keywords {
   opacity: 1 !important;
 }
 
-/* 3) 텍스트 (모드 설명, 라벨, 프리뷰 볼륨 숫자 등) */
+/* 3) í…ìŠ¤íŠ¸ (ëª¨ë“œ ì„¤ëª…, ë¼ë²¨, í”„ë¦¬ë·° ë³¼ë¥¨ ìˆ«ìž ë“±) */
 .abgm-kw-mode-desc,
 .abgm-minihelp,
 .abgm-mode-subpanel,
@@ -3715,7 +3715,7 @@ textarea.abgm_keywords {
   color: var(--abgm-text-dim) !important;
 }
 
-/* 4) 바텀시트 (Add to...) - 다크모드 대응 */
+/* 4) ë°”í…€ì‹œíŠ¸ (Add to...) - ë‹¤í¬ëª¨ë“œ ëŒ€ì‘ */
 .abgm-addto-sheet {
   background: var(--abgm-bg) !important;
   color: var(--abgm-text) !important;
@@ -3724,3 +3724,210 @@ textarea.abgm_keywords {
 .abgm-addto-subtitle { color: var(--abgm-text-dim) !important; }
 .abgm-addto-item { color: var(--abgm-text) !important; }
 .abgm-addto-item:hover { background: var(--abgm-surface-hover) !important; }
+
+
+/* =================================================================
+   [FIX] ST 테마 침범 방지 - 전역 텍스트 색상 강제
+   Settings Modal 내부 모든 텍스트가 확장 테마를 따르도록 강제
+   ================================================================= */
+
+/* ===== 1) 메인 > BGM List 키워드 입력창 placeholder ===== */
+.autobgm-modal textarea::placeholder,
+.autobgm-modal input[type="text"]::placeholder,
+.autobgm-modal input[type="number"]::placeholder,
+.autobgm-modal input[type="search"]::placeholder,
+.abgm-keywords textarea::placeholder,
+.abgm-entry-textarea::placeholder,
+.abgm-prompt-text::placeholder,
+textarea.abgm_keywords::placeholder,
+.abgm-fs-search::placeholder {
+  color: var(--abgm-text-muted) !important;
+  opacity: 1 !important;
+}
+
+/* ===== 2) 모드 탭 - 프롬프트/옵션 설명 텍스트 ===== */
+.autobgm-modal label,
+.autobgm-modal span,
+.autobgm-modal p,
+.autobgm-modal div,
+.autobgm-modal li,
+.autobgm-modal b,
+.autobgm-modal strong,
+.autobgm-modal small {
+  color: inherit;
+}
+
+/* 모드 패널 전체 텍스트 강제 */
+.abgm-mode-subpanel,
+.abgm-mode-subpanel *,
+#abgm-mode-kw,
+#abgm-mode-kw *,
+#abgm-mode-time,
+#abgm-mode-time *,
+#abgm-mode-sfx,
+#abgm-mode-sfx * {
+  color: var(--abgm-text) !important;
+}
+
+/* 체크박스/라디오 레이블 */
+.autobgm-modal .abgm-check,
+.autobgm-modal .abgm-check span,
+.autobgm-modal label[class*="abgm"],
+.autobgm-modal .abgm-radio-label,
+.autobgm-modal .abgm-time-slot-label {
+  color: var(--abgm-text) !important;
+}
+
+/* 공통 옵션 문구 (e.g., 키워드 모드 활성화, Default 곡 사용 등) */
+#abgm_kw_common_section label,
+#abgm_kw_common_section span,
+.abgm-kw-mode-desc,
+.abgm-kw-mode-desc *,
+.abgm-minihelp,
+.abgm-minihelp * {
+  color: var(--abgm-text) !important;
+}
+
+/* dim/muted 텍스트 (설명, 부제목 등) */
+.abgm-mode-subpanel span[style*="opacity"],
+.abgm-mode-subpanel p[style*="opacity"],
+#abgm_kw_prompt_section span[style*="opacity"],
+#abgm-mode-sfx p[style*="opacity"] {
+  color: var(--abgm-text-dim) !important;
+}
+
+/* ===== 3) 소스 탭 - 프리뷰 볼륨 %, 태그, 옵션 텍스트 ===== */
+/* 프리뷰 볼륨 퍼센트 */
+#abgm_fs_prevvol_val,
+.abgm-fs-prevlabel,
+.abgm-fs-prevval {
+  color: var(--abgm-text-dim) !important;
+}
+
+/* 태그 칩 내부 텍스트 */
+.abgm-fs-tag,
+.abgm-fs-tagpick,
+.abgm-fs-tagpanel span,
+.abgm-fs-tagpanel button {
+  color: var(--abgm-text) !important;
+}
+
+/* 태그 상태별 색상 */
+.abgm-fs-tagpick.is-include {
+  color: var(--abgm-accent) !important;
+}
+
+.abgm-fs-tagpick.is-exclude {
+  color: var(--abgm-danger) !important;
+}
+
+/* ===== 4) 바텀시트 (Add to...) 텍스트 ===== */
+.abgm-addto-overlay,
+.abgm-addto-overlay *,
+.abgm-addto-sheet,
+.abgm-addto-sheet * {
+  color: var(--abgm-text) !important;
+}
+
+.abgm-addto-title {
+  color: var(--abgm-text) !important;
+}
+
+.abgm-addto-subtitle,
+.abgm-addto-divider {
+  color: var(--abgm-text-dim) !important;
+}
+
+.abgm-addto-item,
+.abgm-addto-item span,
+.abgm-addto-item i {
+  color: var(--abgm-text) !important;
+}
+
+/* ===== 5) Settings Modal 전역 기본 색상 ===== */
+.myaoplay-settings-modal,
+.myaoplay-settings-modal * {
+  color: var(--abgm-text);
+}
+
+/* 탭바, 탭 패널 */
+.myaoplay-settings-tabbar,
+.myaoplay-tab-btn,
+.myaoplay-tab-panel,
+.myaoplay-tab-panels {
+  color: var(--abgm-text) !important;
+}
+
+/* 활성 탭 버튼 */
+.myaoplay-tab-btn.is-active {
+  color: var(--abgm-tab-active-color) !important;
+}
+
+/* ===== 6) Free Sources 전체 래퍼 ===== */
+.abgm-fs-wrap,
+.abgm-fs-wrap * {
+  color: var(--abgm-text);
+}
+
+/* 곡 이름, 시간 등 */
+.abgm-fs-name {
+  color: var(--abgm-text) !important;
+}
+
+.abgm-fs-time,
+.abgm-fs-artist,
+.abgm-fs-dur {
+  color: var(--abgm-text-muted) !important;
+}
+
+/* 카테고리 버튼 */
+.abgm-fs-cat {
+  color: var(--abgm-text-dim) !important;
+}
+
+.abgm-fs-cat:hover {
+  color: var(--abgm-text) !important;
+}
+
+.abgm-fs-cat.is-active {
+  color: var(--abgm-accent) !important;
+}
+
+/* 탭 버튼 */
+.abgm-fs-tab {
+  color: var(--abgm-text-dim) !important;
+}
+
+.abgm-fs-tab:hover {
+  color: var(--abgm-text) !important;
+}
+
+.abgm-fs-tab.is-active {
+  color: #ffffff !important;
+}
+
+/* ===== 7) 기타 누락 요소 ===== */
+/* 프리셋 선택 드롭다운 */
+.autobgm-modal select,
+.autobgm-modal select option {
+  color: var(--abgm-text) !important;
+  background: var(--abgm-input-bg) !important;
+}
+
+/* 입력 필드 텍스트 (placeholder 아닌 실제 값) */
+.autobgm-modal input,
+.autobgm-modal textarea {
+  color: var(--abgm-text) !important;
+}
+
+/* 버튼 텍스트 */
+.autobgm-modal button:not(.abgm-fs-tab):not(.abgm-fs-cat):not(.myaoplay-tab-btn) {
+  color: var(--abgm-text);
+}
+
+/* 테이블/리스트 아이템 */
+.autobgm-modal tr,
+.autobgm-modal td,
+.autobgm-modal th {
+  color: var(--abgm-text) !important;
+}
