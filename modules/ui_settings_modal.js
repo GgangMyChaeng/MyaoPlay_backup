@@ -458,7 +458,7 @@ function renderBgmTable(root, settings) {
     const vol100 = Math.round((b.volume ?? 1) * 100);
     const locked = !!b.volLocked;
     tr2.innerHTML = `
-      <td colspan="4">
+      <td colspan="5">
         <div class="abgm-detail-grid">
           <div class="abgm-keywords">
           <small>Keywords</small>
