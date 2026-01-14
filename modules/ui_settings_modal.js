@@ -1442,9 +1442,7 @@ function setupHelpToggles(root) {
   // 버튼ID : 박스ID
   const helps = [
     ["abgm_modal_help_toggle", "abgm_modal_help"],
-    ["abgm_preset_help_toggle", "abgm_preset_help"],
     ["abgm_bgm_help_toggle", "abgm_bgm_help"],
-    ["abgm_bgm_entry_help_toggle", "abgm_bgm_entry_help"],
   ];
   const boxes = helps
     .map(([, boxId]) => root.querySelector(`#${boxId}`))
