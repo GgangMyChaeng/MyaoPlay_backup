@@ -3102,3 +3102,75 @@ textarea.abgm-lyrics-input:focus {
 #abgm_addto_overlay .abgm-addto-item:hover {
   background-color: var(--abgm-surface-hover) !important;
 }
+
+
+/* =================================================================
+   NUCLEAR OVERRIDE: Force Text Color on ALL Form Elements
+   Defeats external font extensions that override colors
+   ================================================================= */
+
+/* Keywords textarea in BGM List */
+#abgm_modal_overlay .abgm-keywords textarea,
+#abgm_modal_overlay .abgm-keywords input,
+#abgm_modal_overlay textarea.abgm_keywords {
+  color: var(--abgm-text) !important;
+}
+
+/* Lyrics & License inputs */
+#abgm_modal_overlay textarea.abgm-lyrics-input,
+#abgm_modal_overlay textarea.abgm-license-input,
+#abgm_modal_overlay .abgm-entry-detail textarea {
+  color: var(--abgm-text) !important;
+}
+
+/* Mode section - prompt textarea & all descriptions */
+#abgm_modal_overlay .abgm-prompt-text,
+#abgm_modal_overlay .abgm-kw-mode-desc,
+#abgm_modal_overlay .abgm-kw-mode-desc *,
+#abgm_modal_overlay .abgm-time-mode-desc,
+#abgm_modal_overlay .abgm-time-mode-desc *,
+#abgm_modal_overlay .abgm-sfx-mode-desc,
+#abgm_modal_overlay .abgm-sfx-mode-desc *,
+#abgm_modal_overlay .abgm-mode-desc,
+#abgm_modal_overlay .abgm-mode-desc *,
+#abgm_modal_overlay .abgm-minihelp,
+#abgm_modal_overlay .abgm-minihelp * {
+  color: var(--abgm-text) !important;
+}
+
+/* Mode section - options labels, spans, etc */
+#abgm_modal_overlay .abgm-options-block label,
+#abgm_modal_overlay .abgm-options-block span,
+#abgm_modal_overlay .abgm-options-block p,
+#abgm_modal_overlay .abgm-option-row label,
+#abgm_modal_overlay .abgm-option-row span {
+  color: var(--abgm-text) !important;
+}
+
+/* Source section - preview volume % label */
+#abgm_modal_overlay .abgm-fs-prevlabel,
+#abgm_modal_overlay .abgm-fs-prevval {
+  color: var(--abgm-text-dim) !important;
+}
+
+/* Source section - tag panel tags text */
+#abgm_modal_overlay .abgm-fs-tagpanel,
+#abgm_modal_overlay .abgm-fs-tag,
+#abgm_modal_overlay .abgm-fs-tagpick {
+  color: var(--abgm-text) !important;
+}
+
+/* Source section - clipboard/mysource copy buttons & preset labels */
+#abgm_modal_overlay .abgm-fs-copybtn,
+#abgm_modal_overlay .abgm-fs-preset-label,
+#abgm_modal_overlay [class*="abgm-fs"] span,
+#abgm_modal_overlay [class*="abgm-fs"] label {
+  color: var(--abgm-text) !important;
+}
+
+/* Ensure dimmed text stays dimmed */
+#abgm_modal_overlay .abgm-fs-artist,
+#abgm_modal_overlay .abgm-fs-dur,
+#abgm_modal_overlay .abgm-fs-time {
+  color: var(--abgm-text-muted) !important;
+}
