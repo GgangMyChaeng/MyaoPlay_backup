@@ -400,10 +400,6 @@ function openAddToBottomSheet(root, settings, item) {
   const itemTags = item.tags || [];
   const tagSection = document.createElement("div");
   tagSection.className = "abgm-addto-tags-section";
-  const tagDivider = document.createElement("div");
-  tagDivider.className = "abgm-addto-divider";
-  tagDivider.textContent = "태그";
-  tagSection.appendChild(tagDivider);
   if (itemTags.length === 0) {
     const empty = document.createElement("div");
     empty.className = "abgm-tags-empty";
