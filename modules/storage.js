@@ -220,6 +220,7 @@ export function addToMySources(settings, item) {
     title: item.title || item.name || "Untitled",
     durationSec: item.durationSec || 0,
     tags: Array.isArray(item.tags) ? [...item.tags] : [],
+    license: item.license || "",
   };
   settings.mySources.push(newItem);
   return newItem;
@@ -238,7 +239,7 @@ export function addUrlToPreset(settings, presetId, item) {
     priority: 0,
     volume: 1.0,
     volLocked: false,
-    license: "",
+    license: item.license || "",
     lyrics: "",
     imageUrl: "",
     imageAssetKey: "",
