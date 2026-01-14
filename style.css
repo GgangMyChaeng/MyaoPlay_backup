@@ -81,8 +81,7 @@
 }
 
 /* ===== Dark Theme ===== */
-[data-abgm-theme="dark"],
-:root:has([data-abgm-theme="dark"]) {
+body[data-abgm-theme="dark"] {
   /* Surface & Background í‹¸/ë¯¼íŠ¸ */
   --abgm-bg: #0a1111;
   --abgm-surface: rgba(255, 255, 255, 0.04);
@@ -3618,47 +3617,105 @@ button.abgm-fs-main {
 .abgm-fs-item {
   border-bottom-color: var(--abgm-border) !important;
 }
-
-
 /* =================================================================
-   [FIX] í…Œë§ˆ ë¯¸ì ìš© ìš”ì†Œ ê°•ì œ ìˆ˜ì • (ìŠ¬ë¼ì´ë”, ìž…ë ¥ì°½, í…ìŠ¤íŠ¸)
+   FINAL BOSS PATCH: THEME ISOLATION & OVERRIDE
+   SillyTavern 테마의 모든 간섭을 무시하고 확장 UI를 강제로 격리합니다.
    ================================================================= */
 
-/* 1) ìŠ¬ë¼ì´ë” (Range) - í…Œë‘ë¦¬ ì œê±° ë° í…Œë§ˆ ìƒ‰ìƒ ê°•ì œ */
-.autobgm-modal input[type="range"],
-.abgm-np-seek,
-.abgm-fs-prevvol,
-.abgm_vol,
-#abgm_globalVol {
+/* --- 1. 전역 격리 컨테이너 --- */
+#abgm_modal_overlay,
+#ABGM_NP_GLASS_OVERLAY,
+.abgm-floating-menu,
+.abgm-confirm-wrap,
+#abgm_addto_overlay {
+  /* ST 테마의 font-family 상속을 끊고 시스템 기본값 사용 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+}
+
+/* --- 2. 모든 텍스트 색상 강제 --- */
+#abgm_modal_overlay, #abgm_modal_overlay *,
+#ABGM_NP_GLASS_OVERLAY, #ABGM_NP_GLASS_OVERLAY *,
+.abgm-floating-menu, .abgm-floating-menu *,
+.abgm-confirm-wrap, .abgm-confirm-wrap *,
+#abgm_addto_overlay, #abgm_addto_overlay * {
+  color: var(--abgm-text) !important;
+}
+
+/* 부가 설명, placeholder 등 흐린 텍스트 */
+#abgm_modal_overlay small, #abgm_modal_overlay .text-muted,
+#abgm_modal_overlay ::placeholder {
+  color: var(--abgm-text-muted) !important;
+  opacity: 1 !important;
+}
+#abgm_modal_overlay .text-dim {
+  color: var(--abgm-text-dim) !important;
+}
+
+/* --- 3. 모든 입력 필드(input, textarea, select) 스타일 강제 --- */
+#abgm_modal_overlay input[type="text"],
+#abgm_modal_overlay input[type="number"],
+#abgm_modal_overlay input[type="search"],
+#abgm_modal_overlay textarea,
+#abgm_modal_overlay select {
+  background-color: var(--abgm-input-bg) !important;
+  border: 1px solid var(--abgm-input-border) !important;
+  color: var(--abgm-text) !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+  box-shadow: none !important;
+}
+#abgm_modal_overlay input:focus,
+#abgm_modal_overlay textarea:focus,
+#abgm_modal_overlay select:focus {
+  border-color: var(--abgm-accent) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--abgm-accent-soft) !important;
+}
+
+/* --- 4. 모든 버튼 스타일 강제 --- */
+#abgm_modal_overlay .menu_button,
+#abgm_modal_overlay button {
+  background-color: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+  color: var(--abgm-text) !important;
+  border-radius: 8px !important;
+  transition: all 0.15s ease !important;
+}
+#abgm_modal_overlay .menu_button:hover,
+#abgm_modal_overlay button:hover {
+  background-color: var(--abgm-surface-hover) !important;
+  border-color: var(--abgm-border-strong) !important;
+}
+
+/* --- 5. 슬라이더(range) 스타일 강제 --- */
+#abgm_modal_overlay input[type="range"],
+#ABGM_NP_GLASS_OVERLAY input[type="range"] {
   -webkit-appearance: none !important;
   appearance: none !important;
   background: transparent !important;
-  border: none !important;        /* ì™¸ê³½ í…Œë‘ë¦¬ ì œê±° */
-  outline: none !important;       /* í¬ì»¤ìŠ¤ ë¼ì¸ ì œê±° */
-  height: 20px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-}
-
-/* ìŠ¬ë¼ì´ë” íŠ¸ëž™ (ì¤„) */
-.autobgm-modal input[type="range"]::-webkit-slider-runnable-track,
-.abgm-np-seek::-webkit-slider-runnable-track,
-.abgm-fs-prevvol::-webkit-slider-runnable-track,
-.abgm_vol::-webkit-slider-runnable-track,
-#abgm_globalVol::-webkit-slider-runnable-track {
-  height: 6px !important;
-  border-radius: 3px !important;
-  background: var(--abgm-border-strong) !important;
   border: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 20px !important;
+  cursor: pointer !important;
 }
-
-/* ìŠ¬ë¼ì´ë” í•¸ë“¤ (ë™ê·¸ë¼ë¯¸) */
-.autobgm-modal input[type="range"]::-webkit-slider-thumb,
-.abgm-np-seek::-webkit-slider-thumb,
-.abgm-fs-prevvol::-webkit-slider-thumb,
-.abgm_vol::-webkit-slider-thumb,
-#abgm_globalVol::-webkit-slider-thumb {
+/* Track */
+#abgm_modal_overlay input[type="range"]::-webkit-slider-runnable-track,
+#ABGM_NP_GLASS_OVERLAY input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px !important;
+  background: var(--abgm-border-strong) !important;
+  border-radius: 3px !important;
+}
+#abgm_modal_overlay input[type="range"]::-moz-range-track,
+#ABGM_NP_GLASS_OVERLAY input[type="range"]::-moz-range-track {
+  height: 6px !important;
+  background: var(--abgm-border-strong) !important;
+  border-radius: 3px !important;
+}
+/* Thumb */
+#abgm_modal_overlay input[type="range"]::-webkit-slider-thumb,
+#ABGM_NP_GLASS_OVERLAY input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none !important;
   appearance: none !important;
   width: 16px !important;
@@ -3667,267 +3724,44 @@ button.abgm-fs-main {
   background: var(--abgm-accent) !important;
   border: 2px solid var(--abgm-bg) !important;
   box-shadow: 0 2px 6px var(--abgm-shadow-strong) !important;
-  margin-top: -5px !important; /* íŠ¸ëž™ ì¤‘ì•™ ì •ë ¬ */
-  transition: transform 0.15s ease !important;
+  margin-top: -5px !important;
+}
+#abgm_modal_overlay input[type="range"]::-moz-range-thumb,
+#ABGM_NP_GLASS_OVERLAY input[type="range"]::-moz-range-thumb {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background: var(--abgm-accent) !important;
+  border: 2px solid var(--abgm-bg) !important;
+  box-shadow: 0 2px 6px var(--abgm-shadow-strong) !important;
+  border: none !important; /* Firefox adds a border */
 }
 
-.autobgm-modal input[type="range"]:hover::-webkit-slider-thumb,
-.abgm-np-seek:hover::-webkit-slider-thumb,
-.abgm-fs-prevvol:hover::-webkit-slider-thumb,
-.abgm_vol:hover::-webkit-slider-thumb,
-#abgm_globalVol:hover::-webkit-slider-thumb {
-  transform: scale(1.15) !important;
+/* --- 6. 특정 영역 배경/테두리 강제 --- */
+/* 모드 탭 설명 박스 */
+#abgm_modal_overlay .abgm-kw-mode-desc,
+#abgm_modal_overlay .abgm-minihelp {
+  background-color: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
 }
-
-/* 2) ìž…ë ¥ì°½ (í‚¤ì›Œë“œ, ë¼ì´ì„¼ìŠ¤, ê°€ì‚¬ ë“±) - ë°°ê²½/ê¸€ìžìƒ‰ ê°•ì œ */
-.autobgm-modal textarea,
-.autobgm-modal input[type="text"],
-.autobgm-modal input[type="number"],
-.abgm-keywords textarea,
-.abgm-entry-textarea,
-.abgm-prompt-text,
-textarea.abgm_keywords {
-  background: var(--abgm-input-bg) !important;
-  color: var(--abgm-text) !important;
-  border: 1px solid var(--abgm-input-border) !important;
-}
-
-.autobgm-modal textarea::placeholder,
-.autobgm-modal input::placeholder {
-  color: var(--abgm-text-muted) !important;
-  opacity: 1 !important;
-}
-
-/* 3) í…ìŠ¤íŠ¸ (ëª¨ë“œ ì„¤ëª…, ë¼ë²¨, í”„ë¦¬ë·° ë³¼ë¥¨ ìˆ«ìž ë“±) */
-.abgm-kw-mode-desc,
-.abgm-minihelp,
-.abgm-mode-subpanel,
-.abgm-check,
-.abgm-time-slot-label,
-#abgm_kw_prompt_section,
-#abgm_rec_prompt_section {
-  color: var(--abgm-text) !important;
-}
-
-#abgm_fs_prevvol_val,
-.abgm-fs-prevlabel,
-.abgm-fs-prevval {
-  color: var(--abgm-text-dim) !important;
-}
-
-/* 4) ë°”í…€ì‹œíŠ¸ (Add to...) - ë‹¤í¬ëª¨ë“œ ëŒ€ì‘ */
-.abgm-addto-sheet {
-  background: var(--abgm-bg) !important;
-  color: var(--abgm-text) !important;
-}
-.abgm-addto-title { color: var(--abgm-text) !important; }
-.abgm-addto-subtitle { color: var(--abgm-text-dim) !important; }
-.abgm-addto-item { color: var(--abgm-text) !important; }
-.abgm-addto-item:hover { background: var(--abgm-surface-hover) !important; }
-
-
-/* =================================================================
-   [FIX] ST 테마 침범 방지 - 전역 텍스트 색상 강제
-   Settings Modal 내부 모든 텍스트가 확장 테마를 따르도록 강제
-   ================================================================= */
-
-/* ===== 1) 메인 > BGM List 키워드 입력창 placeholder ===== */
-.autobgm-modal textarea::placeholder,
-.autobgm-modal input[type="text"]::placeholder,
-.autobgm-modal input[type="number"]::placeholder,
-.autobgm-modal input[type="search"]::placeholder,
-.abgm-keywords textarea::placeholder,
-.abgm-entry-textarea::placeholder,
-.abgm-prompt-text::placeholder,
-textarea.abgm_keywords::placeholder,
-.abgm-fs-search::placeholder {
-  color: var(--abgm-text-muted) !important;
-  opacity: 1 !important;
-}
-
-/* ===== 2) 모드 탭 - 프롬프트/옵션 설명 텍스트 ===== */
-.autobgm-modal label,
-.autobgm-modal span,
-.autobgm-modal p,
-.autobgm-modal div,
-.autobgm-modal li,
-.autobgm-modal b,
-.autobgm-modal strong,
-.autobgm-modal small {
-  color: inherit;
-}
-
-/* 모드 패널 전체 텍스트 강제 */
-.abgm-mode-subpanel,
-.abgm-mode-subpanel *,
-#abgm-mode-kw,
-#abgm-mode-kw *,
-#abgm-mode-time,
-#abgm-mode-time *,
-#abgm-mode-sfx,
-#abgm-mode-sfx * {
-  color: var(--abgm-text) !important;
-}
-
-/* 체크박스/라디오 레이블 */
-.autobgm-modal .abgm-check,
-.autobgm-modal .abgm-check span,
-.autobgm-modal label[class*="abgm"],
-.autobgm-modal .abgm-radio-label,
-.autobgm-modal .abgm-time-slot-label {
-  color: var(--abgm-text) !important;
-}
-
-/* 공통 옵션 문구 (e.g., 키워드 모드 활성화, Default 곡 사용 등) */
-#abgm_kw_common_section label,
-#abgm_kw_common_section span,
-.abgm-kw-mode-desc,
-.abgm-kw-mode-desc *,
-.abgm-minihelp,
-.abgm-minihelp * {
-  color: var(--abgm-text) !important;
-}
-
-/* dim/muted 텍스트 (설명, 부제목 등) */
-.abgm-mode-subpanel span[style*="opacity"],
-.abgm-mode-subpanel p[style*="opacity"],
-#abgm_kw_prompt_section span[style*="opacity"],
-#abgm-mode-sfx p[style*="opacity"] {
-  color: var(--abgm-text-dim) !important;
-}
-
-/* ===== 3) 소스 탭 - 프리뷰 볼륨 %, 태그, 옵션 텍스트 ===== */
-/* 프리뷰 볼륨 퍼센트 */
-#abgm_fs_prevvol_val,
-.abgm-fs-prevlabel,
-.abgm-fs-prevval {
-  color: var(--abgm-text-dim) !important;
-}
-
-/* 태그 칩 내부 텍스트 */
-.abgm-fs-tag,
-.abgm-fs-tagpick,
-.abgm-fs-tagpanel span,
-.abgm-fs-tagpanel button {
-  color: var(--abgm-text) !important;
-}
-
-/* 태그 상태별 색상 */
-.abgm-fs-tagpick.is-include {
+#abgm_modal_overlay .abgm-kw-mode-desc code {
+  background-color: var(--abgm-accent-soft) !important;
   color: var(--abgm-accent) !important;
 }
 
-.abgm-fs-tagpick.is-exclude {
-  color: var(--abgm-danger) !important;
+/* 소스 탭 리스트 */
+#abgm_modal_overlay .abgm-fs-list {
+  background-color: var(--abgm-surface) !important;
+  border: 1px solid var(--abgm-border) !important;
+}
+#abgm_modal_overlay .abgm-fs-item {
+  border-bottom-color: var(--abgm-border) !important;
 }
 
-/* ===== 4) 바텀시트 (Add to...) 텍스트 ===== */
-.abgm-addto-overlay,
-.abgm-addto-overlay *,
-.abgm-addto-sheet,
-.abgm-addto-sheet * {
-  color: var(--abgm-text) !important;
+/* 바텀시트 */
+#abgm_addto_overlay .abgm-addto-sheet {
+  background-color: var(--abgm-bg) !important;
 }
-
-.abgm-addto-title {
-  color: var(--abgm-text) !important;
-}
-
-.abgm-addto-subtitle,
-.abgm-addto-divider {
-  color: var(--abgm-text-dim) !important;
-}
-
-.abgm-addto-item,
-.abgm-addto-item span,
-.abgm-addto-item i {
-  color: var(--abgm-text) !important;
-}
-
-/* ===== 5) Settings Modal 전역 기본 색상 ===== */
-.myaoplay-settings-modal,
-.myaoplay-settings-modal * {
-  color: var(--abgm-text);
-}
-
-/* 탭바, 탭 패널 */
-.myaoplay-settings-tabbar,
-.myaoplay-tab-btn,
-.myaoplay-tab-panel,
-.myaoplay-tab-panels {
-  color: var(--abgm-text) !important;
-}
-
-/* 활성 탭 버튼 */
-.myaoplay-tab-btn.is-active {
-  color: var(--abgm-tab-active-color) !important;
-}
-
-/* ===== 6) Free Sources 전체 래퍼 ===== */
-.abgm-fs-wrap,
-.abgm-fs-wrap * {
-  color: var(--abgm-text);
-}
-
-/* 곡 이름, 시간 등 */
-.abgm-fs-name {
-  color: var(--abgm-text) !important;
-}
-
-.abgm-fs-time,
-.abgm-fs-artist,
-.abgm-fs-dur {
-  color: var(--abgm-text-muted) !important;
-}
-
-/* 카테고리 버튼 */
-.abgm-fs-cat {
-  color: var(--abgm-text-dim) !important;
-}
-
-.abgm-fs-cat:hover {
-  color: var(--abgm-text) !important;
-}
-
-.abgm-fs-cat.is-active {
-  color: var(--abgm-accent) !important;
-}
-
-/* 탭 버튼 */
-.abgm-fs-tab {
-  color: var(--abgm-text-dim) !important;
-}
-
-.abgm-fs-tab:hover {
-  color: var(--abgm-text) !important;
-}
-
-.abgm-fs-tab.is-active {
-  color: #ffffff !important;
-}
-
-/* ===== 7) 기타 누락 요소 ===== */
-/* 프리셋 선택 드롭다운 */
-.autobgm-modal select,
-.autobgm-modal select option {
-  color: var(--abgm-text) !important;
-  background: var(--abgm-input-bg) !important;
-}
-
-/* 입력 필드 텍스트 (placeholder 아닌 실제 값) */
-.autobgm-modal input,
-.autobgm-modal textarea {
-  color: var(--abgm-text) !important;
-}
-
-/* 버튼 텍스트 */
-.autobgm-modal button:not(.abgm-fs-tab):not(.abgm-fs-cat):not(.myaoplay-tab-btn) {
-  color: var(--abgm-text);
-}
-
-/* 테이블/리스트 아이템 */
-.autobgm-modal tr,
-.autobgm-modal td,
-.autobgm-modal th {
-  color: var(--abgm-text) !important;
+#abgm_addto_overlay .abgm-addto-item:hover {
+  background-color: var(--abgm-surface-hover) !important;
 }
