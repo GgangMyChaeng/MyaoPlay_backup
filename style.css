@@ -82,7 +82,7 @@
 
 /* ===== Dark Theme ===== */
 body[data-abgm-theme="dark"] {
-  /* Surface & Background í‹¸/ë¯¼íŠ¸ */
+  /* Surface & Background - Teal/Mint */
   --abgm-bg: #0a1111;
   --abgm-surface: rgba(255, 255, 255, 0.04);
   --abgm-surface2: rgba(255, 255, 255, 0.06);
@@ -97,77 +97,21 @@ body[data-abgm-theme="dark"] {
   --abgm-text-dim: rgba(255, 255, 255, 0.6);
   --abgm-text-muted: rgba(255, 255, 255, 0.4);
   
-  /* Accent - í‹¸/ë¯¼íŠ¸ */
+  /* Accent - Teal/Mint */
   --abgm-accent: #5eead4;
   --abgm-accent-soft: rgba(94, 234, 212, 0.15);
   --abgm-accent-hover: #72edd9;
 
-  /* Accent - í•‘í¬/ë¡œì¦ˆ
-*   --abgm-accent: #f472b6;
-*   --abgm-accent-soft: rgba(244, 114, 182, 0.15);
-*   --abgm-accent-hover: #f687bf;
-*/
-
-  /* Accent - ì½”ëž„/í”¼ì¹˜
-*   --abgm-accent: #fb923c;
-*   --abgm-accent-soft: rgba(251, 146, 60, 0.15);
-*   --abgm-accent-hover: #fba458;
-*/
-
-  /* Accent - ì—ë©”ëž„ë“œ/ê·¸ë¦°
-*   --abgm-accent: #34d399;
-*   --abgm-accent-soft: rgba(52, 211, 153, 0.15);
-*   --abgm-accent-hover: #4eeaa8;
-*/
-
-  /* Accent - ë¼ë²¤ë”
-*   --abgm-accent: #c4b5fd;
-*   --abgm-accent-soft: rgba(196, 181, 253, 0.15);
-*   --abgm-accent-hover: #d0c4fd;
-*/
-  
   /* Danger */
   --abgm-danger: #ff6b6b;
   --abgm-danger-soft: rgba(255, 107, 107, 0.15);
   
-  /* Chips & Tags í‹¸/ë¯¼íŠ¸ */
+  /* Chips & Tags - Teal/Mint */
   --abgm-chip-bg: rgba(255, 255, 255, 0.04);
   --abgm-chip-border: rgba(255, 255, 255, 0.10);
   --abgm-chip-active-bg: rgba(94, 234, 212, 0.2);
   --abgm-chip-active-border: #5eead4;
   --abgm-tab-active-color: #5eead4;
-
-  /* Chips & Tags í•‘í¬/ë¡œì¦ˆ
-*  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
-*  --abgm-chip-border: rgba(255, 255, 255, 0.10);
-*  --abgm-chip-active-bg: rgba(244, 114, 182, 0.2);
-*  --abgm-chip-active-border: #f472b6;
-*  --abgm-tab-active-color: #f472b6;
-*/
-
-  /* Chips & Tags ì½”ëž„/í”¼ì¹˜
-*  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
-*  --abgm-chip-border: rgba(255, 255, 255, 0.10);
-*  --abgm-chip-active-bg: rgba(251, 146, 60, 0.2);
-*  --abgm-chip-active-border: #fb923c;
-*  --abgm-tab-active-color: #fb923c;
-*/
-
-  /* Chips & Tags ì—ë©”ëž„ë“œ/ê·¸ë¦°
-*  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
-*  --abgm-chip-border: rgba(255, 255, 255, 0.10);
-*  --abgm-chip-active-bg: rgba(52, 211, 153, 0.2);
-*  --abgm-chip-active-border: #34d399;
-*  --abgm-tab-active-color: #34d399;
-*/
-
-  /* Chips & Tags ë¼ë²¤ë”
-*  --abgm-chip-bg: rgba(255, 255, 255, 0.04);
-*  --abgm-chip-border: rgba(255, 255, 255, 0.10);
-*  --abgm-chip-active-bg: rgba(196, 181, 253, 0.2);
-*  --abgm-chip-active-border: #c4b5fd;
-*  --abgm-tab-active-color: #c4b5fd;
-*/
   
   /* Input */
   --abgm-input-bg: rgba(0, 0, 0, 0.25);
@@ -184,7 +128,7 @@ body[data-abgm-theme="dark"] {
   /* Overlay */
   --abgm-overlay: rgba(0, 0, 0, 0.55);
   
-  /* Modal specific í‹¸/ë¯¼íŠ¸ */
+  /* Modal specific - Teal/Mint */
   --abgm-modal-bg: rgba(20, 20, 20, 0.96);
   --abgm-modal-header-bg: rgba(30, 30, 30, 0.98);
   --abgm-tabbar-bg: rgba(20, 20, 20, 0.96);
@@ -201,7 +145,7 @@ body[data-abgm-theme="dark"] {
   --abgm-floating-btn-border: rgba(255, 255, 255, 0.08);
   --abgm-floating-btn-hover: rgba(255, 255, 255, 0.06);
   
-  /* Debug toast í‹¸/ë¯¼íŠ¸ */
+  /* Debug toast - Teal/Mint */
   --abgm-toast-bg: rgba(30, 39, 40, 0.95);
   --abgm-toast-border: rgba(255, 255, 255, 0.12);
   --abgm-toast-text: rgba(255, 255, 255, 0.88);
@@ -1521,7 +1465,7 @@ body.autobgm-modal-open {
   resize: vertical;
 }
 
-/* í”„ë¡¬í”„íŠ¸ textarea ê¸€ìžìƒ‰ ê°•ì œ (ë¼ì´íŠ¸ í…Œë§ˆ ëŒ€ì‘) */
+/* Prompt textarea color (light theme support) */
 .abgm-textarea,
 #abgm_kw_prompt_content {
   color: var(--abgm-text) !important;
@@ -1937,7 +1881,7 @@ body.autobgm-modal-open {
   align-items: center;
   justify-content: center;
   line-height: 1;
-  aspect-ratio: 1 / 1; /* í˜¹ì‹œ ì°Œê·¸ëŸ¬ì§ ë°©ì§€ */
+  aspect-ratio: 1 / 1; /* Prevent squishing */
   border-radius: 10px;
   background: var(--abgm-surface);
   border: 1px solid var(--abgm-border);
@@ -1988,7 +1932,7 @@ body.autobgm-modal-open {
    NP Glass (Now Playing Glass UI)
    ================================================================= */
 
-/* NP Glass Overlay - ì¤‘ì•™ ì •ë ¬ (fitModalToHost ë¬´ì‹œ) */
+/* NP Glass Overlay - center alignment (ignore fitModalToHost) */
 .autobgm-overlay[data-abgm-page] {
   display: flex !important;
   align-items: center !important;
@@ -1997,7 +1941,7 @@ body.autobgm-modal-open {
 }
 
 .autobgm-overlay[data-abgm-page] .autobgm-modal.abgm-np-glass {
-  /* fitModalToHostì˜ ê°•ì œ ìŠ¤íƒ€ì¼ ë¬´ë ¥í™” */
+  /* Override fitModalToHost forced styles */
   width: min(340px, 72vw) !important;
   height: auto !important;
   max-height: 85vh !important;
@@ -2015,7 +1959,7 @@ body.autobgm-modal-open {
   box-shadow: 0 18px 60px var(--abgm-shadow-strong);
   overflow: hidden;
   color: var(--abgm-text);
-  /* ê¸°ë³¸ê°’ (important ë²„ì „ì´ ë®ì–´ì”€) */
+  /* Base values (no important - overridden above) */
   width: min(340px, 72vw);
   height: auto;
   max-height: 85vh;
@@ -2030,7 +1974,7 @@ body.autobgm-modal-open {
   color: var(--abgm-text);
 }
 
-/* NP Home - flex ë ˆì´ì•„ì›ƒ (ìƒ/í•˜ ë¶„ë¦¬) */
+/* NP Home - flex layout (top/bottom split) */
 .abgm-np-glass-inner > div[data-abgm-page="np"] {
   color: var(--abgm-text);
   padding: 20px 18px 16px;
@@ -2041,14 +1985,14 @@ body.autobgm-modal-open {
   height: 100%;
 }
 
-/* NP ìƒë‹¨ ê·¸ë£¹ (artë§Œ) */
+/* NP top group (art area) */
 .abgm-np-top-group {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* NP í•˜ë‹¨ ê·¸ë£¹ (title~bottom) - ì•„ëž˜ë¡œ ë°€ë¦¼ */
+/* NP bottom group (title~controls) - push to bottom */
 .abgm-np-bottom-group {
   display: flex;
   flex-direction: column;
@@ -2081,7 +2025,7 @@ body.autobgm-modal-open {
   box-shadow: 0 10px 30px var(--abgm-shadow-strong);
 }
 
-/* NP Art - ê°€ì‚¬/ë¼ì´ì„¼ìŠ¤ì¼ ë•Œ ì‚¬ê°í˜•ìœ¼ë¡œ ë³€í™˜ */
+/* NP Art - rectangle view for lyrics/license */
 .abgm-np-art.is-text-view {
   border-radius: 14px;
   width: min(280px, 85%);
@@ -2091,7 +2035,7 @@ body.autobgm-modal-open {
   box-shadow: none;
 }
 
-/* ê°€ì‚¬/ë¼ì´ì„¼ìŠ¤ í…ìŠ¤íŠ¸ ì»¨í…Œì´ë„ˆ */
+/* Lyrics/License text content container */
 .abgm-np-art-text {
   width: 100%;
   height: 100%;
@@ -2581,8 +2525,8 @@ body.autobgm-modal-open {
   margin-bottom: 12px;
 }
 
-/* ===== Add-to ë°”í…€ì‹œíŠ¸ ===== */
-/* â–¼ options ë²„íŠ¼(ì •ì‚¬ê° 1:1) */
+/* ===== Add-to Bottom Sheet ===== */
+/* Options button (square 1:1) */
 .abgm-fs-addmenu-btn{
   width: 32px;
   height: 32px;
@@ -2594,7 +2538,7 @@ body.autobgm-modal-open {
   justify-content: center;
   line-height: 1;
   border-radius: 10px;
-  font-size: 12px; /* ë„ˆë¬´ ì»¤ë³´ì´ë©´ 10ìœ¼ë¡œ */
+  font-size: 12px; /* If too big, use 10px */
 }
 
 .abgm-addto-overlay {
@@ -2697,7 +2641,7 @@ body.autobgm-modal-open {
   color: var(--abgm-text-muted, rgba(0,0,0,0.4));
 }
 
-/* íƒœê·¸ ì„¹ì…˜ (ì˜µì…˜ ë°”í…€ì‹œíŠ¸ ë‚´) */
+/* Tag section (optional bottom sheet area) */
 .abgm-addto-tags-section {
   padding: 0 20px 8px;
 }
@@ -2723,14 +2667,14 @@ body.autobgm-modal-open {
   font-weight: 500;
 }
 
-/* ëª¨ë°”ì¼ì—ì„œ ë°”í…€ì‹œíŠ¸ ë„ˆë¬´ ìœ„ë¡œ ì˜¬ë¼ì˜¤ëŠ” ê±° ë°©ì§€ */
+/* Mobile: prevent bottom sheet from being too tall */
 @media (max-width: 520px){
   .abgm-addto-sheet{
-    max-height: 50vh; /* ì·¨í–¥ê» ë†’ì´ ì¤„ì´ê¸° */
+    max-height: 50vh; /* Reduce height on mobile */
   }
 }
 
-/* ë‹¤í¬ í…Œë§ˆ ëŒ€ì‘ */
+/* Dark theme support */
 [data-abgm-theme="dark"] .abgm-addto-sheet {
   background: var(--abgm-bg, #1a1a2e);
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
@@ -2885,125 +2829,7 @@ body.autobgm-modal-open {
 
 
 /* =================================================================
-   Theme Isolation & Slider Enhancement (ver.01)
-   - SillyTavern í…Œë§ˆ ê°„ì„­ ë°©ì§€
-   - ìŠ¬ë¼ì´ë” ì»¤ìŠ¤í…€ ìŠ¤íƒ€ì¼ë§
-   - ë°”ì¸ë“œ/ë¼ì´ì„¼ìŠ¤ ë“± ëˆ„ë½ ìš”ì†Œ ë³´ì™„
-   ================================================================= */
-
-
-/* =================================================================
-   SLIDER CUSTOM STYLING - ì „ì²´ ìŠ¬ë¼ì´ë” í†µí•©
-   ================================================================= */
-
-/* ê¸°ë³¸ ìŠ¬ë¼ì´ë” ìŠ¤íƒ€ì¼ (ëª¨ë“  range input) */
-.autobgm-modal input[type="range"],
-.abgm-np-seek,
-.abgm-fs-prevvol,
-.abgm_vol,
-#abgm_globalVol {
-  -webkit-appearance: none !important;
-  appearance: none !important;
-  background: transparent !important;
-  cursor: pointer !important;
-  height: 20px !important;
-}
-
-/* ìŠ¬ë¼ì´ë” íŠ¸ëž™ - Webkit (Chrome, Safari, Edge) */
-.autobgm-modal input[type="range"]::-webkit-slider-runnable-track,
-.abgm-np-seek::-webkit-slider-runnable-track,
-.abgm-fs-prevvol::-webkit-slider-runnable-track,
-.abgm_vol::-webkit-slider-runnable-track,
-#abgm_globalVol::-webkit-slider-runnable-track {
-  height: 6px !important;
-  border-radius: 3px !important;
-  background: var(--abgm-border-strong) !important;
-  border: none !important;
-}
-
-/* ìŠ¬ë¼ì´ë” ì¸(í•¸ë“¤) - Webkit */
-.autobgm-modal input[type="range"]::-webkit-slider-thumb,
-.abgm-np-seek::-webkit-slider-thumb,
-.abgm-fs-prevvol::-webkit-slider-thumb,
-.abgm_vol::-webkit-slider-thumb,
-#abgm_globalVol::-webkit-slider-thumb {
-  -webkit-appearance: none !important;
-  appearance: none !important;
-  width: 16px !important;
-  height: 16px !important;
-  border-radius: 50% !important;
-  background: var(--abgm-accent) !important;
-  border: 2px solid var(--abgm-bg) !important;
-  box-shadow: 0 2px 6px var(--abgm-shadow-strong) !important;
-  margin-top: -5px !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
-}
-
-.autobgm-modal input[type="range"]:hover::-webkit-slider-thumb,
-.abgm-np-seek:hover::-webkit-slider-thumb,
-.abgm-fs-prevvol:hover::-webkit-slider-thumb,
-.abgm_vol:hover::-webkit-slider-thumb,
-#abgm_globalVol:hover::-webkit-slider-thumb {
-  transform: scale(1.15) !important;
-  box-shadow: 0 3px 10px var(--abgm-shadow-strong) !important;
-}
-
-.autobgm-modal input[type="range"]:active::-webkit-slider-thumb,
-.abgm-np-seek:active::-webkit-slider-thumb,
-.abgm-fs-prevvol:active::-webkit-slider-thumb,
-.abgm_vol:active::-webkit-slider-thumb,
-#abgm_globalVol:active::-webkit-slider-thumb {
-  transform: scale(1.05) !important;
-}
-
-/* ìŠ¬ë¼ì´ë” íŠ¸ëž™ - Firefox */
-.autobgm-modal input[type="range"]::-moz-range-track,
-.abgm-np-seek::-moz-range-track,
-.abgm-fs-prevvol::-moz-range-track,
-.abgm_vol::-moz-range-track,
-#abgm_globalVol::-moz-range-track {
-  height: 6px !important;
-  border-radius: 3px !important;
-  background: var(--abgm-border-strong) !important;
-  border: none !important;
-}
-
-/* ìŠ¬ë¼ì´ë” ì¸(í•¸ë“¤) - Firefox */
-.autobgm-modal input[type="range"]::-moz-range-thumb,
-.abgm-np-seek::-moz-range-thumb,
-.abgm-fs-prevvol::-moz-range-thumb,
-.abgm_vol::-moz-range-thumb,
-#abgm_globalVol::-moz-range-thumb {
-  width: 16px !important;
-  height: 16px !important;
-  border-radius: 50% !important;
-  background: var(--abgm-accent) !important;
-  border: 2px solid var(--abgm-bg) !important;
-  box-shadow: 0 2px 6px var(--abgm-shadow-strong) !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
-}
-
-/* ë¹„í™œì„±í™”ëœ ìŠ¬ë¼ì´ë” */
-.autobgm-modal input[type="range"]:disabled,
-.abgm-np-seek:disabled,
-.abgm-fs-prevvol:disabled,
-.abgm_vol:disabled,
-#abgm_globalVol:disabled {
-  opacity: 0.4 !important;
-  cursor: not-allowed !important;
-}
-
-.autobgm-modal input[type="range"]:disabled::-webkit-slider-thumb,
-.abgm-np-seek:disabled::-webkit-slider-thumb,
-.abgm-fs-prevvol:disabled::-webkit-slider-thumb,
-.abgm_vol:disabled::-webkit-slider-thumb,
-#abgm_globalVol:disabled::-webkit-slider-thumb {
-  background: var(--abgm-text-muted) !important;
-}
-
-
-/* =================================================================
-   BGM LIST - í‚¤ì›Œë“œ ìž…ë ¥ì¹¸ í…ìŠ¤íŠ¸ ê°•í™”
+   BGM LIST - Table Input Theme
    ================================================================= */
 
 .abgm-keywords textarea.abgm_keywords,
@@ -3031,7 +2857,7 @@ body.autobgm-modal-open {
 
 
 /* =================================================================
-   LICENSE & LYRICS ìž…ë ¥ì°½ - í…Œë§ˆ ê°•í™”
+   LICENSE & LYRICS Input Windows - Theme
    ================================================================= */
 
 #abgm_np_license_text,
@@ -3054,7 +2880,7 @@ textarea.abgm-lyrics-input:focus {
   outline: none !important;
 }
 
-/* Entry Detail ë‹¤ì´ì–¼ë¡œê·¸ ë‚´ë¶€ textarea */
+/* Entry Detail dialog textarea */
 .abgm-entry-detail textarea {
   background: var(--abgm-input-bg) !important;
   border: 1px solid var(--abgm-input-border) !important;
@@ -3066,7 +2892,7 @@ textarea.abgm-lyrics-input:focus {
   outline: none !important;
 }
 
-/* Entry Detail ë¼ë²¨/í…ìŠ¤íŠ¸ */
+/* Entry Detail labels/text */
 .abgm-entry-detail label,
 .abgm-entry-detail span,
 .abgm-entry-detail p {
@@ -3079,7 +2905,7 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   MODE ì„¤ëª… ë¸”ë¡ (Keyword, Time, SFX) - í…Œë§ˆ ê°•í™”
+   MODE Settings Block (Keyword, Time, SFX) - Theme
    ================================================================= */
 
 .abgm-kw-mode-desc,
@@ -3128,511 +2954,22 @@ textarea.abgm-lyrics-input:focus {
 
 
 /* =================================================================
-   BIND ì˜¤ë²„ë ˆì´ - ìºë¦­í„° ì„ íƒ UI ê°•í™”
-   ================================================================= */
-
-#abgm_bind_overlay {
-  background: var(--abgm-overlay) !important;
-}
-
-#abgm_bind_overlay > div {
-  background: var(--abgm-modal-bg) !important;
-  border: 1px solid var(--abgm-border-strong) !important;
-  border-radius: 14px !important;
-  color: var(--abgm-text) !important;
-  box-shadow: 0 10px 40px var(--abgm-shadow-strong) !important;
-}
-
-/* ë°”ì¸ë“œ í—¤ë” */
-#abgm_bind_overlay > div > div:first-child {
-  border-bottom: 1px solid var(--abgm-border) !important;
-  padding: 12px 14px !important;
-  background: var(--abgm-modal-header-bg) !important;
-}
-
-#abgm_bind_title {
-  color: var(--abgm-text) !important;
-  font-weight: 700 !important;
-}
-
-#abgm_bind_sub {
-  color: var(--abgm-text-dim) !important;
-  font-size: 13px !important;
-}
-
-/* ë°”ì¸ë“œ ìºë¦­í„° ì´ë¦„ ë²„íŠ¼ */
-#abgm_bind_overlay .menu_button,
-.abgm-bind-char-btn {
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-  color: var(--abgm-text) !important;
-  border-radius: 10px !important;
-  padding: 10px 14px !important;
-  transition: all 0.15s ease !important;
-}
-
-#abgm_bind_overlay .menu_button:hover,
-.abgm-bind-char-btn:hover {
-  background: var(--abgm-surface-hover) !important;
-  border-color: var(--abgm-border-strong) !important;
-}
-
-/* ì„ íƒëœ ìºë¦­í„° */
-#abgm_bind_overlay .menu_button.is-selected,
-.abgm-bind-char-btn.is-selected {
-  background: var(--abgm-accent-soft) !important;
-  border-color: var(--abgm-accent) !important;
-  color: var(--abgm-accent) !important;
-}
-
-/* Unbind ë²„íŠ¼ */
-#abgm_bind_overlay .abgm-unbind-btn,
-.abgm-unbind-btn {
-  background: var(--abgm-danger-soft) !important;
-  border: 1px solid var(--abgm-danger) !important;
-  color: var(--abgm-danger) !important;
-  border-radius: 10px !important;
-}
-
-#abgm_bind_overlay .abgm-unbind-btn:hover,
-.abgm-unbind-btn:hover {
-  background: var(--abgm-danger) !important;
-  color: #ffffff !important;
-}
-
-/* ë°”ì¸ë“œ ë‹«ê¸° ë²„íŠ¼ */
-#abgm_bind_close {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  min-height: 38px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 12px !important;
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-  color: var(--abgm-text) !important;
-  transition: all 0.15s ease !important;
-}
-
-#abgm_bind_close:hover {
-  background: var(--abgm-surface-hover) !important;
-  color: var(--abgm-text) !important;
-}
-
-
-/* =================================================================
-   SillyTavern í…Œë§ˆ ê°„ì„­ ì™„ì „ ì°¨ë‹¨
-   ================================================================= */
-
-/* ëª¨ë‹¬ ì „ì²´ ìš”ì†Œ ê²©ë¦¬ */
-.autobgm-modal,
-.autobgm-modal *,
-.autobgm-overlay,
-.autobgm-overlay *,
-#abgm_bind_overlay,
-#abgm_bind_overlay *,
-.abgm-floating-menu,
-.abgm-floating-menu *,
-.abgm-confirm-wrap,
-.abgm-confirm-wrap *,
-.abgm-np-glass,
-.abgm-np-glass *,
-.abgm-addto-overlay,
-.abgm-addto-overlay * {
-  font-family: inherit !important;
-}
-
-/* í…ìŠ¤íŠ¸ ìƒ‰ìƒ ê°•ì œ */
-.autobgm-modal,
-.autobgm-modal p,
-.autobgm-modal span,
-.autobgm-modal label,
-.autobgm-modal div {
-  color: var(--abgm-text) !important;
-}
-
-.autobgm-modal small,
-.autobgm-modal .text-dim {
-  color: var(--abgm-text-dim) !important;
-}
-
-.autobgm-modal b,
-.autobgm-modal strong {
-  color: var(--abgm-text) !important;
-}
-
-/* ìž…ë ¥ í•„ë“œ ì™„ì „ ê²©ë¦¬ */
-.autobgm-modal input[type="text"],
-.autobgm-modal input[type="number"],
-.autobgm-modal input[type="url"],
-.autobgm-modal input[type="search"],
-.autobgm-modal textarea,
-.autobgm-modal select {
-  background: var(--abgm-input-bg) !important;
-  border: 1px solid var(--abgm-input-border) !important;
-  color: var(--abgm-text) !important;
-  border-radius: 10px !important;
-  padding: 8px 10px !important;
-}
-
-.autobgm-modal input:focus,
-.autobgm-modal textarea:focus,
-.autobgm-modal select:focus {
-  border-color: var(--abgm-accent) !important;
-  outline: none !important;
-  box-shadow: 0 0 0 2px var(--abgm-accent-soft) !important;
-}
-
-/* ì²´í¬ë°•ìŠ¤/ë¼ë””ì˜¤ */
-.autobgm-modal input[type="checkbox"],
-.autobgm-modal input[type="radio"] {
-  accent-color: var(--abgm-accent) !important;
-}
-
-/* ë²„íŠ¼ ê²©ë¦¬ */
-.autobgm-modal button,
-.autobgm-modal .menu_button {
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-  color: var(--abgm-text) !important;
-  border-radius: 10px !important;
-  transition: all 0.15s ease !important;
-}
-
-.autobgm-modal button:hover,
-.autobgm-modal .menu_button:hover {
-  background: var(--abgm-surface-hover) !important;
-}
-
-/* ì•¡ì„¼íŠ¸ ë²„íŠ¼ (ì €ìž¥, í™•ì¸ ë“±) */
-.autobgm-modal button.is-primary,
-.autobgm-modal .menu_button.is-primary,
-.autobgm-modal button.abgm-primary,
-.autobgm-modal .menu_button.abgm-primary {
-  background: var(--abgm-accent) !important;
-  border-color: var(--abgm-accent) !important;
-  color: #ffffff !important;
-}
-
-.autobgm-modal button.is-primary:hover,
-.autobgm-modal .menu_button.is-primary:hover,
-.autobgm-modal button.abgm-primary:hover,
-.autobgm-modal .menu_button.abgm-primary:hover {
-  background: var(--abgm-accent-hover) !important;
-}
-
-/* ìœ„í—˜ ë²„íŠ¼ (ì‚­ì œ ë“±) */
-.autobgm-modal button.is-danger,
-.autobgm-modal .menu_button.is-danger,
-.autobgm-modal .abgm_del {
-  background: var(--abgm-danger-soft) !important;
-  border-color: var(--abgm-danger) !important;
-  color: var(--abgm-danger) !important;
-}
-
-.autobgm-modal button.is-danger:hover,
-.autobgm-modal .menu_button.is-danger:hover,
-.autobgm-modal .abgm_del:hover {
-  background: var(--abgm-danger) !important;
-  color: #ffffff !important;
-}
-
-
-/* =================================================================
-   Select ë“œë¡­ë‹¤ìš´ ì™„ì „ ê²©ë¦¬
-   ================================================================= */
-
-.autobgm-modal select,
-.abgm-select,
-.abgm-pl-select,
-.abgm-pickpreset {
-  background: var(--abgm-input-bg) !important;
-  border: 1px solid var(--abgm-input-border) !important;
-  color: var(--abgm-text) !important;
-  border-radius: 10px !important;
-  padding: 8px 12px !important;
-  cursor: pointer !important;
-}
-
-.autobgm-modal select:focus,
-.abgm-select:focus,
-.abgm-pl-select:focus,
-.abgm-pickpreset:focus {
-  border-color: var(--abgm-accent) !important;
-  outline: none !important;
-}
-
-/* select option - ì¼ë¶€ ë¸Œë¼ìš°ì € ì§€ì› */
-.autobgm-modal select option,
-.abgm-select option,
-.abgm-pl-select option,
-.abgm-pickpreset option {
-  background: var(--abgm-bg) !important;
-  color: var(--abgm-text) !important;
-}
-
-
-/* =================================================================
-   NP í™ˆ ìŠ¬ë¼ì´ë” ì¶”ê°€ ìŠ¤íƒ€ì¼
-   ================================================================= */
-
-.abgm-np-seek-wrap {
-  width: min(360px, 86%) !important;
-  margin: 2px auto 0 !important;
-}
-
-.abgm-np-seek {
-  width: 100% !important;
-  height: 20px !important;
-}
-
-/* NP íƒ€ìž„ í‘œì‹œ */
-.abgm-np-time {
-  color: var(--abgm-text-dim) !important;
-}
-
-.abgm-np-time span {
-  color: var(--abgm-text-dim) !important;
-}
-
-
-/* =================================================================
-   Free Sources í”„ë¦¬ë·° ë³¼ë¥¨ ìŠ¬ë¼ì´ë”
-   ================================================================= */
-
-.abgm-fs-prevrow {
-  color: var(--abgm-text) !important;
-}
-
-.abgm-fs-prevlabel {
-  color: var(--abgm-text-dim) !important;
-}
-
-.abgm-fs-prevval {
-  color: var(--abgm-text-dim) !important;
-}
-
-.abgm-fs-prevvol {
-  width: min(360px, 100%) !important;
-}
-
-
-/* =================================================================
-   ê¸€ë¡œë²Œ ë³¼ë¥¨ ì˜ì—­
-   ================================================================= */
-
-.abgm-vol-row {
-  color: var(--abgm-text) !important;
-}
-
-#abgm_globalVolText {
-  color: var(--abgm-text-dim) !important;
-}
-
-#abgm_globalVol {
-  width: 180px !important;
-}
-
-
-/* =================================================================
-   Entry Detail ë‹¤ì´ì–¼ë¡œê·¸ (ì´ë¯¸ì§€/ë¼ì´ì„¼ìŠ¤/ê°€ì‚¬)
-   ================================================================= */
-
-.abgm-entry-detail {
-  background: var(--abgm-modal-bg) !important;
-  border: 1px solid var(--abgm-border-strong) !important;
-  border-radius: 14px !important;
-  color: var(--abgm-text) !important;
-}
-
-.abgm-entry-detail .abgm-entry-tabs {
-  border-bottom: 1px solid var(--abgm-border) !important;
-  background: var(--abgm-modal-header-bg) !important;
-}
-
-.abgm-entry-tabs .menu_button {
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-  color: var(--abgm-text) !important;
-}
-
-.abgm-entry-tabs .menu_button.is-active {
-  background: var(--abgm-accent-soft) !important;
-  border-color: var(--abgm-accent) !important;
-  color: var(--abgm-accent) !important;
-}
-
-/* ì´ë¯¸ì§€ í”„ë¦¬ë·° ì˜ì—­ */
-.abgm-image-preview {
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-  border-radius: 12px !important;
-}
-
-.abgm-image-placeholder {
-  color: var(--abgm-text-muted) !important;
-}
-
-/* ì´ë¯¸ì§€ URL ìž…ë ¥ */
-.abgm-image-url {
-  background: var(--abgm-input-bg) !important;
-  border: 1px solid var(--abgm-input-border) !important;
-  color: var(--abgm-text) !important;
-}
-
-.abgm-image-url:focus {
-  border-color: var(--abgm-accent) !important;
-}
-
-/* ì´ë¯¸ì§€ ë²„íŠ¼ë“¤ */
-.abgm-image-url-apply,
-.abgm-image-upload,
-.abgm-image-delete {
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-  color: var(--abgm-text) !important;
-}
-
-.abgm-image-url-apply:hover,
-.abgm-image-upload:hover {
-  background: var(--abgm-surface-hover) !important;
-}
-
-.abgm-image-delete:hover {
-  background: var(--abgm-danger-soft) !important;
-  border-color: var(--abgm-danger) !important;
-  color: var(--abgm-danger) !important;
-}
-
-/* ì´ë¯¸ì§€ ìƒíƒœ í…ìŠ¤íŠ¸ */
-.abgm-image-status {
-  color: var(--abgm-text-dim) !important;
-}
-
-
-/* =================================================================
-   PATCH: ìµœì¢… ìˆ˜ì • (íƒ­ ë²„íŠ¼ ì§ì‚¬ê°í˜• + fs-main í…Œë‘ë¦¬ ì œê±°)
-   ================================================================= */
-
-
-/* =================================================================
-   Settings Modal ë©”ì¸ íƒ­ ë²„íŠ¼ - ì§ì‚¬ê°í˜• ìœ ì§€ + í…Œë‘ë¦¬ ì—†ìŒ
-   ================================================================= */
-
-.myaoplay-tab-btn,
-.autobgm-modal .myaoplay-tab-btn {
-  border-radius: 0 !important;
-  border: none !important;
-  border-bottom: 2px solid transparent !important;
-}
-
-.myaoplay-tab-btn.is-active,
-.autobgm-modal .myaoplay-tab-btn.is-active {
-  border-bottom-color: var(--abgm-tab-active-color) !important;
-}
-
-
-/* =================================================================
-   Free Sources ê³¡ ë©”ì¸ ë²„íŠ¼ - í…Œë‘ë¦¬ ì—†ìŒ ìœ ì§€
-   ================================================================= */
-
-.abgm-fs-main,
-.autobgm-modal .abgm-fs-main,
-button.abgm-fs-main {
-  border: none !important;
-  border: 0 !important;
-  background: transparent !important;
-  border-radius: 0 !important;
-}
-
-
-/* =================================================================
-   ì„¤ëª… ë¸”ë¡ (ðŸ’¡ ë§¤í¬ë¡œ ì•ˆë‚´, ðŸ“ ì‚¬ìš©ë²•, SFX íŠ¹ì§• ë“±) - í…Œë§ˆí™”
-   ================================================================= */
-
-/* ê³µí†µ ì„¤ëª… ë¸”ë¡ - ì¸ë¼ì¸ ìŠ¤íƒ€ì¼ ë®ì–´ì“°ê¸° */
-.abgm-kw-mode-desc,
-.abgm-minihelp,
-#abgm_kw_prompt_section > div[style*="background"],
-#abgm_kw_recommend_section > div[style*="background"],
-#abgm-mode-time div[style*="background:rgba"],
-#abgm-mode-sfx div[style*="background:rgba"],
-.abgm-mode-subpanel div[style*="background:rgba(0,0,0"] {
-  background: var(--abgm-surface2) !important;
-  border: 1px solid var(--abgm-border) !important;
-  color: var(--abgm-text) !important;
-}
-
-/* ì„¤ëª… ë¸”ë¡ ë‚´ë¶€ í…ìŠ¤íŠ¸ */
-.abgm-kw-mode-desc b,
-.abgm-kw-mode-desc code,
-.abgm-minihelp b,
-#abgm_kw_prompt_section b,
-#abgm-mode-time b,
-#abgm-mode-sfx b,
-.abgm-mode-subpanel div[style*="background"] b {
-  color: var(--abgm-text) !important;
-}
-
-/* code íƒœê·¸ ìŠ¤íƒ€ì¼ */
-.abgm-kw-mode-desc code,
-.abgm-minihelp code,
-#abgm_kw_prompt_section code,
-.abgm-mode-subpanel code {
-  background: var(--abgm-accent-soft) !important;
-  color: var(--abgm-accent) !important;
-  padding: 2px 6px !important;
-  border-radius: 4px !important;
-}
-
-/* ë¦¬ìŠ¤íŠ¸ í•­ëª© */
-.abgm-kw-mode-desc li,
-.abgm-minihelp li,
-#abgm_kw_prompt_section li,
-#abgm-mode-time li,
-#abgm-mode-sfx li,
-.abgm-mode-subpanel li {
-  color: var(--abgm-text) !important;
-}
-
-/* ì„¤ëª… ë¸”ë¡ ë‚´ span (íˆ¬ëª…ë„ ìžˆëŠ” ê²ƒë“¤) */
-#abgm_kw_prompt_section span[style*="opacity"],
-#abgm-mode-sfx p[style*="opacity"],
-.abgm-mode-subpanel p[style*="opacity"] {
-  color: var(--abgm-text-dim) !important;
-}
-
-
-/* =================================================================
-   ì†ŒìŠ¤ ê³¡ ë¦¬ìŠ¤íŠ¸ ì˜ì—­ - í…Œë‘ë¦¬ í…Œë§ˆ ê°•í™”
-   ================================================================= */
-
-.abgm-fs-list {
-  background: var(--abgm-surface) !important;
-  border: 1px solid var(--abgm-border) !important;
-}
-
-.abgm-fs-item {
-  border-bottom-color: var(--abgm-border) !important;
-}
-/* =================================================================
    FINAL BOSS PATCH: THEME ISOLATION & OVERRIDE
-   SillyTavern 테마의 모든 간섭을 무시하고 확장 UI를 강제로 격리합니다.
+   Isolates the extension UI to ignore all interference from the SillyTavern theme.
    ================================================================= */
 
-/* --- 1. 전역 격리 컨테이너 --- */
-#abgm_modal_overlay,
+/* --- 1. Global Isolation Container --- */
+/* #abgm_modal_overlay,
 #ABGM_NP_GLASS_OVERLAY,
 .abgm-floating-menu,
 .abgm-confirm-wrap,
 #abgm_addto_overlay {
-  /* ST 테마의 font-family 상속을 끊고 시스템 기본값 사용 */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
-}
+*/  /* Break font-family inheritance from ST theme and use system default */
+/*  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+* }
+*/ 
 
-/* --- 2. 모든 텍스트 색상 강제 --- */
+/* --- 2. Force All Text Colors --- */
 #abgm_modal_overlay, #abgm_modal_overlay *,
 #ABGM_NP_GLASS_OVERLAY, #ABGM_NP_GLASS_OVERLAY *,
 .abgm-floating-menu, .abgm-floating-menu *,
@@ -3641,7 +2978,7 @@ button.abgm-fs-main {
   color: var(--abgm-text) !important;
 }
 
-/* 부가 설명, placeholder 등 흐린 텍스트 */
+/* Dim text for additional info, placeholders, etc. */
 #abgm_modal_overlay small, #abgm_modal_overlay .text-muted,
 #abgm_modal_overlay ::placeholder {
   color: var(--abgm-text-muted) !important;
@@ -3651,7 +2988,7 @@ button.abgm-fs-main {
   color: var(--abgm-text-dim) !important;
 }
 
-/* --- 3. 모든 입력 필드(input, textarea, select) 스타일 강제 --- */
+/* --- 3. Force All Input Field (input, textarea, select) Styles --- */
 #abgm_modal_overlay input[type="text"],
 #abgm_modal_overlay input[type="number"],
 #abgm_modal_overlay input[type="search"],
@@ -3672,7 +3009,7 @@ button.abgm-fs-main {
   box-shadow: 0 0 0 2px var(--abgm-accent-soft) !important;
 }
 
-/* --- 4. 모든 버튼 스타일 강제 --- */
+/* --- 4. Force All Button Styles --- */
 #abgm_modal_overlay .menu_button,
 #abgm_modal_overlay button {
   background-color: var(--abgm-surface) !important;
@@ -3687,7 +3024,7 @@ button.abgm-fs-main {
   border-color: var(--abgm-border-strong) !important;
 }
 
-/* --- 5. 슬라이더(range) 스타일 강제 --- */
+/* --- 5. Force Slider (range) Styles --- */
 #abgm_modal_overlay input[type="range"],
 #ABGM_NP_GLASS_OVERLAY input[type="range"] {
   -webkit-appearance: none !important;
@@ -3737,8 +3074,8 @@ button.abgm-fs-main {
   border: none !important; /* Firefox adds a border */
 }
 
-/* --- 6. 특정 영역 배경/테두리 강제 --- */
-/* 모드 탭 설명 박스 */
+/* --- 6. Force Background/Border for Specific Areas --- */
+/* Mode tab description box */
 #abgm_modal_overlay .abgm-kw-mode-desc,
 #abgm_modal_overlay .abgm-minihelp {
   background-color: var(--abgm-surface) !important;
@@ -3749,7 +3086,7 @@ button.abgm-fs-main {
   color: var(--abgm-accent) !important;
 }
 
-/* 소스 탭 리스트 */
+/* Source tab list */
 #abgm_modal_overlay .abgm-fs-list {
   background-color: var(--abgm-surface) !important;
   border: 1px solid var(--abgm-border) !important;
@@ -3758,7 +3095,7 @@ button.abgm-fs-main {
   border-bottom-color: var(--abgm-border) !important;
 }
 
-/* 바텀시트 */
+/* Bottom sheet */
 #abgm_addto_overlay .abgm-addto-sheet {
   background-color: var(--abgm-bg) !important;
 }
