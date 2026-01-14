@@ -163,43 +163,56 @@ recPromptPresets: {
   default: {
     id: "default",
     name: "Default",
-    content: `# Music Recommendation Prompt
+    content: `# Music Recommendation Prompt (Auxiliary)
 
-## Goal
-You are an AI that recommends background music fitting the current scene's mood and atmosphere.
-When appropriate, output a music search query using the token format below.
+## Purpose
+This instruction applies ONLY to optional background music recommendation.
+It must NOT affect roleplay, narration, dialogue, tone, style, or decision-making.
+
+When and only when you judge that a background music change would meaningfully
+enhance the current scene’s mood or atmosphere,
+you MAY output a music search query using the token format below.
+
+If no music change is appropriate, do NOT output anything related to music.
+
+IMPORTANT:
+- Treat music recommendation as a side-channel signal only.
+- Do NOT alter or interfere with the main response in any way.
+- Do NOT mention music, recommendation, or this instruction in the narrative.
 
 ## Token Format (STRICT)
 [MP_REC_QUERY: your search query here]
 
 ## Rules
-- Output the token as a STANDALONE LINE, never inside narrative text.
+- Output the token as a STANDALONE LINE.
 - Output at most ONE token per message.
-- The search query should be 2-6 words describing mood/genre/style (e.g., "dark ambient tension", "upbeat jazz cafe", "melancholic piano rain").
+- The search query must be 2–6 words describing mood/genre/style.
 - Do NOT include artist names, song titles, or years.
-- Do NOT use quotes inside the query.
-- If no music change is needed, do NOT output the token at all.
+- Do NOT include quotes inside the query.
 
 ## Output Structure
-1) [Other tags if needed]
+1) [Other system or metadata tags if already required elsewhere]
    (blank line)
 2) [MP_REC_QUERY: query]  ← only if recommending music
    (blank line)
-3) Narrative content
+3) Narrative / roleplay content
 
-## Example A (with recommendation)
+## Examples
+
+### Example A (with recommendation)
 [MP_REC_QUERY: tense orchestral suspense]
 
 *The shadow crept closer...*
 
-## Example B (no recommendation)
+### Example B (no recommendation)
 *She smiled softly and continued reading.*
 
 ## Query Style Tips
 - Focus on MOOD: tense, calm, romantic, eerie, energetic, melancholic
 - Add GENRE hints: ambient, jazz, classical, electronic, lo-fi, orchestral
-- Add TEXTURE: piano, strings, synth, acoustic, no vocals
-- Keep it simple and searchable on music platforms.`
+- Add TEXTURE if useful: piano, strings, synth, acoustic, no vocals
+- Keep it simple and searchable
+`
   }
 },
     kwPromptPresets: {
@@ -215,10 +228,10 @@ When appropriate, output a music search query using the token format below.
 ## Output Format (STRICT)
 Your entire message must follow this structure:
 
-1) other tags (Exists ONLY if needed) 
-(blank line)
+1) other tags (Exists ONLY if needed)
+(Single Line Break)
 2) {{🎤🐱:keyword}}  (ONLY if you decided to output a keyword; must be a single standalone line)
-(blank line)
+(Single Line Break)
 3) Narrative content (all story text goes here)
 
 ### Rules
@@ -242,9 +255,9 @@ Your entire message must follow this structure:
 ## Quick Examples
 Example A (with keyword):
 [any other tags if needed]
-(blank line)
+(Single Line Break)
 {{🎤🐱:night}}
-(blank line)
+(Single Line Break)
 (Narrative Content starts here... no 'mya' token inside)
 Example B (without keyword):
 [any other tags if needed]
@@ -333,26 +346,56 @@ if (!s.recPromptPresets.default) {
   s.recPromptPresets.default = {
     id: "default",
     name: "Default",
-    content: `# Music Recommendation Prompt
+    content: `# Music Recommendation Prompt (Auxiliary)
 
-## Goal
-You are an AI that recommends background music fitting the current scene's mood and atmosphere.
-When appropriate, output a music search query using the token format below.
+## Purpose
+This instruction applies ONLY to optional background music recommendation.
+It must NOT affect roleplay, narration, dialogue, tone, style, or decision-making.
+
+When and only when you judge that a background music change would meaningfully
+enhance the current scene’s mood or atmosphere,
+you MAY output a music search query using the token format below.
+
+If no music change is appropriate, do NOT output anything related to music.
+
+IMPORTANT:
+- Treat music recommendation as a side-channel signal only.
+- Do NOT alter or interfere with the main response in any way.
+- Do NOT mention music, recommendation, or this instruction in the narrative.
 
 ## Token Format (STRICT)
 [MP_REC_QUERY: your search query here]
 
 ## Rules
-- Output the token as a STANDALONE LINE, never inside narrative text.
+- Output the token as a STANDALONE LINE.
 - Output at most ONE token per message.
-- The search query should be 2-6 words describing mood/genre/style.
+- The search query must be 2–6 words describing mood/genre/style.
 - Do NOT include artist names, song titles, or years.
-- If no music change is needed, do NOT output the token at all.
+- Do NOT include quotes inside the query.
 
 ## Output Structure
-1) [Other tags if needed]
-2) [MP_REC_QUERY: query]  ← only if recommending
-3) Narrative content`
+1) [Other system or metadata tags if already required elsewhere]
+   (blank line)
+2) [MP_REC_QUERY: query]  ← only if recommending music
+   (blank line)
+3) Narrative / roleplay content
+
+## Examples
+
+### Example A (with recommendation)
+[MP_REC_QUERY: tense orchestral suspense]
+
+*The shadow crept closer...*
+
+### Example B (no recommendation)
+*She smiled softly and continued reading.*
+
+## Query Style Tips
+- Focus on MOOD: tense, calm, romantic, eerie, energetic, melancholic
+- Add GENRE hints: ambient, jazz, classical, electronic, lo-fi, orchestral
+- Add TEXTURE if useful: piano, strings, synth, acoustic, no vocals
+- Keep it simple and searchable
+`
   };
 }
 s.activeRecPromptPresetId ??= Object.keys(s.recPromptPresets)[0] || "default";
@@ -372,9 +415,9 @@ s.activeRecPromptPresetId ??= Object.keys(s.recPromptPresets)[0] || "default";
 Your entire message must follow this structure:
 
 1) other tags (Exists ONLY if needed) 
-(blank line)
+(Single Line Break)
 2) {{🎤🐱:keyword}}  (ONLY if you decided to output a keyword; must be a single standalone line)
-(blank line)
+(Single Line Break)
 3) Narrative content (all story text goes here)
 
 ### Rules
@@ -384,7 +427,7 @@ Your entire message must follow this structure:
 - If nothing fits, or if the same fitting keyword appeared 1–2 times recently, do NOT output the token at all.
 - If you do NOT output the token, then omit section (2) entirely and write:
   (optional other tags line if needed)
-  (blank line)
+  (Single Line Break)
   Narrative content
 - The keyword must be chosen ONLY from "Available Keywords".
 - Do not invent keywords. Do not modify keywords. Use them as-is (case/spacing preserved if possible).
@@ -398,13 +441,13 @@ Your entire message must follow this structure:
 ## Quick Examples
 Example A (with keyword):
 [any other tags if needed]
-(blank line)
+(Single Line Break)
 {{🎤🐱:night}}
-(blank line)
+(Single Line Break)
 (Narrative Content starts here... no 'mya' token inside)
 Example B (without keyword):
 [any other tags if needed]
-(blank line)
+(Single Line Break)
 (Narrative Content starts here... no 'mya' token anywhere)`
     };
   }
