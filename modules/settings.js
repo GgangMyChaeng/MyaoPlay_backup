@@ -340,13 +340,12 @@ Example B (without keyword):
   s.recommendMode.cooldownSec ??= 60;
   s.recommendMode.stopOnEnter ??= true;
   s.recommendMode.spotify ??= {};
-  // > 추천 프롬프트 프리셋 보정
-s.recPromptPresets ??= {};
-if (!s.recPromptPresets.default) {
-  s.recPromptPresets.default = {
-    id: "default",
-    name: "Default",
-    content: `# Music Recommendation Prompt (Auxiliary)
+  // ===== 프롬프트 프리셋(kw/rec) 번들 갱신 정책 =====
+  // - Default는 업데이트 때 자동 갱신
+  // - 유저 프리셋은 절대 삭제/초기화 안 함
+  // - 유저가 Default를 수정해놨으면 백업을 만들어주고 덮어씀
+  const PROMPT_PRESET_BUNDLE_REV = 1; // 기본 프롬프트 바꿀 때마다 숫자 올려야 함
+  const DEFAULT_REC_PROMPT_CONTENT = `# Music Recommendation Prompt (Auxiliary)
 
 ## Purpose
 This instruction applies ONLY to optional background music recommendation.
@@ -395,17 +394,9 @@ She smiled softly and continued reading.
 - Add GENRE hints: ambient, jazz, classical, electronic, lo-fi, orchestral
 - Add TEXTURE if useful: piano, strings, synth, acoustic, no vocals
 - Keep it simple and searchable
-`
-  };
-}
-s.activeRecPromptPresetId ??= Object.keys(s.recPromptPresets)[0] || "default";
-  // > 프롬프트 프리셋 보정
-  s.kwPromptPresets ??= {};
-  if (!s.kwPromptPresets.default) {
-    s.kwPromptPresets.default = {
-      id: "default",
-      name: "Default",
-      content: `# Mya Prompt for AI
+`;
+
+  const DEFAULT_KW_PROMPT_CONTENT = `# Mya Prompt for AI
 
 ## Goal
 - If an appropriate keyword exists, output EXACTLY ONE token in the format {{🎤🐱:keyword}}
@@ -413,8 +404,7 @@ s.activeRecPromptPresetId ??= Object.keys(s.recPromptPresets)[0] || "default";
 
 ## Output Format (STRICT)
 Your entire message must follow this structure:
-
-1) other tags (Exists ONLY if needed) 
+1) other tags (Exists ONLY if needed)
 (Single Line Break)
 2) {{🎤🐱:keyword}}  (ONLY if you decided to output a keyword; must be a single standalone line)
 (Single Line Break)
@@ -448,9 +438,46 @@ Example A (with keyword):
 Example B (without keyword):
 [any other tags if needed]
 (Single Line Break)
-(Narrative Content starts here... no 'mya' token anywhere)`
-    };
+(Narrative Content starts here... no 'mya' token anywhere)`;
+  function _backupPreset(presets, label, content) {
+    const id = `backup_${uid()}`;
+    presets[id] = { id, name: label, content };
+    return id;
   }
+  s.promptPresetBundleRev ??= 0;
+  const needRefreshDefaultPrompts = s.promptPresetBundleRev < PROMPT_PRESET_BUNDLE_REV;
+  // ===== 추천 프롬프트 프리셋 보정 + Default 갱신 =====
+  s.recPromptPresets ??= {};
+  if (!s.recPromptPresets.default) {
+    s.recPromptPresets.default = { id: "default", name: "Default", content: DEFAULT_REC_PROMPT_CONTENT };
+  } else if (needRefreshDefaultPrompts) {
+    const cur = String(s.recPromptPresets.default.content ?? "");
+    if (cur && cur !== DEFAULT_REC_PROMPT_CONTENT) {
+      _backupPreset(s.recPromptPresets, `Default (backup)`, cur);
+    }
+    s.recPromptPresets.default.content = DEFAULT_REC_PROMPT_CONTENT;
+  }
+  s.activeRecPromptPresetId ??= (s.recPromptPresets.default ? "default" : (Object.keys(s.recPromptPresets)[0] || "default"));
+  if (!s.recPromptPresets[s.activeRecPromptPresetId]) {
+    s.activeRecPromptPresetId = s.recPromptPresets.default ? "default" : (Object.keys(s.recPromptPresets)[0] || "default");
+  }
+  // ===== 키워드 프롬프트 프리셋 보정 + Default 갱신 =====
+  s.kwPromptPresets ??= {};
+  if (!s.kwPromptPresets.default) {
+    s.kwPromptPresets.default = { id: "default", name: "Default", content: DEFAULT_KW_PROMPT_CONTENT };
+  } else if (needRefreshDefaultPrompts) {
+    const cur = String(s.kwPromptPresets.default.content ?? "");
+    if (cur && cur !== DEFAULT_KW_PROMPT_CONTENT) {
+      _backupPreset(s.kwPromptPresets, `Default (backup)`, cur);
+    }
+    s.kwPromptPresets.default.content = DEFAULT_KW_PROMPT_CONTENT;
+  }
+  s.activeKwPromptPresetId ??= (s.kwPromptPresets.default ? "default" : (Object.keys(s.kwPromptPresets)[0] || "default"));
+  if (!s.kwPromptPresets[s.activeKwPromptPresetId]) {
+    s.activeKwPromptPresetId = s.kwPromptPresets.default ? "default" : (Object.keys(s.kwPromptPresets)[0] || "default");
+  }
+  // 마지막에 리비전 기록 (다음 부팅부터 “갱신 필요 없음” 상태)
+  s.promptPresetBundleRev = PROMPT_PRESET_BUNDLE_REV;
   // > Time Mode 보정
   s.timeMode ??= {};
   s.timeMode.enabled ??= false;
@@ -476,10 +503,6 @@ Example B (without keyword):
   s.sfxMode ??= {};
   s.sfxMode.overlay ??= true;
   s.sfxMode.skipInOtherModes ??= true;
-  s.activeKwPromptPresetId ??= "default";
-  if (!s.kwPromptPresets[s.activeKwPromptPresetId]) {
-    s.activeKwPromptPresetId = Object.keys(s.kwPromptPresets)[0] || "default";
-  }
   // > 프리셋/곡 스키마 보정 + 구버전 변환
   Object.values(s.presets).forEach((p) => {
     p.defaultBgmKey ??= "";
@@ -549,10 +572,8 @@ export async function migrateLegacyDataUrlsToIDB(settings) {
 export function getAllKeywordsFromActivePreset(settings) {
   const preset = settings?.presets?.[settings?.activePresetId];
   if (!preset?.bgms?.length) return [];
-  
   const seen = new Set();
   const keywords = [];
-  
   for (const bgm of preset.bgms) {
     const kwStr = String(bgm.keywords ?? "");
     const kws = kwStr.split(/[,\n]+/).map(k => k.trim()).filter(Boolean);
@@ -564,7 +585,6 @@ export function getAllKeywordsFromActivePreset(settings) {
       }
     }
   }
-  
   return keywords;
 }
 
