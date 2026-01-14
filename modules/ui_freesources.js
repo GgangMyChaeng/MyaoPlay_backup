@@ -388,6 +388,7 @@ function openAddToBottomSheet(root, settings, item) {
   const header = document.createElement("div");
   header.className = "abgm-addto-header";
   header.innerHTML = `
+    <div class="abgm-addto-handle" aria-hidden="true"></div>
     <div class="abgm-addto-title">${escapeHtml(item.title)}</div>
     <div class="abgm-addto-subtitle">추가할 위치 선택</div>
   `;
@@ -479,6 +480,71 @@ function openAddToBottomSheet(root, settings, item) {
   requestAnimationFrame(() => {
     overlay.classList.add("is-open");
   });
+
+    // ===== 헤더 풀다운 닫기 (pull-down to close) =====
+  (() => {
+    const headerEl = header;
+    const sheetEl = sheet;
+    const overlayEl = overlay;
+    let dragging = false;
+    let startY = 0;
+    let dy = 0;
+    const getY = (e) => (e.touches?.[0]?.clientY ?? e.clientY ?? 0);
+    const cleanupDoc = () => {
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onEnd);
+      document.removeEventListener("touchmove", onMove);
+      document.removeEventListener("touchend", onEnd);
+      document.removeEventListener("touchcancel", onEnd);
+    };
+    const onStart = (e) => {
+      // 마우스는 좌클만
+      if (e.type === "mousedown" && e.button !== 0) return;
+      dragging = true;
+      startY = getY(e);
+      dy = 0;
+      // 드래그 중엔 transition 끔
+      sheetEl.style.transition = "none";
+      // 문서 레벨로 move/end 추적
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onEnd);
+      document.addEventListener("touchmove", onMove, { passive: false });
+      document.addEventListener("touchend", onEnd);
+      document.addEventListener("touchcancel", onEnd);
+    };
+    const onMove = (e) => {
+      if (!dragging) return;
+      if (e.cancelable) e.preventDefault();
+      const y = getY(e);
+      dy = Math.max(0, y - startY);
+      // 시트 내려가는 만큼 따라오게
+      sheetEl.style.transform = `translateY(${dy}px)`;
+      // 배경도 같이 옅어지게(0.5 -> 0)
+      const alpha = Math.max(0, Math.min(0.5, 0.5 * (1 - dy / 260)));
+      overlayEl.style.background = `rgba(0,0,0,${alpha})`;
+    };
+    const onEnd = () => {
+      if (!dragging) return;
+      dragging = false;
+      cleanupDoc();
+      const rect = sheetEl.getBoundingClientRect();
+      const closePx = Math.min(160, Math.max(90, rect.height * 0.22)); // 대충 22% or 90~160px
+      if (dy > closePx) {
+        // 드래그로 닫기: 현재 위치(dy)에서 아래로 쭉 내려가며 닫힘
+        closeAddToBottomSheet({ dragging: true });
+        return;
+      }
+      // 스냅백 (원위치)
+      sheetEl.style.transition = "";
+      sheetEl.style.transform = "";
+      overlayEl.style.background = "";
+    };
+    // 헤더는 스크롤 제스처 대신 드래그 제스처로
+    headerEl.style.touchAction = "none";
+    headerEl.addEventListener("touchstart", onStart, { passive: false });
+    headerEl.addEventListener("mousedown", onStart);
+  })();
+
   
   // 이벤트
   overlay.addEventListener("click", (e) => {
@@ -530,11 +596,24 @@ function openAddToBottomSheet(root, settings, item) {
   window.addEventListener("keydown", onEsc);
 }
 
-function closeAddToBottomSheet() {
+function closeAddToBottomSheet(opts = {}) {
   const overlay = document.getElementById("abgm_addto_overlay");
   if (!overlay) return;
+  // 드래그로 닫을 때: 현재 위치에서 아래로 더 내려가며 닫히게
+  if (opts?.dragging) {
+    try {
+      const sheet = overlay.querySelector(".abgm-addto-sheet");
+      const h = sheet?.getBoundingClientRect?.().height || 0;
+      if (sheet && h) {
+        sheet.style.transition = "transform 0.22s cubic-bezier(0.4, 0, 0.2, 1)";
+        sheet.style.transform = `translateY(${h}px)`;
+      }
+      overlay.style.transition = "background 0.22s ease";
+      overlay.style.background = "rgba(0,0,0,0)";
+    } catch {}
+  }
   overlay.classList.remove("is-open");
-  setTimeout(() => overlay.remove(), 200);
+  setTimeout(() => overlay.remove(), opts?.dragging ? 240 : 200);
 }
 
 
