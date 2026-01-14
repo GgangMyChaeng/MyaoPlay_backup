@@ -2613,7 +2613,7 @@ body.autobgm-modal-open {
 .abgm-addto-item:active {
   background: var(--abgm-accent-soft, rgba(74,183,216,0.15));
 }
-.abgm-addto-item i {
+#abgm_addto_overlay .abgm-addto-item i {
   width: 20px;
   text-align: center;
   color: var(--abgm-accent, #4ab7d8) !important;
@@ -2651,7 +2651,7 @@ body.autobgm-modal-open {
   gap: 6px;
   padding: 4px 0 8px;
 }
-.abgm-tag-chip {
+#abgm_addto_overlay .abgm-tag-chip {
   display: inline-block;
   padding: 5px 10px;
   background: var(--abgm-accent-soft);
