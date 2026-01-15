@@ -497,28 +497,28 @@
       "title": "Sparkling 3",
       "src": "https://www.dropbox.com/scl/fi/sul9xycr31z6bwflcltfp/Sparkling-3.wav?rlkey=ygtn25au91jq6df72nwf00ie8&st=viii5igb&raw=1",
       "durationSec": 117,
-      "tags": ["lyric", "male", "178", "High-Energy J-Rock"]
+      "tags": ["lyric", "male", "178", "J-Rock", "High-Energy"]
     },
     {
       "id": "Sparkling-4",
       "title": "Sparkling 4",
       "src": "https://www.dropbox.com/scl/fi/m7ae6ctiy92vwbi9dxyzh/Sparkling-4.wav?rlkey=wd69az12dgbjl3jtdnc658zd6&st=i9fbkcga&raw=1",
       "durationSec": 114,
-      "tags": ["lyric", "male", "178", "High-Energy J-Rock"]
+      "tags": ["lyric", "male", "178", "J-Rock", "High-Energy"]
     },
     {
       "id": "Sparkling-5",
       "title": "Sparkling 5",
       "src": "https://www.dropbox.com/scl/fi/e1iwis62hhb2ylpuyhdss/Sparkling-5.wav?rlkey=s2u19f7quhlmxn4izc0835r9z&st=fn8rjw37&raw=1",
       "durationSec": 111,
-      "tags": ["lyric", "female", "178", "High-Energy J-Rock"]
+      "tags": ["lyric", "female", "178", "J-Rock", "High-Energy"]
     },
     {
       "id": "Sparkling-6",
       "title": "Sparkling 6",
       "src": "https://www.dropbox.com/scl/fi/ut3fbi7aqfk6psvd4l04i/Sparkling-6.wav?rlkey=cljk54quvz9nj5as376vikktn&st=la0mlo7s&raw=1",
       "durationSec": 107,
-      "tags": ["lyric", "female", "178", "High-Energy J-Rock"]
+      "tags": ["lyric", "female", "178", "J-Rock", "High-Energy"]
     },
     {
   "id": "Coins-Cheers-1",
@@ -603,6 +603,55 @@
   "src": "https://www.dropbox.com/scl/fi/ca8zvi964evlq1wnv64ux/The-Silent-Bluff-4.wav?rlkey=7oeid0rgcygqcz2k7hrncuq8i&st=j7qjtz04&raw=1",
   "durationSec": 288,
   "tags": ["No lyric", "Adagio", "Dark Fantasy Ambient", "Chamber Strings"]
+},
+    {
+  "id": "Scale-Skin-1",
+  "title": "Scale Skin 1",
+  "src": "https://www.dropbox.com/scl/fi/m3zxbv8tb9zjcs4qg5f36/Scale-Skin-1.wav?rlkey=ky5wy59gdvm2p3ciwzm44li5w&st=p4iz6syz&raw=1",
+  "durationSec": 167,
+  "tags": ["Lyric", "Duet", "140", "Epic Orchestral Pop", "Trap Beat"]
+},
+    {
+  "id": "Scale-Skin-2",
+  "title": "Scale Skin 2",
+  "src": "https://www.dropbox.com/scl/fi/fisv34175fy62gwvwxtee/Scale-Skin-2.wav?rlkey=b437bjw0p5pjheoc3557l0xwc&st=clwdluw2&raw=1",
+  "durationSec": 198,
+  "tags": ["Lyric", "Duet", "140", "Epic Orchestral Pop", "Trap Beat"]
+},
+    {
+  "id": "Liquid-Memory-1",
+  "title": "Liquid Memory 1",
+  "src": "https://www.dropbox.com/scl/fi/zrsxt075cjzvkf8v99hcg/Liquid-Memory-1.wav?rlkey=qegdbgwdihk812mm4yjettnsj&st=wdgu6ct1&raw=1",
+  "durationSec": 139,
+  "tags": ["No lyric", "94", "Chillwave", "Glitch Hop"]
+},
+    {
+  "id": "Liquid-Memory-2",
+  "title": "Liquid Memory 2",
+  "src": "https://www.dropbox.com/scl/fi/tvsx8ezbf3pttjw344s1z/Liquid-Memory-2.wav?rlkey=y9m2xz1gfxtqwluw930hh2utb&st=g7w1lt7a&raw=1",
+  "durationSec": 155,
+  "tags": ["No lyric", "94", "Chillwave", "Glitch Hop"]
+},
+    {
+  "id": "Stardust-Paradox-1",
+  "title": "Stardust Paradox 1",
+  "src": "https://www.dropbox.com/scl/fi/qy8vixn5p01gu520lw9wy/Stardust-Paradox-1.wav?rlkey=yqqqervoqwwgq54v4jlxxvwhg&st=y0qfjn8w&raw=1",
+  "durationSec": 152,
+  "tags": ["Lyric", "Female", "88", "Lo-fi Hip Hop", "Dream Pop"]
+},
+    {
+  "id": "Stardust-Paradox-2",
+  "title": "Stardust Paradox 2",
+  "src": "https://www.dropbox.com/scl/fi/frzdaal6vgk13xznldl8p/Stardust-Paradox-2.wav?rlkey=gpw8btng4gohzmeo7qca7inzx&st=342e7qlb&raw=1",
+  "durationSec": 156,
+  "tags": ["Lyric", "Female", "88", "Lo-fi Hip Hop", "Dream Pop"]
+},
+    {
+  "id": "Stardust-Paradox-3",
+  "title": "Stardust Paradox 3",
+  "src": "https://www.dropbox.com/scl/fi/cqotqfqxyro0b142qzxev/Stardust-Paradox-3.wav?rlkey=3by20abn6zrohrl0xkh1gsssh&st=oepegvyl&raw=1",
+  "durationSec": 154,
+  "tags": ["Lyric", "Duet", "88", "Lo-fi Hip Hop", "Dream Pop"]
 }
   ]
 }
