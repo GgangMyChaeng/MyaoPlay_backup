@@ -2987,7 +2987,8 @@ textarea.abgm-lyrics-input:focus {
 #ABGM_NP_GLASS_OVERLAY, #ABGM_NP_GLASS_OVERLAY *,
 .abgm-floating-menu, .abgm-floating-menu *,
 .abgm-confirm-wrap, .abgm-confirm-wrap *,
-#abgm_addto_overlay, #abgm_addto_overlay * {
+#abgm_addto_overlay, #abgm_addto_overlay *,
+#abgm_bind_overlay, #abgm_bind_overlay * {
   color: var(--abgm-text) !important;
 }
 
@@ -3121,9 +3122,11 @@ textarea.abgm-lyrics-input:focus {
 }
 /* Bind Overlay Force */
 #abgm_bind_overlay > div {
-  background-color: var(--abgm-modal-bg) !important;
+  background: var(--abgm-modal-bg) !important;
   border: 1px solid var(--abgm-border-strong) !important;
   color: var(--abgm-text) !important;
+  opacity: 1 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
 }
 #abgm_addto_overlay .abgm-addto-item:hover {
   background-color: var(--abgm-surface-hover) !important;
