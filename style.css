@@ -128,7 +128,7 @@ body[data-abgm-theme="dark"] {
   --abgm-glass-border: rgba(255, 255, 255, 0.12);
   
   /* Overlay */
-  --abgm-overlay: rgba(0, 0, 0, 0.55);
+  --abgm-overlay: rgba(0, 0, 0, 0.85);
   
   /* Modal specific - Teal/Mint */
   --abgm-modal-bg: rgba(20, 20, 20, 0.96);
