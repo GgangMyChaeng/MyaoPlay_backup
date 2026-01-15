@@ -69,11 +69,11 @@
   --abgm-table-row-hover: rgba(74, 164, 216, 0.04);
   --abgm-table-row-expanded: rgba(74, 159, 216, 0.06);
   
-  /* Floating Menu (glassmorphism - keep semi-transparent) */
-  --abgm-floating-glass: rgba(255, 255, 255, 0.06);
-  --abgm-floating-btn-bg: rgba(255, 255, 255, 0.05);
-  --abgm-floating-btn-border: rgba(255, 255, 255, 0.12);
-  --abgm-floating-btn-hover: rgba(255, 255, 255, 0.10);
+  /* Floating Menu (glassmorphism - INVERTED: light theme = dark glass) */
+--abgm-floating-glass: rgba(0, 0, 0, 0.06);
+--abgm-floating-btn-bg: rgba(0, 0, 0, 0.05);
+--abgm-floating-btn-border: rgba(0, 0, 0, 0.12);
+--abgm-floating-btn-hover: rgba(0, 0, 0, 0.10);
   
   /* Debug toast */
   --abgm-toast-bg: rgba(255, 255, 255, 0.92);
@@ -141,11 +141,11 @@ body[data-abgm-theme="dark"] {
   --abgm-table-row-hover: rgba(255, 255, 255, 0.03);
   --abgm-table-row-expanded: rgba(255, 255, 255, 0.02);
   
-  /* Floating Menu */
-  --abgm-floating-glass: rgba(0, 0, 0, 0.25);
-  --abgm-floating-btn-bg: transparent;
-  --abgm-floating-btn-border: rgba(255, 255, 255, 0.08);
-  --abgm-floating-btn-hover: rgba(255, 255, 255, 0.06);
+  /* Floating Menu (INVERTED: dark theme = light glass) */
+--abgm-floating-glass: rgba(255, 255, 255, 0.06);
+--abgm-floating-btn-bg: rgba(255, 255, 255, 0.05);
+--abgm-floating-btn-border: rgba(255, 255, 255, 0.12);
+--abgm-floating-btn-hover: rgba(255, 255, 255, 0.10);
   
   /* Debug toast - Teal/Mint */
   --abgm-toast-bg: rgba(30, 39, 40, 0.95);
@@ -3120,14 +3120,21 @@ textarea.abgm-lyrics-input:focus {
 #abgm_addto_overlay .abgm-addto-sheet {
   background-color: var(--abgm-bg) !important;
 }
+
 /* Bind Overlay Force */
 #abgm_bind_overlay > div {
-  background: var(--abgm-modal-bg) !important;
+  background: var(--abgm-bg) !important;
   border: 1px solid var(--abgm-border-strong) !important;
   color: var(--abgm-text) !important;
   opacity: 1 !important;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
 }
+
+/* Dark mode: ensure bind overlay is fully opaque */
+body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
+  background: #1a1a1a !important;
+}
+
 #abgm_addto_overlay .abgm-addto-item:hover {
   background-color: var(--abgm-surface-hover) !important;
 }
