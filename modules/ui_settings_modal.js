@@ -938,52 +938,63 @@ root.querySelector("#abgm_reset_vol_selected")?.addEventListener("click", async 
       const name =
         String(ch.name ?? ch?.data?.name ?? ch?.data?.first_mes ?? `Character #${i}`).trim() || `Character #${i}`;
       const boundId = String(ch?.data?.extensions?.[_EXT_BIND_KEY]?.presetId ?? "");
-      const boundName = boundId && settingsNow.presets?.[boundId] ? String(settingsNow.presets[boundId].name ?? boundId) : (boundId || "");
+      const boundName = boundId && settingsNow.presets?.[boundId] ? String(settingsNow.presets[boundId].name ?? boundId) : "";
+      
+      // 현재 선택된 프리셋과 연결되어 있는지 체크
+      const isBoundToCurrent = boundId === presetId;
+      
       const row = document.createElement("div");
-      row.style.display = "flex";
-      row.style.alignItems = "center";
-      row.style.gap = "8px";
-      row.style.padding = "8px 10px";
-      row.style.border = "1px solid rgba(255,255,255,.12)";
-      row.style.borderRadius = "10px";
-      row.style.background = "rgba(0,0,0,.18)";
-      const mainBtn = document.createElement("button");
-      mainBtn.type = "button";
-      mainBtn.className = "menu_button";
-      mainBtn.style.flex = "1";
-      mainBtn.style.textAlign = "left";
-      mainBtn.style.whiteSpace = "nowrap";
-      mainBtn.style.overflow = "hidden";
-      mainBtn.style.textOverflow = "ellipsis";
-      mainBtn.textContent = boundId ? `${name}  ·  (Bound: ${boundName || boundId})` : `${name}  ·  (Not bound)`;
-      mainBtn.addEventListener("click", async () => {
+      row.className = "abgm-bind-row" + (isBoundToCurrent ? " is-bound-current" : "");
+      
+      // 인디케이터 (불)
+      const indicator = document.createElement("div");
+      indicator.className = "abgm-bind-indicator";
+      
+      // 캐릭터 정보
+      const info = document.createElement("div");
+      info.className = "abgm-bind-info";
+      
+      const nameEl = document.createElement("div");
+      nameEl.className = "abgm-bind-name";
+      nameEl.textContent = name;
+      
+      const statusEl = document.createElement("div");
+      statusEl.className = "abgm-bind-status";
+      if (isBoundToCurrent) {
+        statusEl.textContent = `✓ 현재 프리셋에 연결됨`;
+      } else if (boundId) {
+        statusEl.textContent = `→ ${boundName || boundId}`;
+      } else {
+        statusEl.textContent = `연결 안 됨`;
+      }
+      
+      info.appendChild(nameEl);
+      info.appendChild(statusEl);
+      
+      row.appendChild(indicator);
+      row.appendChild(info);
+      
+      // 클릭: 토글 (연결/해제)
+      row.addEventListener("click", async () => {
         try {
-          await writeExtensionField(i, _EXT_BIND_KEY, { presetId, presetName, at: Date.now() });
+          if (isBoundToCurrent) {
+            // 이미 현재 프리셋에 연결됨 → 해제
+            try {
+              await writeExtensionField(i, _EXT_BIND_KEY, null);
+            } catch {
+              await writeExtensionField(i, _EXT_BIND_KEY, {});
+            }
+          } else {
+            // 연결 안 됨 or 다른 프리셋 → 현재 프리셋에 연결
+            await writeExtensionField(i, _EXT_BIND_KEY, { presetId, presetName, at: Date.now() });
+          }
         } catch (e) {
-          console.error("[MyaPl] bind failed", e);
+          console.error("[MyaPl] bind toggle failed", e);
         }
         await renderBindOverlay();
         try { _engineTick(); } catch {}
       });
-      const clearBtn = document.createElement("button");
-      clearBtn.type = "button";
-      clearBtn.className = "menu_button";
-      clearBtn.textContent = "Unbind";
-      clearBtn.style.flex = "0 0 auto";
-      clearBtn.style.opacity = boundId ? "1" : ".5";
-      clearBtn.disabled = !boundId;
-      clearBtn.addEventListener("click", async (ev) => {
-        ev.stopPropagation();
-        try {
-          await writeExtensionField(i, _EXT_BIND_KEY, null);
-        } catch {
-          try { await writeExtensionField(i, _EXT_BIND_KEY, {}); } catch {}
-        }
-        await renderBindOverlay();
-        try { _engineTick(); } catch {}
-      });
-      row.appendChild(mainBtn);
-      row.appendChild(clearBtn);
+      
       bindList.appendChild(row);
     }
   };
