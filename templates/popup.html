@@ -609,34 +609,17 @@
 </div>
   
   <!-- Bind Overlay (covers modal) -->
-  <div id="abgm_bind_overlay" style="
-  display:none;
-  position:fixed;
-  left:0; top:0;
-  width:100vw;
-  height:100vh;
-  height:100dvh;
-  z-index:9999999;
-  align-items:center;
-  justify-content:center;
-  padding:12px;
-  padding-top:calc(12px + env(safe-area-inset-top));
-  padding-bottom:calc(12px + env(safe-area-inset-bottom));
-  box-sizing:border-box;
-  background:rgba(0,0,0,.55);
-">
-
-    <div style="width:min(560px, calc(100vw - 24px)); height:min(70dvh, 560px); border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.55);">
-      <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 12px 10px 12px; border-bottom:1px solid rgba(255,255,255,.10); gap:10px;">
+  <div id="abgm_bind_overlay" class="abgm-bind-overlay">
+    <div class="abgm-bind-box">
+      <div class="abgm-bind-header">
         <b id="abgm_bind_title">Bind Preset</b>
         <div class="menu_button" id="abgm_bind_close" title="Close">
           <i class="fa-solid fa-xmark fa-lg"></i>
         </div>
       </div>
-
-      <div style="padding:10px 12px; height:calc(100% - 52px); display:flex; flex-direction:column; gap:10px;">
-        <small id="abgm_bind_sub" style="opacity:.75;">Select a character</small>
-        <div id="abgm_bind_list" style="flex:1; overflow:auto; display:flex; flex-direction:column; gap:8px; padding:2px;"></div>
+      <div class="abgm-bind-body">
+        <small id="abgm_bind_sub" class="abgm-bind-sub">Select a character</small>
+        <div id="abgm_bind_list" class="abgm-bind-list"></div>
       </div>
     </div>
   </div>
