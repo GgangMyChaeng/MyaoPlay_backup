@@ -58,7 +58,7 @@ btn.innerHTML = `
   // > 드래그 시작
   btn.addEventListener("mousedown", onDragStart);
   btn.addEventListener("touchstart", onDragStart, { passive: false });
-  document.documentElement.appendChild(btn);
+  document.body.appendChild(btn);
   _floatingBtn = btn;
   return btn;
 }
@@ -251,7 +251,7 @@ function createFloatingMenu() {
       closeFloatingMenu();
     }
   });
-  document.documentElement.appendChild(menu);
+  document.body.appendChild(menu);
   _floatingMenu = menu;
   return menu;
 }
@@ -322,7 +322,7 @@ function createDebugToast() {
   toast.innerHTML = `
     <div class="abgm-debug-toast-line" id="abgm_debug_line"></div>
   `;
-  document.documentElement.appendChild(toast);
+  document.body.appendChild(toast);
   _debugToast = toast;
   return toast;
 }
