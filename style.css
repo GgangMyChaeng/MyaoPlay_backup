@@ -3119,6 +3119,12 @@ textarea.abgm-lyrics-input:focus {
 #abgm_addto_overlay .abgm-addto-sheet {
   background-color: var(--abgm-bg) !important;
 }
+/* Bind Overlay Force */
+#abgm_bind_overlay > div {
+  background-color: var(--abgm-modal-bg) !important;
+  border: 1px solid var(--abgm-border-strong) !important;
+  color: var(--abgm-text) !important;
+}
 #abgm_addto_overlay .abgm-addto-item:hover {
   background-color: var(--abgm-surface-hover) !important;
 }
