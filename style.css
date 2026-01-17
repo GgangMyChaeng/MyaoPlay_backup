@@ -220,7 +220,7 @@ body[data-abgm-theme="dark"] {
   position: fixed;
   width: 64px;
   height: 64px;
-  z-index: 5;
+  z-index: 999999;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
@@ -259,7 +259,7 @@ body[data-abgm-theme="dark"] {
   top: 50vh;
   transform: translate(-50%, -50%) scale(0.9);
   transform-origin: center;
-  z-index: 6;
+  z-index: 999998;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
   opacity: 0;
   pointer-events: none;
@@ -412,7 +412,7 @@ body.autobgm-modal-open {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   background: var(--abgm-overlay);
-  z-index: 3;
+  z-index: 99999;
   padding: 12px;
 }
 
@@ -697,7 +697,7 @@ body.autobgm-modal-open {
 .abgm-confirm-wrap {
   position: fixed;
   inset: 0;
-  z-index: 4;
+  z-index: 2147483647;
   display: grid;
   place-items: center;
 }
@@ -1581,7 +1581,7 @@ body.autobgm-modal-open {
 
 #abgm_fs_tag_picker {
   position: absolute;
-  z-index: 4;
+  z-index: 50;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -2333,7 +2333,7 @@ body.autobgm-modal-open {
 .abgm-pl-sortwrap {
   position: absolute;
   inset: 0;
-  z-index: 5;
+  z-index: 100;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -2398,7 +2398,7 @@ body.autobgm-modal-open {
   top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 6;
+  z-index: 999999;
   
   min-width: 320px;
   max-width: min(600px, 90vw);
@@ -2436,7 +2436,7 @@ body.autobgm-modal-open {
 .myaoplay-tabbar {
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 100;
   display: flex;
   gap: 0;
   background: var(--abgm-tabbar-bg);
@@ -2540,7 +2540,7 @@ body.autobgm-modal-open {
 .abgm-addto-overlay {
   position: fixed;
   inset: 0;
-  z-index: 3;
+  z-index: 99999;
   background: rgba(0, 0, 0, 0);
   display: flex;
   align-items: flex-end;
@@ -3313,7 +3313,7 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
   width: 100vw;
   height: 100vh;
   height: 100dvh;
-  z-index: 3;
+  z-index: 9999999;
   align-items: center;
   justify-content: center;
   padding: 12px;
