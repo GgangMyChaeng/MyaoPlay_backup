@@ -419,6 +419,52 @@ function openAddToBottomSheet(root, settings, item) {
     tagSection.appendChild(chips);
   }
   list.appendChild(tagSection);
+  // (0.5) Info 섹션 (license, lyrics)
+  const list2 = getFsActiveList(settings);
+  const fullItem2 = list2.find(it => it.id === item.id) || item;
+  const itemLicense = fullItem2?.license || "";
+  const itemLyrics = fullItem2?.lyrics || "";
+  const itemAddedDate = fullItem2?.addedDate || "";
+  if (itemLicense || itemLyrics || itemAddedDate) {
+    const infoSection = document.createElement("div");
+    infoSection.className = "abgm-addto-info-section";
+    infoSection.style.cssText = "padding:8px 12px; font-size:12px; border-top:1px solid rgba(255,255,255,.1); margin-top:8px;";
+    if (itemAddedDate) {
+      const dateEl = document.createElement("div");
+      dateEl.style.cssText = "opacity:.6; margin-bottom:4px;";
+      try {
+        const d = new Date(itemAddedDate);
+        dateEl.textContent = `추가일: ${d.toLocaleDateString()}`;
+      } catch { dateEl.textContent = `추가일: ${itemAddedDate}`; }
+      infoSection.appendChild(dateEl);
+    }
+    if (itemLicense) {
+      const licenseEl = document.createElement("details");
+      licenseEl.style.cssText = "margin-bottom:6px;";
+      const sum = document.createElement("summary");
+      sum.style.cssText = "cursor:pointer; opacity:.8;";
+      sum.textContent = "📜 License";
+      licenseEl.appendChild(sum);
+      const content = document.createElement("div");
+      content.style.cssText = "padding:6px 0 0 8px; white-space:pre-wrap; opacity:.7; font-size:11px; max-height:100px; overflow:auto;";
+      content.textContent = itemLicense;
+      licenseEl.appendChild(content);
+      infoSection.appendChild(licenseEl);
+    }
+    if (itemLyrics) {
+      const lyricsEl = document.createElement("details");
+      const sum = document.createElement("summary");
+      sum.style.cssText = "cursor:pointer; opacity:.8;";
+      sum.textContent = "🎤 Lyrics";
+      lyricsEl.appendChild(sum);
+      const content = document.createElement("div");
+      content.style.cssText = "padding:6px 0 0 8px; white-space:pre-wrap; opacity:.7; font-size:11px; max-height:150px; overflow:auto;";
+      content.textContent = itemLyrics;
+      lyricsEl.appendChild(content);
+      infoSection.appendChild(lyricsEl);
+    }
+    list.appendChild(infoSection);
+  }
   
   // (1) 클립보드에 복사
   const clipBtn = document.createElement("button");
@@ -1011,7 +1057,7 @@ function simpleHash(s) {
 function normalizeFreeSourceItem(raw) {
   const MYAOPLAY_FREE_LICENSE = `Music © MyaoPlay
 These tracks are free to use and share for non-commercial purposes only, as long as proper credit is given.
-Credit: “Music by MyaoPlay”`;
+Credit: "Music by MyaoPlay"`;
   const src = String(raw?.src ?? raw?.url ?? raw?.fileKey ?? "").trim();
   if (!src) return null;
   const title = String(raw?.title ?? raw?.name ?? "").trim() || nameFromSource(src);
@@ -1023,11 +1069,11 @@ Credit: “Music by MyaoPlay”`;
         .split(/[,\n]+/)
         .map(t => t.trim())
         .filter(Boolean);
-  // > id는 믿지 말고, 없으면 src 기반으로 안정 생성
   const id = String(raw?.id || "").trim() || `fs_${simpleHash(src)}`;
-  // 핵심: 프리소스는 기본 라이센스를 항상 들고 있게 만들기 (raw.license 있으면 그걸 우선)
   const license = String(raw?.license ?? MYAOPLAY_FREE_LICENSE);
-  return { id, src, title, durationSec, tags, license };
+  const lyrics = raw?.lyrics != null ? String(raw.lyrics) : "";
+  const addedDate = raw?.addedDate != null ? String(raw.addedDate) : "";
+  return { id, src, title, durationSec, tags, license, lyrics, addedDate };
 }
 
 // 번들 JSON을 “진실”로 보고 settings.freeSources를 src 기준 유니크로 덮어쓰는 애 (중복 src면 마지막 승)
