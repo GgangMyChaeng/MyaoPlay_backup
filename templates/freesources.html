@@ -28,6 +28,12 @@
   <div class="abgm-fs-searchrow">
     <input id="abgm_fs_search" type="text" placeholder="Search..."
       class="abgm-fs-search" />
+    <select id="abgm_fs_sort" class="abgm-fs-sort" title="Sort order">
+      <option value="date-newest">Date (Newest)</option>
+      <option value="date-oldest">Date (Oldest)</option>
+      <option value="name-asc">Name (A→Z)</option>
+      <option value="name-desc">Name (Z→A)</option>
+    </select>
     <button id="abgm_fs_clear" type="button" class="menu_button abgm-fs-clear">Clear</button>
   </div>
 
@@ -39,7 +45,6 @@
   <!-- JSON 스니펫 생성 -->
   <button id="abgm_fs_emit_json" class="menu_button abgm-iconbtn abgm-fs-jsonbtn" title="프리소스 JSON 생성">✎</button>
 </div>
-
 
   <!-- category bar (tag group selector) -->
 <div id="abgm_fs_catbar" class="abgm-fs-catbar">
