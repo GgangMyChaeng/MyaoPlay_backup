@@ -734,7 +734,7 @@ body.autobgm-modal-open {
 .abgm-confirm-wrap {
   position: fixed;
   inset: 0;
-  z-index: 91;
+  z-index: 92;
   display: grid;
   place-items: center;
 }
@@ -1618,7 +1618,7 @@ body.autobgm-modal-open {
 
 #abgm_fs_tag_picker {
   position: absolute;
-  z-index: 91;
+  z-index: 92;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -1804,7 +1804,7 @@ body.autobgm-modal-open {
   left: 14px;
   right: 14px;
   top: 112px;
-  z-index: 91;
+  z-index: 92;
   padding: 10px;
   border: 1px solid var(--abgm-border-strong);
   border-radius: 12px;
@@ -2386,7 +2386,7 @@ body.autobgm-modal-open {
 .abgm-pl-sortwrap {
   position: absolute;
   inset: 0;
-  z-index: 91;
+  z-index: 92;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -2489,7 +2489,7 @@ body.autobgm-modal-open {
 .myaoplay-tabbar {
   position: sticky;
   top: 0;
-  z-index: 94;
+  z-index: 91;
   display: flex;
   gap: 0;
   background: var(--abgm-tabbar-bg);
@@ -2593,7 +2593,7 @@ body.autobgm-modal-open {
 .abgm-addto-overlay {
   position: fixed;
   inset: 0;
-  z-index: 96;
+  z-index: 92;
   background: rgba(0, 0, 0, 0);
   display: flex;
   align-items: flex-end;
@@ -3366,7 +3366,7 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
   width: 100vw;
   height: 100vh;
   height: 100dvh;
-  z-index: 96;
+  z-index: 92;
   align-items: center;
   justify-content: center;
   padding: 12px;
@@ -3504,7 +3504,7 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 96;
+  z-index: 100;
   padding: 20px;
   box-sizing: border-box;
 }
