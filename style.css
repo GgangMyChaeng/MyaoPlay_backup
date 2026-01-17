@@ -1693,6 +1693,22 @@ body.autobgm-modal-open {
   color: var(--abgm-text);
 }
 
+/* FS sort dropdown */
+.abgm-fs-sort {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--abgm-input-border);
+  background: var(--abgm-input-bg);
+  color: var(--abgm-text);
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 120px;
+}
+.abgm-fs-sort:focus {
+  outline: none;
+  border-color: var(--abgm-accent);
+}
+
 /* FS preview volume */
 .abgm-fs-prevrow {
   margin-top: 10px;
