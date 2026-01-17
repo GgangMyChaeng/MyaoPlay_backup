@@ -3487,3 +3487,190 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
 .abgm-bind-row.is-bound-current .abgm-bind-status {
   color: var(--abgm-accent);
 }
+
+
+/* =================================================================
+   JSON Generator Modal (프리소스 JSON 생성 모달)
+   ================================================================= */
+
+.abgm-json-gen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.abgm-json-gen-modal {
+  background: var(--abgm-bg, #1a1a2e);
+  border: 1px solid var(--abgm-border-strong, rgba(255,255,255,0.15));
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.abgm-json-gen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--abgm-border, rgba(255,255,255,0.1));
+  background: var(--abgm-surface, rgba(255,255,255,0.03));
+}
+
+.abgm-json-gen-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--abgm-text, #fff);
+}
+
+.abgm-json-gen-close {
+  background: transparent !important;
+  border: none !important;
+  color: var(--abgm-text-dim, rgba(255,255,255,0.6)) !important;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px !important;
+  transition: color 0.2s;
+}
+
+.abgm-json-gen-close:hover {
+  color: var(--abgm-danger, #dc4c4c) !important;
+}
+
+.abgm-json-gen-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.abgm-json-gen-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.abgm-json-gen-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--abgm-text, #fff);
+}
+
+.abgm-json-gen-field input[type="text"],
+.abgm-json-gen-field input[type="number"],
+.abgm-json-gen-field input[type="date"],
+.abgm-json-gen-field textarea {
+  background: var(--abgm-input-bg, rgba(0,0,0,0.3));
+  border: 1px solid var(--abgm-input-border, rgba(255,255,255,0.15));
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--abgm-text, #fff);
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.abgm-json-gen-field input:focus,
+.abgm-json-gen-field textarea:focus {
+  outline: none;
+  border-color: var(--abgm-accent, #4ab7d8);
+}
+
+.abgm-json-gen-field textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.abgm-json-gen-field textarea#abgm_jgen_result {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #88ffaa;
+}
+
+.abgm-json-gen-hint {
+  font-size: 11px;
+  color: var(--abgm-text-muted, rgba(255,255,255,0.5));
+}
+
+.abgm-json-gen-url-row {
+  display: flex;
+  gap: 8px;
+}
+
+.abgm-json-gen-url-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.abgm-json-gen-url-row button {
+  flex-shrink: 0;
+  padding: 8px 12px !important;
+}
+
+.abgm-json-gen-row {
+  display: flex;
+  gap: 12px;
+}
+
+.abgm-json-gen-row .abgm-json-gen-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.abgm-json-gen-dur-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.abgm-json-gen-dur-row input {
+  width: 100px;
+}
+
+.abgm-json-gen-durfmt {
+  font-size: 13px;
+  color: var(--abgm-text-dim, rgba(255,255,255,0.7));
+  font-family: monospace;
+}
+
+.abgm-json-gen-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--abgm-border, rgba(255,255,255,0.1));
+  background: var(--abgm-surface, rgba(255,255,255,0.03));
+}
+
+.abgm-json-gen-footer button {
+  padding: 8px 16px !important;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.abgm-json-gen-footer #abgm_jgen_copy {
+  background: var(--abgm-accent, #4ab7d8) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.abgm-json-gen-footer #abgm_jgen_copy:hover {
+  background: var(--abgm-accent-hover, #3a9bc8) !important;
+}
