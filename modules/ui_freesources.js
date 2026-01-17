@@ -251,6 +251,7 @@ function renderFsList(root, settings) {
   if (!listEl) return;
   const { inc, exc } = fsGetTagSets(settings);
   const q = String(settings.fsUi?.search ?? "");
+  const sortOrder = String(settings.fsUi?.sortOrder ?? "date-newest");
   const listRaw = getFsActiveList(settings);
   const filtered = listRaw
     .filter((it) =>
@@ -259,9 +260,28 @@ function renderFsList(root, settings) {
       matchSearch(it, q)
     )
     .sort((a, b) => {
-      const an = String(a?.title ?? a?.name ?? "").trim();
-      const bn = String(b?.title ?? b?.name ?? "").trim();
-      return an.localeCompare(bn, undefined, { numeric: true, sensitivity: "base" });
+      // 정렬 로직
+      if (sortOrder === "name-asc" || sortOrder === "name-desc") {
+        const an = String(a?.title ?? a?.name ?? "").trim();
+        const bn = String(b?.title ?? b?.name ?? "").trim();
+        const cmp = an.localeCompare(bn, undefined, { numeric: true, sensitivity: "base" });
+        return sortOrder === "name-desc" ? -cmp : cmp;
+      }
+      // date 정렬: addedDate 없으면 맨 뒤로 (오래된 취급)
+      const aDate = a?.addedDate || "";
+      const bDate = b?.addedDate || "";
+      // 둘 다 없으면 이름순
+      if (!aDate && !bDate) {
+        const an = String(a?.title ?? a?.name ?? "").trim();
+        const bn = String(b?.title ?? b?.name ?? "").trim();
+        return an.localeCompare(bn, undefined, { numeric: true, sensitivity: "base" });
+      }
+      // 하나만 없으면 없는 쪽이 뒤로
+      if (!aDate) return 1;
+      if (!bDate) return -1;
+      // 둘 다 있으면 날짜 비교
+      const cmp = aDate.localeCompare(bDate);
+      return sortOrder === "date-newest" ? -cmp : cmp;
     });
   listEl.innerHTML = "";
   if (!filtered.length) {
@@ -310,6 +330,9 @@ function renderFsAll(root, settings) {
   // 3) search ui
   const search = root.querySelector("#abgm_fs_search");
   if (search) search.value = String(settings.fsUi?.search ?? "");
+  // 3-1) sort ui
+  const sortSel = root.querySelector("#abgm_fs_sort");
+  if (sortSel) sortSel.value = String(settings.fsUi?.sortOrder ?? "date-newest");
   // 4) cat active UI
   const cur = String(settings?.fsUi?.cat || "all");
   root.querySelectorAll(".abgm-fs-cat")?.forEach?.((b) => {
@@ -887,6 +910,7 @@ export function initFreeSourcesInPanel(root, settings) {
   settings.fsUi.selectedTags ??= [];
   settings.fsUi.previewVolFree ??= 60;
   settings.fsUi.previewVolMy ??= 60;
+  settings.fsUi.sortOrder ??= "date-newest"; // 정렬 기본값
   // 1) Free/My 탭 전환
   root.querySelectorAll(".abgm-fs-tab").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -931,6 +955,16 @@ export function initFreeSourcesInPanel(root, settings) {
     searchInput.value = settings.fsUi.search || "";
     searchInput.addEventListener("input", () => {
       settings.fsUi.search = searchInput.value;
+      _saveSettingsDebounced();
+      renderFsList(root, settings);
+    });
+  }
+  // 3-1) 정렬 드롭다운
+  const sortSelect = root.querySelector("#abgm_fs_sort");
+  if (sortSelect) {
+    sortSelect.value = settings.fsUi.sortOrder || "date-newest";
+    sortSelect.addEventListener("change", () => {
+      settings.fsUi.sortOrder = sortSelect.value;
       _saveSettingsDebounced();
       renderFsList(root, settings);
     });
