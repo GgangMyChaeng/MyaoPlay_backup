@@ -377,112 +377,63 @@ export async function openFreeSourcesModal() {
 
 /** ========================= 바텀시트 (Add to...) ========================= */
 function openAddToBottomSheet(root, settings, item) {
-  // 기존 바텀시트 있으면 제거
   closeAddToBottomSheet();
+  
+  // 풀 아이템 정보 가져오기
+  const fullItem = getFsActiveList(settings).find(it => it.id === item.id) || item;
+  const itemTags = fullItem?.tags || [];
+  const itemLicense = fullItem?.license || "";
+  const itemLyrics = fullItem?.lyrics || "";
+  const itemImage = fullItem?.image || fullItem?.imageUrl || "";
+  
   const overlay = document.createElement("div");
   overlay.id = "abgm_addto_overlay";
   overlay.className = "abgm-addto-overlay";
+  
   const sheet = document.createElement("div");
   sheet.className = "abgm-addto-sheet";
-  // 헤더
+  
+  // ===== 헤더 (타이틀 + 탭) =====
   const header = document.createElement("div");
   header.className = "abgm-addto-header";
   header.innerHTML = `
     <div class="abgm-addto-handle" aria-hidden="true"></div>
     <div class="abgm-addto-title">${escapeHtml(item.title)}</div>
-    <div class="abgm-addto-subtitle">추가할 위치 선택</div>
+    <div class="abgm-addto-tabs" style="display:flex; gap:4px; margin-top:8px;">
+      <button type="button" class="menu_button abgm-addto-tab is-active" data-tab="copy" style="flex:1; padding:6px 0; font-size:13px;">복사</button>
+      <button type="button" class="menu_button abgm-addto-tab" data-tab="info" style="flex:1; padding:6px 0; font-size:13px;">정보</button>
+    </div>
   `;
   sheet.appendChild(header);
-  // 옵션 리스트
-  const list = document.createElement("div");
-  list.className = "abgm-addto-list";
   
-  // (0) 태그 보기 섹션 (최상단)
-  const itemTags = item.tags || [];
-  const tagSection = document.createElement("div");
-  tagSection.className = "abgm-addto-tags-section";
-  if (itemTags.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "abgm-tags-empty";
-    empty.textContent = "(no tags)";
-    tagSection.appendChild(empty);
-  } else {
-    const chips = document.createElement("div");
-    chips.className = "abgm-tags-chips";
-    for (const t of itemTags) {
-      const chip = document.createElement("span");
-      chip.className = "abgm-tag-chip";
-      chip.textContent = `#${tagPretty(t)}`;
-      chip.title = t;
-      chips.appendChild(chip);
-    }
-    tagSection.appendChild(chips);
-  }
-  list.appendChild(tagSection);
-  // (0.5) Info 섹션 (license, lyrics)
-  const list2 = getFsActiveList(settings);
-  const fullItem2 = list2.find(it => it.id === item.id) || item;
-  const itemLicense = fullItem2?.license || "";
-  const itemLyrics = fullItem2?.lyrics || "";
-  const itemAddedDate = fullItem2?.addedDate || "";
-  if (itemLicense || itemLyrics || itemAddedDate) {
-    const infoSection = document.createElement("div");
-    infoSection.className = "abgm-addto-info-section";
-    infoSection.style.cssText = "padding:8px 12px; font-size:12px; border-top:1px solid rgba(255,255,255,.1); margin-top:8px;";
-    if (itemAddedDate) {
-      const dateEl = document.createElement("div");
-      dateEl.style.cssText = "opacity:.6; margin-bottom:4px;";
-      try {
-        const d = new Date(itemAddedDate);
-        dateEl.textContent = `추가일: ${d.toLocaleDateString()}`;
-      } catch { dateEl.textContent = `추가일: ${itemAddedDate}`; }
-      infoSection.appendChild(dateEl);
-    }
-    if (itemLicense) {
-      const licenseEl = document.createElement("details");
-      licenseEl.style.cssText = "margin-bottom:6px;";
-      const sum = document.createElement("summary");
-      sum.style.cssText = "cursor:pointer; opacity:.8;";
-      sum.textContent = "📜 License";
-      licenseEl.appendChild(sum);
-      const content = document.createElement("div");
-      content.style.cssText = "padding:6px 0 0 8px; white-space:pre-wrap; opacity:.7; font-size:11px; max-height:100px; overflow:auto;";
-      content.textContent = itemLicense;
-      licenseEl.appendChild(content);
-      infoSection.appendChild(licenseEl);
-    }
-    if (itemLyrics) {
-      const lyricsEl = document.createElement("details");
-      const sum = document.createElement("summary");
-      sum.style.cssText = "cursor:pointer; opacity:.8;";
-      sum.textContent = "🎤 Lyrics";
-      lyricsEl.appendChild(sum);
-      const content = document.createElement("div");
-      content.style.cssText = "padding:6px 0 0 8px; white-space:pre-wrap; opacity:.7; font-size:11px; max-height:150px; overflow:auto;";
-      content.textContent = itemLyrics;
-      lyricsEl.appendChild(content);
-      infoSection.appendChild(lyricsEl);
-    }
-    list.appendChild(infoSection);
-  }
+  // ===== 패널 컨테이너 =====
+  const panelContainer = document.createElement("div");
+  panelContainer.className = "abgm-addto-panels";
+  panelContainer.style.cssText = "overflow-y:auto; max-height:50vh;";
   
-  // (1) 클립보드에 복사
+  // ----- 복사 탭 패널 -----
+  const copyPanel = document.createElement("div");
+  copyPanel.className = "abgm-addto-panel";
+  copyPanel.dataset.panel = "copy";
+  copyPanel.style.display = "block";
+  
+  // 클립보드에 복사
   const clipBtn = document.createElement("button");
   clipBtn.type = "button";
   clipBtn.className = "abgm-addto-item";
   clipBtn.dataset.action = "clipboard";
   clipBtn.innerHTML = `<i class="fa-solid fa-clipboard"></i><span>클립보드에 복사</span>`;
-  list.appendChild(clipBtn);
+  copyPanel.appendChild(clipBtn);
   
-  // (2) 마이소스에 복사
+  // 마이소스에 복사
   const myBtn = document.createElement("button");
   myBtn.type = "button";
   myBtn.className = "abgm-addto-item";
   myBtn.dataset.action = "mysources";
   myBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>마이소스에 복사</span>`;
-  list.appendChild(myBtn);
+  copyPanel.appendChild(myBtn);
   
-  // (3) 프리셋 목록 (A-Z 정렬)
+  // 프리셋 목록
   const presetIds = Object.keys(settings.presets || {}).sort((a, b) => {
     const na = settings.presets[a]?.name || a;
     const nb = settings.presets[b]?.name || b;
@@ -492,7 +443,7 @@ function openAddToBottomSheet(root, settings, item) {
     const divider = document.createElement("div");
     divider.className = "abgm-addto-divider";
     divider.textContent = "프리셋";
-    list.appendChild(divider);
+    copyPanel.appendChild(divider);
   }
   for (const pid of presetIds) {
     const p = settings.presets[pid];
@@ -502,16 +453,122 @@ function openAddToBottomSheet(root, settings, item) {
     pBtn.dataset.action = "preset";
     pBtn.dataset.presetId = pid;
     pBtn.innerHTML = `<i class="fa-solid fa-music"></i><span>${escapeHtml(p.name || pid)}</span>`;
-    list.appendChild(pBtn);
+    copyPanel.appendChild(pBtn);
   }
-  sheet.appendChild(list);
+  panelContainer.appendChild(copyPanel);
+  
+  // ----- 정보 탭 패널 -----
+  const infoPanel = document.createElement("div");
+  infoPanel.className = "abgm-addto-panel";
+  infoPanel.dataset.panel = "info";
+  infoPanel.style.display = "none";
+  infoPanel.style.padding = "12px";
+  
+  // 태그 섹션
+  const tagSection = document.createElement("div");
+  tagSection.className = "abgm-addto-tags-section";
+  tagSection.style.marginBottom = "12px";
+  if (itemTags.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "abgm-tags-empty";
+    empty.style.cssText = "opacity:.5; font-size:12px;";
+    empty.textContent = "(태그 없음)";
+    tagSection.appendChild(empty);
+  } else {
+    const chips = document.createElement("div");
+    chips.className = "abgm-tags-chips";
+    chips.style.cssText = "display:flex; flex-wrap:wrap; gap:6px;";
+    for (const t of itemTags) {
+      const chip = document.createElement("span");
+      chip.className = "abgm-tag-chip";
+      chip.style.cssText = "background:rgba(255,255,255,.1); padding:4px 8px; border-radius:12px; font-size:11px;";
+      chip.textContent = `#${tagPretty(t)}`;
+      chip.title = t;
+      chips.appendChild(chip);
+    }
+    tagSection.appendChild(chips);
+  }
+  infoPanel.appendChild(tagSection);
+  
+  // 가사 섹션
+  if (itemLyrics) {
+    const lyricsSection = document.createElement("div");
+    lyricsSection.style.cssText = "margin-bottom:12px;";
+    const lyricsLabel = document.createElement("div");
+    lyricsLabel.style.cssText = "font-size:12px; opacity:.7; margin-bottom:6px;";
+    lyricsLabel.textContent = "🎤 가사";
+    lyricsSection.appendChild(lyricsLabel);
+    const lyricsContent = document.createElement("div");
+    lyricsContent.style.cssText = "white-space:pre-wrap; font-size:12px; line-height:1.5; max-height:150px; overflow-y:auto; padding:8px; background:rgba(0,0,0,.2); border-radius:8px;";
+    lyricsContent.textContent = itemLyrics;
+    lyricsSection.appendChild(lyricsContent);
+    infoPanel.appendChild(lyricsSection);
+  }
+  
+  // 이미지 + 라이센스 가로 배치
+  if (itemImage || itemLicense) {
+    const bottomRow = document.createElement("div");
+    bottomRow.style.cssText = "display:flex; gap:12px; align-items:flex-start;";
+    
+    // 이미지 (좌측)
+    if (itemImage) {
+      const imgWrap = document.createElement("div");
+      imgWrap.style.cssText = "flex-shrink:0; width:80px; height:80px; border-radius:8px; overflow:hidden; background:rgba(0,0,0,.2);";
+      const img = document.createElement("img");
+      img.src = itemImage;
+      img.style.cssText = "width:100%; height:100%; object-fit:cover;";
+      img.onerror = () => { imgWrap.style.display = "none"; };
+      imgWrap.appendChild(img);
+      bottomRow.appendChild(imgWrap);
+    }
+    
+    // 라이센스 (우측)
+    if (itemLicense) {
+      const licenseWrap = document.createElement("div");
+      licenseWrap.style.cssText = "flex:1; min-width:0;";
+      const licenseLabel = document.createElement("div");
+      licenseLabel.style.cssText = "font-size:12px; opacity:.7; margin-bottom:4px;";
+      licenseLabel.textContent = "📜 라이센스";
+      licenseWrap.appendChild(licenseLabel);
+      const licenseContent = document.createElement("div");
+      licenseContent.style.cssText = "white-space:pre-wrap; font-size:11px; line-height:1.4; max-height:80px; overflow-y:auto; opacity:.8;";
+      licenseContent.textContent = itemLicense;
+      licenseWrap.appendChild(licenseContent);
+      bottomRow.appendChild(licenseWrap);
+    }
+    
+    infoPanel.appendChild(bottomRow);
+  }
+  
+  // 정보 없을 때
+  if (!itemLyrics && !itemImage && !itemLicense && itemTags.length === 0) {
+    const noInfo = document.createElement("div");
+    noInfo.style.cssText = "text-align:center; opacity:.5; padding:20px; font-size:13px;";
+    noInfo.textContent = "추가 정보 없음";
+    infoPanel.appendChild(noInfo);
+  }
+  
+  panelContainer.appendChild(infoPanel);
+  sheet.appendChild(panelContainer);
   overlay.appendChild(sheet);
+  
+  // ===== 탭 전환 이벤트 =====
+  const tabs = header.querySelectorAll(".abgm-addto-tab");
+  const panels = panelContainer.querySelectorAll(".abgm-addto-panel");
+  tabs.forEach(tab => {
+    tab.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const tabId = tab.dataset.tab;
+      tabs.forEach(t => t.classList.toggle("is-active", t.dataset.tab === tabId));
+      panels.forEach(p => p.style.display = p.dataset.panel === tabId ? "block" : "none");
+    });
+  });
+  
+  // ===== 오버레이 삽입 =====
   const modalOverlay = document.getElementById("abgm_modal_overlay");
   const host = modalOverlay || document.body;
-  // 모달 위에 뜨게 강제
   const setO = (k, v) => overlay.style.setProperty(k, v, "important");
   setO("z-index", "2147483648");
-  // 모달 안이면 absolute(같은 스택에서 놀게), 아니면 fixed(뷰포트 기준)
   if (modalOverlay) {
     const cs = getComputedStyle(modalOverlay);
     if (cs.position === "static") modalOverlay.style.position = "relative";
@@ -522,12 +579,12 @@ function openAddToBottomSheet(root, settings, item) {
     setO("inset", "0");
   }
   host.appendChild(overlay);
-  // 애니메이션
+  
   requestAnimationFrame(() => {
     overlay.classList.add("is-open");
   });
 
-    // ===== 헤더 풀다운 닫기 (pull-down to close) =====
+  // ===== 헤더 풀다운 닫기 =====
   (() => {
     const headerEl = header;
     const sheetEl = sheet;
@@ -544,14 +601,11 @@ function openAddToBottomSheet(root, settings, item) {
       document.removeEventListener("touchcancel", onEnd);
     };
     const onStart = (e) => {
-      // 마우스는 좌클만
       if (e.type === "mousedown" && e.button !== 0) return;
       dragging = true;
       startY = getY(e);
       dy = 0;
-      // 드래그 중엔 transition 끔
       sheetEl.style.transition = "none";
-      // 문서 레벨로 move/end 추적
       document.addEventListener("mousemove", onMove);
       document.addEventListener("mouseup", onEnd);
       document.addEventListener("touchmove", onMove, { passive: false });
@@ -563,9 +617,7 @@ function openAddToBottomSheet(root, settings, item) {
       if (e.cancelable) e.preventDefault();
       const y = getY(e);
       dy = Math.max(0, y - startY);
-      // 시트 내려가는 만큼 따라오게
       sheetEl.style.transform = `translateY(${dy}px)`;
-      // 배경도 같이 옅어지게(0.5 -> 0)
       const alpha = Math.max(0, Math.min(0.5, 0.5 * (1 - dy / 260)));
       overlayEl.style.background = `rgba(0,0,0,${alpha})`;
     };
@@ -574,32 +626,26 @@ function openAddToBottomSheet(root, settings, item) {
       dragging = false;
       cleanupDoc();
       const rect = sheetEl.getBoundingClientRect();
-      const closePx = Math.min(160, Math.max(90, rect.height * 0.22)); // 대충 22% or 90~160px
+      const closePx = Math.min(160, Math.max(90, rect.height * 0.22));
       if (dy > closePx) {
-        // 드래그로 닫기: 현재 위치(dy)에서 아래로 쭉 내려가며 닫힘
         closeAddToBottomSheet({ dragging: true });
         return;
       }
-      // 스냅백 (원위치)
       sheetEl.style.transition = "";
       sheetEl.style.transform = "";
       overlayEl.style.background = "";
     };
-    // 헤더는 스크롤 제스처 대신 드래그 제스처로
     headerEl.style.touchAction = "none";
     headerEl.addEventListener("touchstart", onStart, { passive: false });
     headerEl.addEventListener("mousedown", onStart);
   })();
 
-  
-  // 이벤트
+  // ===== 클릭 이벤트 =====
   overlay.addEventListener("click", (e) => {
-    // 바깥 클릭 → 닫기
     if (e.target === overlay) {
       closeAddToBottomSheet();
       return;
     }
-    // 아이템 클릭
     const itemBtn = e.target.closest(".abgm-addto-item");
     if (itemBtn) {
       const action = itemBtn.dataset.action;
@@ -614,16 +660,11 @@ function openAddToBottomSheet(root, settings, item) {
         return;
       }
       if (action === "mysources") {
-        // 현재 리스트에서 아이템 찾기
-        const list = getFsActiveList(settings);
-        const fullItem = list.find(it => it.id === item.id) || item;
         addToMySources(settings, fullItem);
         _saveSettingsDebounced();
         if (typeof toastr !== "undefined") toastr.success("마이소스에 추가됨");
       } else if (action === "preset") {
         const presetId = itemBtn.dataset.presetId;
-        const list = getFsActiveList(settings);
-        const fullItem = list.find(it => it.id === item.id) || item;
         addUrlToPreset(settings, presetId, fullItem);
         _saveSettingsDebounced();
         const pName = settings.presets[presetId]?.name || presetId;
@@ -632,6 +673,7 @@ function openAddToBottomSheet(root, settings, item) {
       closeAddToBottomSheet();
     }
   });
+  
   // ESC 닫기
   const onEsc = (e) => {
     if (e.key === "Escape") {
