@@ -639,6 +639,43 @@ body.autobgm-modal-open {
 
 
 /* =================================================================
+   Details / Summary (Accordion)
+   ================================================================= */
+.abgm-details {
+  border: 1px solid var(--abgm-border);
+  border-radius: 12px;
+  background: var(--abgm-surface);
+  overflow: hidden;
+}
+
+.abgm-details-summary {
+  cursor: pointer;
+  padding: 10px 12px;
+  user-select: none;
+  color: var(--abgm-text);
+  list-style: none;
+}
+
+.abgm-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.abgm-details[open] .abgm-details-summary {
+  border-bottom: 1px solid var(--abgm-border);
+  background: var(--abgm-surface-hover);
+}
+
+.abgm-details-body {
+  padding: 10px 12px;
+  color: var(--abgm-text-dim);
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+/* =================================================================
    Volume Controls
    ================================================================= */
 
