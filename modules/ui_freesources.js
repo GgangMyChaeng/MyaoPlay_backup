@@ -481,7 +481,6 @@ function openAddToBottomSheet(root, settings, item) {
     for (const t of itemTags) {
       const chip = document.createElement("span");
       chip.className = "abgm-tag-chip";
-      chip.style.cssText = "background:rgba(255,255,255,.1); padding:4px 8px; border-radius:12px; font-size:11px;";
       chip.textContent = `#${tagPretty(t)}`;
       chip.title = t;
       chips.appendChild(chip);
