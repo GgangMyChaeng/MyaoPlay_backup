@@ -1238,58 +1238,263 @@ function probeAudioDurationSec(url, timeoutMs = 12000){
   });
 }
 
-async function emitFreeSourceJsonSnippet(){
-  const urlIn = window.prompt("링크(src) 입력");
-  if (urlIn == null) return;
-  const src = dropboxToRawMaybe(urlIn.trim());
-  const guess = guessIdTitleFromUrl(src);
-  const tagsIn = window.prompt(
-    "tags 입력 (쉼표/줄바꿈 OK)\n예: Sample, no lyric, cyberpunk, ambient, dark",
-    ""
-  );
-  if (tagsIn == null) return;
-  const tags = String(tagsIn || "")
-    .split(/[,|\n]+/g)
-    .map(s => s.trim())
-    .filter(Boolean);
-  // duration 자동 계산 시도
-  let durationSec = await probeAudioDurationSec(src);
-  if (!Number.isFinite(durationSec) || durationSec <= 0){
-    const durIn = window.prompt(
-      "durationSec 자동 계산 실패했음\n초 단위 숫자만 입력 (예: 188)",
-      "0"
-    );
-    if (durIn == null) return;
-    const n = Number(durIn);
-    durationSec = Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
-  }
-  const item = {
-    id: guess.id || `fs_${simpleHash(src)}`,
-    title: guess.title || guess.id || "New Source",
-    src,
-    durationSec,
-    tags
-  };
-  const mm = Math.floor(durationSec / 60);
-  const ss = String(durationSec % 60).padStart(2, "0");
-  // tags는 한 줄로 만들기
-  const tagsInline = `[${tags.map(t => JSON.stringify(t)).join(", ")}]`;
 
-  // JSON 스니펫을 수동으로 조립 (tags만 가로 한 줄)
-  const snippet = [
-    "{",
-    `  "id": ${JSON.stringify(item.id)},`,
-    `  "title": ${JSON.stringify(item.title)},`,
-    `  "src": ${JSON.stringify(item.src)},`,
-    `  "durationSec": ${Number(item.durationSec) || 0},`,
-    `  "tags": ${tagsInline}`,
-    "},"
-  ].join("\n");
-  // 클립보드 직통 X → 무조건 “직접 복사”만
-  window.prompt(
-    `아래 JSON 복사해서 freesources.json의 sources 배열 안에 붙여넣어\n(duration: ${mm}:${ss})`,
-    snippet
-  );
+
+/** ========================= 프리소스 JSON 생성 모달 ========================= */
+function openJsonGeneratorModal() {
+  // 기존 모달 있으면 제거
+  const existing = document.querySelector("#abgm_json_gen_overlay");
+  if (existing) existing.remove();
+
+  const overlay = document.createElement("div");
+  overlay.id = "abgm_json_gen_overlay";
+  overlay.className = "abgm-json-gen-overlay";
+  overlay.innerHTML = `
+    <div class="abgm-json-gen-modal">
+      <div class="abgm-json-gen-header">
+        <h3>📝 프리소스 JSON 생성</h3>
+        <button type="button" class="menu_button abgm-json-gen-close" title="닫기">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div class="abgm-json-gen-body">
+        <!-- URL 입력 -->
+        <div class="abgm-json-gen-field">
+          <label>🔗 URL (Dropbox 등)</label>
+          <div class="abgm-json-gen-url-row">
+            <input type="text" id="abgm_jgen_url" placeholder="https://dropbox.com/..." />
+            <button type="button" class="menu_button" id="abgm_jgen_fetch" title="URL 분석">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+          <small class="abgm-json-gen-hint">Dropbox URL은 자동으로 raw=1 변환됨</small>
+        </div>
+        
+        <!-- ID / Title -->
+        <div class="abgm-json-gen-row">
+          <div class="abgm-json-gen-field" style="flex:1;">
+            <label>🆔 ID</label>
+            <input type="text" id="abgm_jgen_id" placeholder="파일명 기반 자동생성" />
+          </div>
+          <div class="abgm-json-gen-field" style="flex:2;">
+            <label>📌 Title</label>
+            <input type="text" id="abgm_jgen_title" placeholder="제목" />
+          </div>
+        </div>
+        
+        <!-- Duration / Date -->
+        <div class="abgm-json-gen-row">
+          <div class="abgm-json-gen-field">
+            <label>⏱️ Duration (초)</label>
+            <div class="abgm-json-gen-dur-row">
+              <input type="number" id="abgm_jgen_dur" min="0" value="0" />
+              <span id="abgm_jgen_dur_fmt" class="abgm-json-gen-durfmt">0:00</span>
+            </div>
+          </div>
+          <div class="abgm-json-gen-field">
+            <label>📅 추가 날짜</label>
+            <input type="date" id="abgm_jgen_date" />
+          </div>
+        </div>
+        
+        <!-- Tags -->
+        <div class="abgm-json-gen-field">
+          <label>🏷️ Tags (쉼표 또는 줄바꿈으로 구분)</label>
+          <textarea id="abgm_jgen_tags" rows="2" placeholder="Sample, no lyric, ambient, dark"></textarea>
+        </div>
+        
+        <!-- Lyrics -->
+        <div class="abgm-json-gen-field">
+          <label>🎤 가사 (줄바꿈 → \\n 자동 변환)</label>
+          <textarea id="abgm_jgen_lyrics" rows="4" placeholder="가사를 줄바꿈해서 입력하면&#10;자동으로 \\n 처리됩니다"></textarea>
+        </div>
+        
+        <!-- 결과 미리보기 -->
+        <div class="abgm-json-gen-field">
+          <label>📋 결과 JSON 스니펫</label>
+          <textarea id="abgm_jgen_result" rows="10" readonly></textarea>
+        </div>
+      </div>
+      
+      <div class="abgm-json-gen-footer">
+        <button type="button" class="menu_button" id="abgm_jgen_copy">
+          <i class="fa-solid fa-copy"></i> 복사
+        </button>
+        <button type="button" class="menu_button" id="abgm_jgen_close2">닫기</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  // 요소 참조
+  const urlInput = overlay.querySelector("#abgm_jgen_url");
+  const fetchBtn = overlay.querySelector("#abgm_jgen_fetch");
+  const idInput = overlay.querySelector("#abgm_jgen_id");
+  const titleInput = overlay.querySelector("#abgm_jgen_title");
+  const durInput = overlay.querySelector("#abgm_jgen_dur");
+  const durFmt = overlay.querySelector("#abgm_jgen_dur_fmt");
+  const dateInput = overlay.querySelector("#abgm_jgen_date");
+  const tagsInput = overlay.querySelector("#abgm_jgen_tags");
+  const lyricsInput = overlay.querySelector("#abgm_jgen_lyrics");
+  const resultArea = overlay.querySelector("#abgm_jgen_result");
+  const copyBtn = overlay.querySelector("#abgm_jgen_copy");
+  const closeBtn = overlay.querySelector(".abgm-json-gen-close");
+  const closeBtn2 = overlay.querySelector("#abgm_jgen_close2");
+
+  // 오늘 날짜 기본값
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  dateInput.value = `${yyyy}-${mm}-${dd}`;
+
+  // duration 포맷 업데이트
+  function updateDurFmt() {
+    const sec = Number(durInput.value) || 0;
+    const m = Math.floor(sec / 60);
+    const s = String(sec % 60).padStart(2, "0");
+    durFmt.textContent = `${m}:${s}`;
+  }
+
+  // JSON 스니펫 생성
+  function generateSnippet() {
+    const src = dropboxToRawMaybe(String(urlInput.value || "").trim());
+    const id = String(idInput.value || "").trim() || `fs_${simpleHash(src)}`;
+    const title = String(titleInput.value || "").trim() || "New Source";
+    const durationSec = Number(durInput.value) || 0;
+    const addedDate = String(dateInput.value || "").trim();
+    
+    // 태그 파싱
+    const tagsRaw = String(tagsInput.value || "");
+    const tags = tagsRaw
+      .split(/[,\n]+/g)
+      .map(s => s.trim())
+      .filter(Boolean);
+    
+    // 가사: 줄바꿈 → \n
+    const lyricsRaw = String(lyricsInput.value || "");
+    const lyrics = lyricsRaw.trim();
+    
+    // JSON 조립
+    const tagsInline = `[${tags.map(t => JSON.stringify(t)).join(", ")}]`;
+    
+    const lines = [
+      "{",
+      `  "id": ${JSON.stringify(id)},`,
+      `  "title": ${JSON.stringify(title)},`,
+      `  "src": ${JSON.stringify(src)},`,
+      `  "durationSec": ${durationSec},`,
+      `  "addedDate": ${JSON.stringify(addedDate)},`,
+      `  "tags": ${tagsInline}`
+    ];
+    
+    // 가사가 있으면 추가 (줄바꿈은 JSON.stringify가 알아서 \n으로 변환)
+    if (lyrics) {
+      // 마지막 줄에 쉼표 추가
+      lines[lines.length - 1] += ",";
+      lines.push(`  "lyrics": ${JSON.stringify(lyrics)}`);
+    }
+    
+    lines.push("},");
+    
+    resultArea.value = lines.join("\n");
+  }
+
+  // URL 분석 (id/title 추측 + duration 측정)
+  async function analyzeUrl() {
+    const url = String(urlInput.value || "").trim();
+    if (!url) return;
+    
+    const src = dropboxToRawMaybe(url);
+    const guess = guessIdTitleFromUrl(src);
+    
+    if (!idInput.value.trim()) idInput.value = guess.id;
+    if (!titleInput.value.trim()) titleInput.value = guess.title;
+    
+    // duration 측정 시도
+    fetchBtn.disabled = true;
+    fetchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    
+    const dur = await probeAudioDurationSec(src);
+    if (Number.isFinite(dur) && dur > 0) {
+      durInput.value = dur;
+      updateDurFmt();
+    }
+    
+    fetchBtn.disabled = false;
+    fetchBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i>';
+    
+    generateSnippet();
+  }
+
+  // 이벤트 바인딩
+  fetchBtn.addEventListener("click", analyzeUrl);
+  
+  // URL 엔터키로도 분석
+  urlInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      analyzeUrl();
+    }
+  });
+
+  // 입력 변경시 스니펫 재생성
+  [idInput, titleInput, durInput, dateInput, tagsInput, lyricsInput].forEach(el => {
+    el.addEventListener("input", generateSnippet);
+  });
+  
+  durInput.addEventListener("input", () => {
+    updateDurFmt();
+    generateSnippet();
+  });
+
+  // 복사 버튼
+  copyBtn.addEventListener("click", async () => {
+    const text = resultArea.value;
+    if (!text.trim()) return;
+    
+    try {
+      await navigator.clipboard.writeText(text);
+      copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> 복사됨!';
+      setTimeout(() => {
+        copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> 복사';
+      }, 1500);
+    } catch (e) {
+      // 클립보드 실패시 선택
+      resultArea.select();
+      alert("Ctrl+C로 복사해줘!");
+    }
+  });
+
+  // 닫기
+  function closeModal() {
+    overlay.remove();
+  }
+  
+  closeBtn.addEventListener("click", closeModal);
+  closeBtn2.addEventListener("click", closeModal);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+  
+  // ESC 키
+  const escHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+      document.removeEventListener("keydown", escHandler);
+    }
+  };
+  document.addEventListener("keydown", escHandler);
+  
+  // 초기 스니펫 생성
+  generateSnippet();
+}
+
+// 기존 함수를 모달 버전으로 대체
+async function emitFreeSourceJsonSnippet() {
+  openJsonGeneratorModal();
 }
 
 
