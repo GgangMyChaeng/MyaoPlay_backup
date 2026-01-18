@@ -814,6 +814,10 @@ root.querySelector("#abgm_reset_vol_selected")?.addEventListener("click", async 
   _rerenderAll(root, settings);
   try { _engineTick(); } catch {}
 });
+  // ===== Refresh BGM list =====
+  root.querySelector("#abgm_refresh_list")?.addEventListener("click", () => {
+    _rerenderAll(root, settings);
+  });
   // ===== Add empty entry row =====
   root.querySelector("#abgm_bgm_add_row")?.addEventListener("click", () => {
   const preset = _getActivePreset(settings);
