@@ -383,7 +383,7 @@ function addWandMenuButton() {
   item.className = "list-group-item flex-container flexGap5 interactable";
   item.innerHTML = `<i class="fa-solid fa-music extensionsMenuExtensionButton"></i> MyaoPlay`;
   item.onclick = () => {
-    openModal();
+    openFloatingMenu();
     menu.style.display = "none";
   };
   menu.appendChild(item);
