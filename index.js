@@ -365,6 +365,32 @@ function setDebugLine(text) {
 
 
 
+/** ====================== 마법봉 메뉴 버튼 ====================== */
+function addWandMenuButton() {
+  const MENU_ID = "myaoplay-wand-item";
+  if (document.getElementById(MENU_ID)) return;
+  const menu = document.getElementById("extensionsMenu");
+  if (!menu) {
+    // 메뉴 없으면 1초 후 재시도 (최대 10회)
+    if ((addWandMenuButton._retry ?? 0) < 10) {
+      addWandMenuButton._retry = (addWandMenuButton._retry ?? 0) + 1;
+      setTimeout(addWandMenuButton, 1000);
+    }
+    return;
+  }
+  const item = document.createElement("div");
+  item.id = MENU_ID;
+  item.className = "list-group-item flex-container flexGap5 interactable";
+  item.innerHTML = `<i class="fa-solid fa-music extensionsMenuExtensionButton"></i> MyaoPlay`;
+  item.onclick = () => {
+    openModal();
+    menu.style.display = "none";
+  };
+  menu.appendChild(item);
+}
+
+
+
 /** ====================== 템플릿 로더 (index.js에 남김) ====================== */
 // HTML 템플릿 파일 로드 (popup.html, window.html 등)
 async function loadHtml(relPath) {
@@ -485,6 +511,8 @@ async function init() {
   // === 체크 끝 ===
   mount();
   startEngine();
+  // 완드 메뉴
+  addWandMenuButton();
   // 2) 플로팅 버튼 초기화
   const settings = ensureSettings();
   // 테마 초기화 (저장된 테마 적용)
