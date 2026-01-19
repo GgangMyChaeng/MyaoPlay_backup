@@ -1,6 +1,6 @@
 // > 설정 모달(열기/닫기/fit/탭 전환/공통 modal 유틸)
 
-import { escapeHtml } from "./utils.js";
+import { escapeHtml, localeCompareFn } from "./utils.js";
 import { openFloatingMenu } from "./ui_floating.js";
 import { idbPutImage, idbGetImage, idbDelImage, makeImageKey } from "./storage.js";
 
@@ -217,11 +217,7 @@ export async function openModal() {
 // 프리셋 목록을 이름 기준으로 정렬해서 배열로 뽑는 애
 function getPresetsSortedByName(settings) {
   const arr = Object.values(settings?.presets ?? {});
-  arr.sort((a, b) => {
-    const an = String(a?.name ?? a?.id ?? "").trim();
-    const bn = String(b?.name ?? b?.id ?? "").trim();
-    return an.localeCompare(bn, undefined, { numeric: true, sensitivity: "base" });
-  });
+  arr.sort((a, b) => localeCompareFn(a?.name ?? a?.id ?? "", b?.name ?? b?.id ?? ""));
   return arr;
 }
 
