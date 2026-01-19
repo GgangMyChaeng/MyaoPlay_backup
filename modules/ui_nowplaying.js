@@ -1,7 +1,7 @@
 import { ensureSettings } from "./settings.js";
 import { saveSettingsDebounced } from "./deps.js";
 import { openFloatingMenu } from "./ui_floating.js";
-import { escapeHtml } from "./utils.js";
+import { escapeHtml, localeCompareFn } from "./utils.js";
 
 
 
@@ -834,12 +834,7 @@ function abgmRenderPlaylistPage(overlay, pidOverride) {
   if (sel) {
     sel.innerHTML = "";
     const presetsSorted = Object.values(settings.presets || {}).sort((a, b) =>
-      String(a?.name ?? a?.id ?? "").localeCompare(
-        String(b?.name ?? b?.id ?? ""),
-        undefined,
-        { numeric: true, sensitivity: "base" }
-      )
-    );
+      localeCompareFn(a?.name ?? a?.id ?? "", b?.name ?? b?.id ?? ""));
     for (const p of presetsSorted) {
       const opt = document.createElement("option");
       opt.value = String(p.id);
