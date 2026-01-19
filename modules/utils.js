@@ -159,5 +159,5 @@ export function localeCompareFn(a, b) {
   const catA = getTextCategory(strA);
   const catB = getTextCategory(strB);
   if (catA !== catB) return catA - catB;
-  return strA.localeCompare(strB, "ko", { numeric: true, sensitivity: "base" });
+  return strA.localeCompare(strB, undefined, { numeric: true, sensitivity: "base" });
 }
