@@ -2,7 +2,7 @@ import { ensureSettings, migrateLegacyDataUrlsToIDB } from "./settings.js";
 import { abgmEntryDetailPrompt } from "./ui_modal.js";
 import { saveSettingsDebounced } from "./deps.js";
 import { openFreeSourcesModal, initFreeSourcesInPanel } from "./ui_freesources.js";
-import { escapeHtml, localeCompareFn } from "./utils.js";
+import { escapeHtml } from "./utils.js";
 
 
 
@@ -338,7 +338,12 @@ function renderPresetSelect(root, settings) {
   sel.innerHTML = "";
   // > 프리셋 이름순 정렬
   const presetsSorted = Object.values(settings.presets).sort((a, b) =>
-    localeCompareFn(a?.name ?? a?.id ?? "", b?.name ?? b?.id ?? ""));
+    String(a?.name ?? a?.id ?? "").localeCompare(
+      String(b?.name ?? b?.id ?? ""),
+      undefined,
+      { numeric: true, sensitivity: "base" }
+    )
+  );
   presetsSorted.forEach((p) => {
     const opt = doc.createElement("option");
     opt.value = p.id;
@@ -1614,9 +1619,9 @@ function initModePanel(root, settings) {
     const presets = settings.recPromptPresets || {};
     const list = Object.values(presets);
     const sorted = list.sort((a, b) => {
-      if (a.id === presetId) return -1;
-      if (b.id === presetId) return 1;
-      return localeCompareFn(a.name || '', b.name || '');
+      if (a.id === "default") return -1;
+      if (b.id === "default") return 1;
+      return (a.name || '').localeCompare(b.name || '', undefined, { numeric: true });
     });
     sorted.forEach(p => {
       const opt = document.createElement('option');
@@ -1709,9 +1714,9 @@ function initModePanel(root, settings) {
     const presets = settings.kwPromptPresets || {};
     const list = Object.values(presets);
     const sorted = list.sort((a, b) => {
-      if (a.id === presetId) return -1;
-      if (b.id === presetId) return 1;
-      return localeCompareFn(a.name || '', b.name || '');
+      if (a.id === "default") return -1;
+      if (b.id === "default") return 1;
+      return (a.name || '').localeCompare(b.name || '', undefined, { numeric: true });
     });
     sorted.forEach(p => {
       const opt = document.createElement('option');
