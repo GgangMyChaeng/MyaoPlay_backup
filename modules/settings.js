@@ -92,7 +92,7 @@ export function rekeyPreset(preset) {
     imageUrl: b.imageUrl ?? "",
     imageAssetKey: "",
   }));
-  if (!p.defaultBgmKey && p.bgms.length && p.bgms[0].fileKey) {
+  if (p.defaultBgmKey === undefined && p.bgms.length && p.bgms[0].fileKey) {
     p.defaultBgmKey = p.bgms[0].fileKey;
   }
   // 2) defaultBgmKey가 bgms에 실제로 존재하는지 보정
