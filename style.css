@@ -70,10 +70,10 @@
   --abgm-table-row-expanded: rgba(74, 159, 216, 0.06);
   
   /* Floating Menu (glassmorphism - INVERTED: light theme = dark glass) */
---abgm-floating-glass: rgba(0, 0, 0, 0.06);
---abgm-floating-btn-bg: rgba(0, 0, 0, 0.05);
---abgm-floating-btn-border: rgba(0, 0, 0, 0.12);
---abgm-floating-btn-hover: rgba(0, 0, 0, 0.10);
+  --abgm-floating-glass: rgba(0, 0, 0, 0.06);
+  --abgm-floating-btn-bg: rgba(0, 0, 0, 0.05);
+  --abgm-floating-btn-border: rgba(0, 0, 0, 0.12);
+  --abgm-floating-btn-hover: rgba(0, 0, 0, 0.10);
   
   /* Debug toast */
   --abgm-toast-bg: rgba(255, 255, 255, 0.92);
@@ -142,10 +142,10 @@ body[data-abgm-theme="dark"] {
   --abgm-table-row-expanded: rgba(255, 255, 255, 0.02);
   
   /* Floating Menu (INVERTED: dark theme = light glass) */
-  --abgm-floating-glass: rgba(255, 255, 255, 0.15);
-  --abgm-floating-btn-bg: rgba(255, 255, 255, 0.08);
-  --abgm-floating-btn-border: rgba(255, 255, 255, 0.25);
-  --abgm-floating-btn-hover: rgba(255, 255, 255, 0.18);
+  --abgm-floating-glass: rgba(255, 255, 255, 0.06);
+  --abgm-floating-btn-bg: rgba(255, 255, 255, 0.05);
+  --abgm-floating-btn-border: rgba(255, 255, 255, 0.12);
+  --abgm-floating-btn-hover: rgba(255, 255, 255, 0.10);
   
   /* Debug toast - Teal/Mint */
   --abgm-toast-bg: rgba(30, 39, 40, 0.95);
