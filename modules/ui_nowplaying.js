@@ -278,14 +278,14 @@ overlay.innerHTML = `
       <div class="abgm-np-glass-inner">
         <!-- ===== Page: NP (Home) ===== -->
         <div data-abgm-page="np">
-          <!-- 상단 그룹: art -->
+          <!-- 상단 그룹: title + preset -->
           <div class="abgm-np-top-group">
-            <div class="abgm-np-art" id="abgm_np_art" data-view="image" style="cursor:pointer;"></div>
-          </div>
-          <!-- 하단 그룹: title + preset + seek + ctrl + bottom -->
-          <div class="abgm-np-bottom-group">
             <div class="abgm-np-title" id="abgm_np_title">(none)</div>
             <div class="abgm-np-sub" id="abgm_np_preset">Preset</div>
+          </div>
+          <!-- 하단 그룹: art + seek + ctrl + bottom -->
+          <div class="abgm-np-bottom-group">
+            <div class="abgm-np-art" id="abgm_np_art" data-view="image" style="cursor:pointer;"></div>
             <div class="abgm-np-seek-wrap">
               <input id="abgm_np_seek" class="abgm-np-seek" type="range" min="0" max="0" value="0" />
               <div class="abgm-np-time">
