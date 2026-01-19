@@ -137,3 +137,27 @@ export function makeAsstSig(text) {
   const tail = t.slice(-20).replace(/\s+/g, " ");
   return `${t.length}:${head}:${tail}`;
 }
+
+
+
+/** ========================= 정렬 (Locale-aware) ========================= */
+// 문자 카테고리 판별: 특문(0) → 한글(1) → 일본어(2) → 한자/중국어(3) → 영어(4)
+export function getTextCategory(name) {
+  const first = String(name || "")[0] || "";
+  if (/^[가-힣]/.test(first)) return 1; // 한글
+  if (/^[\u3040-\u309F\u30A0-\u30FF]/.test(first)) return 2; // 일본어 (히라가나/가타카나)
+  if (/^[\u4E00-\u9FFF]/.test(first)) return 3; // 한자 (중국어 포함)
+  if (/^[a-zA-Z]/.test(first)) return 4; // 영어
+  return 0; // 특문/숫자/기타
+}
+
+// 한/일/중/영 대응 locale-aware 비교 함수
+// 사용법: arr.sort(localeCompareFn) 또는 arr.sort((a,b) => localeCompareFn(a.name, b.name))
+export function localeCompareFn(a, b) {
+  const strA = String(a ?? "").trim().toLowerCase();
+  const strB = String(b ?? "").trim().toLowerCase();
+  const catA = getTextCategory(strA);
+  const catB = getTextCategory(strB);
+  if (catA !== catB) return catA - catB;
+  return strA.localeCompare(strB, "ko", { numeric: true, sensitivity: "base" });
+}
