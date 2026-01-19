@@ -608,12 +608,9 @@ export function initModal(overlay) {
       settings.enabled = !settings.enabled;
       _saveSettingsDebounced();
       updateModalPowerUI();
-      // 서랍 쪽 버튼이랑 동기화 (있으면)
-      const drawerBtn = document.querySelector('#autobgm_enabled_btn');
-      if (drawerBtn) {
-        drawerBtn.classList.toggle('abgm-on', !!settings.enabled);
-        const stateEl = drawerBtn.querySelector('#autobgm_enabled_state');
-        if (stateEl) stateEl.textContent = settings.enabled ? 'On' : 'Off';
+      // 서랍 쪽 이미지 동기화
+      if (typeof window.__abgmSyncEnabledUI === 'function') {
+        window.__abgmSyncEnabledUI();
       }
     });
   }
