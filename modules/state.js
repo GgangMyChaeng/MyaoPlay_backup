@@ -1,6 +1,6 @@
 // > 프리셋/BGM 공용 조회 + 정렬 헬퍼 전담
 
-import { isProbablyUrl, localeCompareFn } from "./utils.js";
+import { isProbablyUrl } from "./utils.js";
 
 
 
@@ -75,13 +75,23 @@ export function getSortedBgms(preset, sort) {
       const pa = Number(a?.priority ?? 0);
       const pb = Number(b?.priority ?? 0);
       if (pa !== pb) return (pa - pb) * dir;
-      return localeCompareFn(getEntryName(a), getEntryName(b));
+      return getEntryName(a).localeCompare(
+        getEntryName(b),
+        undefined,
+        { numeric: true, sensitivity: "base" }
+      );
     });
     return arr;
   }
   // 2) 이름순
   if (mode === "name_asc" || mode === "name_desc") {
-    arr.sort((a, b) => localeCompareFn(getEntryName(a), getEntryName(b)));
+    arr.sort((a, b) =>
+      getEntryName(a).localeCompare(
+        getEntryName(b),
+        undefined,
+        { numeric: true, sensitivity: "base" }
+      )
+    );
     if (mode === "name_desc") arr.reverse();
     return arr;
   }
