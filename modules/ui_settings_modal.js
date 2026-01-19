@@ -593,6 +593,30 @@ export function initModal(overlay) {
   });
   // 저장된 탭 복원
   switchTab(savedTab);
+  // ===== Modal Power Button (Extension Toggle) =====
+  const modalPowerBtn = root.querySelector('#abgm_modal_enabled_btn');
+  if (modalPowerBtn) {
+    // 초기 상태 반영
+    const updateModalPowerUI = () => {
+      const enabled = !!settings.enabled;
+      modalPowerBtn.classList.toggle('is-active', enabled);
+      modalPowerBtn.title = enabled ? 'Extension ON (click to disable)' : 'Extension OFF (click to enable)';
+    };
+    updateModalPowerUI();
+    // 클릭 이벤트
+    modalPowerBtn.addEventListener('click', () => {
+      settings.enabled = !settings.enabled;
+      _saveSettingsDebounced();
+      updateModalPowerUI();
+      // 서랍 쪽 버튼이랑 동기화 (있으면)
+      const drawerBtn = document.querySelector('#autobgm_enabled_btn');
+      if (drawerBtn) {
+        drawerBtn.classList.toggle('abgm-on', !!settings.enabled);
+        const stateEl = drawerBtn.querySelector('#autobgm_enabled_state');
+        if (stateEl) stateEl.textContent = settings.enabled ? 'On' : 'Off';
+      }
+    });
+  }
   // ===== Theme Toggle =====
   const themeBtns = root.querySelectorAll('.abgm-theme-btn');
   const applyTheme = (theme) => {
