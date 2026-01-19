@@ -595,21 +595,22 @@ export function initModal(overlay) {
   switchTab(savedTab);
   // ===== Modal Power Button (Extension Toggle) =====
   const modalPowerBtn = root.querySelector('#abgm_modal_enabled_btn');
-  if (modalPowerBtn) {
-    // 초기 상태 반영
+  const modalPowerImg = root.querySelector('#abgm_modal_enabled_img');
+  if (modalPowerBtn && modalPowerImg) {
+    const ICON_ON = "https://i.postimg.cc/6qDv8VHV/Myao_Play_On.png";
+    const ICON_OFF = "https://i.postimg.cc/tg5WBxTb/Myao_Play_Off.png";
+  
     const updateModalPowerUI = () => {
       const enabled = !!settings.enabled;
-      modalPowerBtn.classList.toggle('is-active', enabled);
-      modalPowerBtn.title = enabled ? 'Extension ON (click to disable)' : 'Extension OFF (click to enable)';
+      modalPowerImg.src = enabled ? ICON_ON : ICON_OFF;
+      modalPowerBtn.title = enabled ? 'Enabled: ON' : 'Enabled: OFF';
     };
     updateModalPowerUI();
-    // 클릭 이벤트
-    modalPowerBtn.addEventListener('pointerup', (e) => {
-      e.preventDefault();
+  
+    modalPowerBtn.addEventListener('click', () => {
       settings.enabled = !settings.enabled;
       _saveSettingsDebounced();
       updateModalPowerUI();
-      // 서랍 쪽 이미지 동기화
       if (typeof window.__abgmSyncEnabledUI === 'function') {
         window.__abgmSyncEnabledUI();
       }
