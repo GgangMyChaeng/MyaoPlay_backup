@@ -2054,7 +2054,7 @@ body.autobgm-modal-open {
 .abgm-np-glass .abgm-np-btn,
 .abgm-np-glass .abgm-np-pill {
   background: transparent;
-  border: none;
+  border: none !important;
   color: var(--abgm-text);
 }
 
