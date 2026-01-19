@@ -453,6 +453,8 @@ async function mount() {
   // 1) 초기 UI
   syncEnabledUI();
   syncFloatingUI();
+  // 모달에서도 호출할 수 있게 전역 노출
+  window.__abgmSyncEnabledUI = syncEnabledUI;
   // 2) Enabled 토글 로직 (기존 로직 유지)
   enabledBtn.addEventListener("click", () => {
     const s = ensureSettings();
