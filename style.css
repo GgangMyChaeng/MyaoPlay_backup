@@ -524,7 +524,7 @@ body.autobgm-modal-open {
    Modal UI Components
    ================================================================= */
 
-/* Modal Power Button (헤더 내 활성화 버튼) */
+/* Modal Power Button (in header) */
 .autobgm-modal-h .abgm-modal-power-btn {
   width: 48px;
   height: 32px;
@@ -534,14 +534,17 @@ body.autobgm-modal-open {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent !important;
 }
 .autobgm-modal-h .abgm-modal-power-btn .abgm-extbtn-icon {
   width: auto;
   height: 28px;
   max-height: 28px;
   object-fit: contain;
-  opacity: 1;
-  filter: none;
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  mix-blend-mode: normal !important;
 }
 
 .abgm-topbar {
