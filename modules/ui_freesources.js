@@ -1,6 +1,6 @@
 import { abgmNormTag, abgmNormTags, tagCat, sortTags, tagPretty } from "./tags.js";
 import { getModalHost } from "./ui_modal.js";
-import { escapeHtml, localeCompareFn } from "./utils.js";
+import { escapeHtml } from "./utils.js";
 import { addToMySources, addUrlToPreset } from "./storage.js";
 
 // 프리뷰 재생
@@ -264,7 +264,7 @@ function renderFsList(root, settings) {
       if (sortOrder === "name-asc" || sortOrder === "name-desc") {
         const an = String(a?.title ?? a?.name ?? "").trim();
         const bn = String(b?.title ?? b?.name ?? "").trim();
-        const cmp = localeCompareFn(an, bn);
+        const cmp = an.localeCompare(bn, undefined, { numeric: true, sensitivity: "base" });
         return sortOrder === "name-desc" ? -cmp : cmp;
       }
       // date 정렬: addedDate 없으면 맨 뒤로 (오래된 취급)
@@ -274,7 +274,7 @@ function renderFsList(root, settings) {
       if (!aDate && !bDate) {
         const an = String(a?.title ?? a?.name ?? "").trim();
         const bn = String(b?.title ?? b?.name ?? "").trim();
-        return localeCompareFn(an, bn);
+        return an.localeCompare(bn, undefined, { numeric: true, sensitivity: "base" });
       }
       // 하나만 없으면 없는 쪽이 뒤로
       if (!aDate) return 1;
@@ -460,7 +460,7 @@ function openAddToBottomSheet(root, settings, item) {
   const presetIds = Object.keys(settings.presets || {}).sort((a, b) => {
     const na = settings.presets[a]?.name || a;
     const nb = settings.presets[b]?.name || b;
-    return localeCompareFn(na, nb);
+    return na.localeCompare(nb, undefined, { sensitivity: "base" });
   });
   if (presetIds.length > 0) {
     const divider = document.createElement("div");
