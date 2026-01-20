@@ -3705,9 +3705,11 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--abgm-overlay, rgba(0, 0, 0, 0.5));
     z-index: 91;
     display: flex;
     align-items: center;
@@ -3715,19 +3717,19 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
 }
 
 .myaoplay-source-modal {
-    background: var(--myaoplay-bg-primary);
-    border: 1px solid var(--myaoplay-border);
+    background: var(--abgm-modal-bg, var(--abgm-bg, #ffffff));
+    border: 1px solid var(--abgm-border-strong, rgba(255, 255, 255, 0.18));
     border-radius: 12px;
     padding: 20px;
     width: 90%;
     max-width: 400px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px var(--abgm-shadow-strong, rgba(0, 0, 0, 0.3));
 }
 
 .myaoplay-source-modal-title {
     font-size: 14px;
     font-weight: 600;
-    color: var(--myaoplay-text-primary);
+    color: var(--abgm-text, #1a1a2e);
     margin-bottom: 16px;
 }
 
@@ -3738,29 +3740,28 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
 .myaoplay-source-modal-current label {
     display: block;
     font-size: 11px;
-    color: var(--myaoplay-text-secondary);
+    color: var(--abgm-text-dim, rgba(255, 255, 255, 0.6));
     margin-bottom: 6px;
 }
 
 .myaoplay-source-modal-input {
     width: 100%;
     padding: 10px 12px;
-    background: var(--myaoplay-bg-secondary);
-    border: 1px solid var(--myaoplay-border);
+    background: var(--abgm-input-bg, var(--abgm-surface, #f8fafd));
+    border: 1px solid var(--abgm-input-border, var(--abgm-border, rgba(255, 255, 255, 0.1)));
     border-radius: 8px;
-    color: var(--myaoplay-text-primary);
+    color: var(--abgm-text, #1a1a2e);
     font-size: 12px;
     box-sizing: border-box;
 }
 
 .myaoplay-source-modal-input:focus {
     outline: none;
-    border-color: var(--myaoplay-accent);
+    border-color: var(--abgm-accent, #4ab7d8);
 }
 
 .myaoplay-source-modal-input::placeholder {
-    color: var(--myaoplay-text-secondary);
-    opacity: 0.7;
+    color: var(--abgm-text-muted, rgba(255, 255, 255, 0.4));
 }
 
 .myaoplay-source-modal-buttons {
@@ -3781,20 +3782,20 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
 }
 
 .myaoplay-source-modal-btn.primary {
-    background: var(--myaoplay-accent);
+    background: var(--abgm-accent, #4ab7d8);
     color: white;
 }
 
 .myaoplay-source-modal-btn.primary:hover {
-    filter: brightness(1.1);
+    background: var(--abgm-accent-hover, #3a9bc8);
 }
 
 .myaoplay-source-modal-btn.secondary {
-    background: var(--myaoplay-bg-secondary);
-    color: var(--myaoplay-text-primary);
-    border: 1px solid var(--myaoplay-border);
+    background: var(--abgm-surface, #f8fafd);
+    color: var(--abgm-text, #1a1a2e);
+    border: 1px solid var(--abgm-border, rgba(255, 255, 255, 0.1));
 }
 
 .myaoplay-source-modal-btn.secondary:hover {
-    background: var(--myaoplay-bg-tertiary);
+    background: var(--abgm-surface-hover, rgba(255, 255, 255, 0.08));
 }
