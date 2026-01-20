@@ -463,18 +463,15 @@ function renderBgmTable(root, settings) {
           <div class="abgm-keywords">
           <small>Keywords</small>
           <textarea class="abgm_keywords" placeholder="rain, storm...">${escapeHtml(b.keywords ?? "")}</textarea>
-          <small class="abgm-src-title">Source</small>
           <div class="abgm-source-row" style="display:flex; gap:8px; align-items:center;">
-            <input type="text" class="abgm_source" placeholder="file.mp3 or https://..." value="${escapeHtml(b.fileKey ?? "")}" style="flex:1; min-width:0;">
-          <div class="menu_button abgm-iconbtn abgm_change_mp3" title="Change MP3" style="white-space:nowrap;">
-            <i class="fa-solid fa-file-audio"></i>
+          <div class="menu_button abgm-iconbtn abgm_change_source" title="Change Source" style="white-space:nowrap;">
+            <i class="fa-solid fa-file-audio"></i> Source
             </div>
           <div class="menu_button abgm-iconbtn abgm_license_btn" title="License / Description" style="white-space:nowrap;">
             <i class="fa-solid fa-file-lines"></i>
           </div>
-            <input type="file" class="abgm_change_mp3_file" accept="audio/mpeg,audio/mp3" style="display:none;">
-            </div>
-          </div>
+         </div>
+        </div>
           <div class="abgm-side">
             <div class="abgm-field-tight">
               <small>Priority</small>
@@ -1145,20 +1142,20 @@ root.querySelector("#abgm_reset_vol_selected")?.addEventListener("click", async 
       _saveSettingsDebounced();
       return;
     }
-// Source (정규화된 거)
-if (e.target.classList.contains("abgm_source")) {
-  const oldKey = String(bgm.fileKey ?? "");
-  let newKey = String(e.target.value || "").trim();
-  newKey = _dropboxToRaw(newKey);     // 여기
-  e.target.value = newKey;           // 입력창도 변환된 걸로 보여주기
-  bgm.fileKey = newKey;
-  if (oldKey && preset.defaultBgmKey === oldKey) {
-    preset.defaultBgmKey = newKey;
+  // Source (정규화된 거)
+  if (e.target.classList.contains("abgm_source")) {
+    const oldKey = String(bgm.fileKey ?? "");
+    let newKey = String(e.target.value || "").trim();
+    newKey = _dropboxToRaw(newKey);     // 여기
+    e.target.value = newKey;           // 입력창도 변환된 걸로 보여주기
+    bgm.fileKey = newKey;
+    if (oldKey && preset.defaultBgmKey === oldKey) {
+      preset.defaultBgmKey = newKey;
+    }
+    _saveSettingsDebounced();
+    _renderDefaultSelect(root, settings);
+    return;
   }
-  _saveSettingsDebounced();
-  _renderDefaultSelect(root, settings);
-  return;
-}
     const detailRow = tr.classList.contains("abgm-bgm-detail") ? tr : tr.closest("tr.abgm-bgm-detail") || tr;
     if (e.target.classList.contains("abgm_vol")) {
       if (bgm.volLocked) return;
@@ -1278,16 +1275,90 @@ if (e.target.classList.contains("abgm_source")) {
         try { _updateNowPlayingUI(); } catch {}
         return;
       }
-    // change mp3 (swap only this entry's asset)
-    if (e.target.closest(".abgm_change_mp3")) {
-      const detailRow = tr.classList.contains("abgm-bgm-detail")
-        ? tr
-        : tr.closest("tr.abgm-bgm-detail") || tr;
-      const fileInput = detailRow.querySelector(".abgm_change_mp3_file");
-      if (!fileInput) return;
-      // 이 엔트리의 id를 fileInput에 기억시켜둠
-      fileInput.dataset.bgmId = String(id);
-      fileInput.click();
+    // change source (소스 변경 모달)
+    if (e.target.closest(".abgm_change_source")) {
+      const currentSource = String(bgm.fileKey ?? "");
+      // 소스 변경 모달 생성
+      const overlay = document.createElement('div');
+      overlay.className = 'myaoplay-source-modal-overlay';
+      overlay.innerHTML = `
+        <div class="myaoplay-source-modal">
+          <div class="myaoplay-source-modal-title">Change Source</div>
+          <div class="myaoplay-source-modal-current">
+            <label>Current Source (URL or filename)</label>
+            <input type="text" class="myaoplay-source-modal-input" 
+                   value="${escapeHtml(currentSource)}" 
+                   placeholder="Enter URL or select a file below">
+          </div>
+          <div class="myaoplay-source-modal-buttons">
+            <button class="myaoplay-source-modal-btn secondary" data-action="file">Select File</button>
+            <button class="myaoplay-source-modal-btn secondary" data-action="cancel">Cancel</button>
+            <button class="myaoplay-source-modal-btn primary" data-action="apply">Apply</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+      const input = overlay.querySelector('.myaoplay-source-modal-input');
+      const fileBtn = overlay.querySelector('[data-action="file"]');
+      const cancelBtn = overlay.querySelector('[data-action="cancel"]');
+      const applyBtn = overlay.querySelector('[data-action="apply"]');
+      // 파일 선택
+      fileBtn.addEventListener('click', async () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'audio/*';
+        fileInput.addEventListener('change', async (ev) => {
+          const file = ev.target.files?.[0];
+          if (!file) return;
+          const oldKey = String(bgm.fileKey ?? "");
+          const newKey = String(file.name ?? "").trim();
+          if (!newKey) return;
+          try {
+            await _idbPut(newKey, file);
+            const assets = _ensureAssetList(settings);
+            assets[newKey] = { fileKey: newKey, label: newKey.replace(/\.mp3$/i, "") };
+            bgm.fileKey = newKey;
+            if (oldKey && preset.defaultBgmKey === oldKey) {
+              preset.defaultBgmKey = newKey;
+            }
+            if (oldKey && oldKey !== newKey && !_isFileKeyReferenced(settings, oldKey)) {
+              try { await _idbDel(oldKey); delete settings.assets[oldKey]; } catch {}
+            }
+            input.value = newKey;
+            _saveSettingsDebounced();
+            _rerenderAll(root, settings);
+            try { _engineTick(); } catch {}
+          } catch (err) {
+            console.error("[MyaPl] change source failed:", err);
+          }
+        });
+        fileInput.click();
+      });
+      // 취소
+      cancelBtn.addEventListener('click', () => {
+        overlay.remove();
+      });
+      // 오버레이 클릭으로 닫기
+      overlay.addEventListener('click', (ev) => {
+        if (ev.target === overlay) {
+          overlay.remove();
+        }
+      });
+      // 적용 (URL 변경)
+      applyBtn.addEventListener('click', () => {
+        let newValue = String(input.value ?? "").trim();
+        newValue = _dropboxToRaw(newValue);
+        const oldKey = String(bgm.fileKey ?? "");
+        if (newValue !== oldKey) {
+          bgm.fileKey = newValue;
+          if (oldKey && preset.defaultBgmKey === oldKey) {
+            preset.defaultBgmKey = newValue;
+          }
+          _saveSettingsDebounced();
+          _rerenderAll(root, settings);
+        }
+        overlay.remove();
+      });
       return;
     }
     // lock volume
@@ -1402,41 +1473,6 @@ if (e.target.classList.contains("abgm_source")) {
       return;
     }
   });
-  // file picker change (per-entry mp3 swap)
-  root.querySelector("#abgm_bgm_tbody")?.addEventListener("change", async (e) => {
-    if (!e.target.classList?.contains("abgm_change_mp3_file")) return;
-    const file = e.target.files?.[0];
-    const bgmId = String(e.target.dataset.bgmId || "");
-    e.target.value = ""; // 같은 파일 다시 선택 가능하게
-    if (!file || !bgmId) return;
-    const preset = _getActivePreset(settings);
-    const bgm = preset.bgms.find((x) => String(x.id) === bgmId);
-    if (!bgm) return;
-    const oldKey = String(bgm.fileKey ?? "");
-    const newKey = String(file.name ?? "").trim();
-    if (!newKey) return;
-    try {
-      // 새 파일 저장
-      await _idbPut(newKey, file);
-      const assets = _ensureAssetList(settings);
-      assets[newKey] = { fileKey: newKey, label: newKey.replace(/\.mp3$/i, "") };
-      // 엔트리 소스 교체
-      bgm.fileKey = newKey;
-      // default 최초만 따라가게
-      if (oldKey && preset.defaultBgmKey === oldKey) {
-    preset.defaultBgmKey = newKey;
-  }
-      // oldKey가 더 이상 참조 안 되면 정리(선택)
-      if (oldKey && oldKey !== newKey && !_isFileKeyReferenced(settings, oldKey)) {
-        try { await _idbDel(oldKey); delete settings.assets[oldKey]; } catch {}
-      }
-      _saveSettingsDebounced();
-      _rerenderAll(root, settings);
-      try { _engineTick(); } catch {}
-    } catch (err) {
-    console.error("[MyaPl] change mp3 failed:", err);
-  }
-});
   // ===== Import/Export (preset 1개: 룰만) =====
   const importFile = root.querySelector("#abgm_import_file");
   root.querySelector("#abgm_import")?.addEventListener("click", () => importFile?.click());
