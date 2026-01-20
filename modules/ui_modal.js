@@ -154,6 +154,7 @@ export async function openModal() {
   setO("display", "block");
   setO("overflow", "auto");
   setO("-webkit-overflow-scrolling", "touch");
+  setO("background", "rgba(0,0,0,.55)");
   setO("z-index", "90"); // modal z-index
   setO("padding", "0"); // 4) modal이 margin/pad 갖고 있으니 overlay는 0
   host.appendChild(overlay);
