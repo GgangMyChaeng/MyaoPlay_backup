@@ -465,7 +465,7 @@ function renderBgmTable(root, settings) {
           <textarea class="abgm_keywords" placeholder="rain, storm...">${escapeHtml(b.keywords ?? "")}</textarea>
           <div class="abgm-source-row" style="display:flex; gap:8px; align-items:center;">
           <div class="menu_button abgm-iconbtn abgm_change_source" title="Change Source" style="white-space:nowrap;">
-            <i class="fa-solid fa-file-audio"></i> Source
+            <i class="fa-solid fa-file-audio"></i>
             </div>
           <div class="menu_button abgm-iconbtn abgm_license_btn" title="License / Description" style="white-space:nowrap;">
             <i class="fa-solid fa-file-lines"></i>
