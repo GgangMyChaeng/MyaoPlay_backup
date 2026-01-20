@@ -1292,8 +1292,8 @@ root.querySelector("#abgm_reset_vol_selected")?.addEventListener("click", async 
           </div>
           <div class="myaoplay-source-modal-buttons">
             <button class="myaoplay-source-modal-btn secondary" data-action="file">Select File</button>
-            <button class="myaoplay-source-modal-btn secondary" data-action="cancel">Cancel</button>
             <button class="myaoplay-source-modal-btn primary" data-action="apply">Apply</button>
+            <button class="myaoplay-source-modal-btn secondary" data-action="cancel">Cancel</button>
           </div>
         </div>
       `;
