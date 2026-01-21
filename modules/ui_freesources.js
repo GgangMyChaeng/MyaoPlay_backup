@@ -1,4 +1,4 @@
-import { abgmNormTag, abgmNormTags, tagCat, sortTags, tagPretty } from "./tags.js";
+import { abgmNormTag, abgmNormTags, tagCat, sortTags, tagPretty, bpmMatchesTempo, getTempoRange } from "./tags.js";
 import { getModalHost } from "./ui_modal.js";
 import { escapeHtml } from "./utils.js";
 import { addToMySources, addUrlToPreset } from "./storage.js";
@@ -112,9 +112,24 @@ function renderFsPreviewVol(root, settings) {
 // 선택된 태그들이 item.tags 안에 “전부(AND)” 들어있는지 판정하는 애
 function matchTagsAND(itemTags = [], selectedSet) {
   if (!selectedSet || selectedSet.size === 0) return true;
-  const set = new Set((itemTags || []).flatMap(abgmNormTags).filter(Boolean));
+  const normTags = (itemTags || []).flatMap(abgmNormTags).filter(Boolean);
+  const set = new Set(normTags);
   for (const t of selectedSet) {
-    if (!set.has(abgmNormTag(t))) return false;
+    const norm = abgmNormTag(t);
+    // tempo:allegro 같은 템포 태그면 BPM 범위 매칭
+    if (norm.startsWith("tempo:")) {
+      const tempoName = norm.split(":")[1];
+      const hasBpmMatch = normTags.some(tag => {
+        if (tag.startsWith("bpm:")) {
+          const bpm = Number(tag.split(":")[1]);
+          return bpmMatchesTempo(bpm, tempoName);
+        }
+        return false;
+      });
+      if (!hasBpmMatch && !set.has(norm)) return false;
+    } else {
+      if (!set.has(norm)) return false;
+    }
   }
   return true;
 }
@@ -124,9 +139,24 @@ function matchSearch(item, q) {
   const s = String(q || "").trim().toLowerCase();
   if (!s) return true;
   const title = String(item?.title ?? item?.name ?? "").toLowerCase();
-  const tags = (item?.tags ?? []).map(abgmNormTag).join(" ");
+  const normTags = (item?.tags ?? []).flatMap(abgmNormTags);
+  const tags = normTags.join(" ");
   const src = String(item?.src ?? item?.fileKey ?? "").toLowerCase();
-  return (title.includes(s) || tags.includes(s) || src.includes(s));
+  // 기본 매칭
+  if (title.includes(s) || tags.includes(s) || src.includes(s)) return true;
+  // 템포 용어로 검색 시 BPM 범위 매칭
+  const range = getTempoRange(s);
+  if (range) {
+    const hasBpmMatch = normTags.some(tag => {
+      if (tag.startsWith("bpm:")) {
+        const bpm = Number(tag.split(":")[1]);
+        return bpm >= range.min && bpm <= range.max;
+      }
+      return false;
+    });
+    if (hasBpmMatch) return true;
+  }
+  return false;
 }
 
 // 현재 탭(Free/My)에 맞는 리스트(settings.freeSources vs settings.mySources) 골라오는 애
