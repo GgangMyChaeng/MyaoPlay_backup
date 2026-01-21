@@ -7,7 +7,6 @@ const TAG_ALIASES = new Map([
   ["hip-hop", "hiphop"],
   ["hip hop", "hiphop"],
   ["r&b", "rnb"],
-  ["lofi", "lo-fi"],
   ["ballads", "ballad"],
   ["vocals", "vocal"],
   ["lyric", "vocal"],
@@ -22,15 +21,13 @@ const PHRASE_ALIASES = new Map([
   ["trap beats", ["genre:trap"]],
   ["neo soul", ["genre:neo_soul"]],
   ["bossa nova", ["genre:bossa_nova"]],
-  ["lo-fi hip hop", ["mood:lofi", "genre:hiphop"]],
   ["glitch hop", ["genre:glitch_hop"]],
-  ["jazz hop", ["genre:jazz_hop"]],
   ["industrial techno", ["genre:industrial", "genre:techno"]],
   ["electronic/edm", ["genre:electronic", "genre:edm"]],
-  ["darksynth", ["genre:darksynth", "mood:dark", "inst:synth"]],
+  ["darksynth", ["genre:darksynth"]],
   ["french glitch", ["genre:french", "genre:glitch"]],
   ["808 bassline", ["inst:808_bass"]],
-  ["industrial horror", ["mood:industrial", "mood:horror"]],
+  ["industrial horror", ["genre:industrial", "mood:horror"]],
   ["mechanical groove", ["mood:mechanical", "mood:groove"]],
   ["night vibes", ["mood:night_vibes"]],
   ["tension", ["mood:tense"]],
@@ -69,7 +66,7 @@ const GENRE_WORDS = new Set([
 
 const MOOD_WORDS = new Set([
   "calm","dark","sad","happy","tense","chill","cozy","epic","mysterious",
-  "alternative","chaotic","cinematic","cold","cyberpunk","tension","night","tight","lofi",
+  "alternative","chaotic","cinematic","cold","cyberpunk","tension","night","tight","lo-fi",
   "east asian influence","exploration","high-energy","hopeless","horizon","military",
   "underscore","mundane","soft", "gothic","fantasy","medieval","celtic","upbeat"
 ]);
@@ -77,7 +74,7 @@ const MOOD_WORDS = new Set([
 const INST_WORDS = new Set([
   "piano","guitar","strings","synth","bass","drums","orchestra",
   "acoustic","808","turntable","scratch","808_bass",
-  "choir","chamber_strings","electronic"
+  "choir","chamber_strings"
 ]);
 
 const LYRIC_WORDS = new Set([
@@ -155,8 +152,8 @@ export function abgmNormTag(raw) {
 /** ========================= 태그 표시용 헬퍼 (표준 태그 → UI 라벨) ========================= */
 const TAG_PRETTY_MAP = new Map([
   ["rnb", "R&B"],
-  ["hiphop", "hip-hop"],
-  ["lofi", "lo-fi"],
+  ["hiphop", "Hip-Hop"],
+  ["lo-fi", "Lo-Fi"],
   ["idm", "IDM"],
   ["edm", "EDM"],
 ]);
