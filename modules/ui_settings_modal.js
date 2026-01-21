@@ -1088,8 +1088,23 @@ root.querySelector("#abgm_reset_vol_selected")?.addEventListener("click", async 
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      // ★ 디버깅 로그 (나중에 지워도 됨)
+      console.log("[MyaPl ZIP] settings.activePresetId:", settings.activePresetId);
+      console.log("[MyaPl ZIP] presets keys:", Object.keys(settings.presets || {}));
       const importedKeys = await _importZip(file, settings);
-      const preset = _getActivePreset(settings);
+      // ★ 현재 모달에서 선택된 프리셋 ID를 직접 가져오기
+      const selectEl = root.querySelector("#abgm_preset_select");
+      const selectedPresetId = selectEl?.value || settings.activePresetId;
+      // activePresetId가 불일치하면 동기화
+      if (selectedPresetId !== settings.activePresetId) {
+        console.warn("[MyaPl ZIP] preset mismatch! UI:", selectedPresetId, "vs settings:", settings.activePresetId);
+        settings.activePresetId = selectedPresetId;
+      }
+      const preset = settings.presets[settings.activePresetId];
+      if (!preset) {
+        console.error("[MyaPl ZIP] preset not found for ID:", settings.activePresetId);
+        return;
+      }
       for (const fk of importedKeys) {
         if (!preset.bgms.some((b) => b.fileKey === fk)) {
           preset.bgms.push({
