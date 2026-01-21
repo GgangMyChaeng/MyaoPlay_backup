@@ -1,4 +1,4 @@
-import { abgmNormTag, abgmNormTags, tagCat, sortTags, tagPretty, bpmMatchesTempo, getTempoRange } from "./tags.js";
+import { abgmNormTag, abgmNormTags, tagCat, sortTags, tagPretty, bpmMatchesTempo, getTempoRange, bpmToSearchTempo } from "./tags.js";
 import { getModalHost } from "./ui_modal.js";
 import { escapeHtml } from "./utils.js";
 import { addToMySources, addUrlToPreset } from "./storage.js";
@@ -176,6 +176,17 @@ function collectAllTagsForTabAndCat(settings) {
       const t = abgmNormTag(raw);
       if (!t) continue;
       const c = tagCat(t);
+      // bpm 카테고리면 → tempo 용어로 변환해서 저장
+      if (c === "bpm") {
+        if (cat === "tempo") {  // bpm 대신 tempo로
+          const bpm = Number(t.split(":")[1]);
+          const tempoName = bpmToSearchTempo(bpm);
+          if (tempoName) {
+            bag.add(`tempo:${tempoName}`);
+          }
+        }
+        continue;
+      }
       // > All = "분류 안 된 것만" (콜론 없는 태그들 = etc)
       if (cat === "all") {
         if (c !== "etc") continue;
