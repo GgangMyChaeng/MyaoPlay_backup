@@ -7,9 +7,7 @@ const TAG_ALIASES = new Map([
   ["hip-hop", "hiphop"],
   ["hip hop", "hiphop"],
   ["r&b", "rnb"],
-  ["lofi", "lo-fi"], // 취향
-  ["trap beats", "trap beat"],
-  ["trap", "trap beat"],
+  ["lofi", "lo-fi"],
   ["ballads", "ballad"],
   ["vocals", "vocal"],
   ["lyric", "vocal"],
@@ -20,6 +18,8 @@ const TAG_ALIASES = new Map([
 const PHRASE_ALIASES = new Map([
   ["alternative r&b", ["mood:alternative", "genre:rnb"]],
   ["acoustic pop", ["inst:acoustic", "genre:pop"]],
+  ["trap beat", ["genre:trap"]],
+  ["trap beats", ["genre:trap"]],
   ["neo soul", ["genre:neo_soul"]],
   ["bossa nova", ["genre:bossa_nova"]],
   ["lo-fi hip hop", ["mood:lofi", "genre:hiphop"]],
@@ -63,7 +63,8 @@ const PHRASE_ALIASES = new Map([
 const GENRE_WORDS = new Set([
   "blues","jazz","rock","pop","country","classical","folk","funk","soul","reggae","metal","ambient",
   "electronic","edm","hiphop","rap","rnb","drill","idm","techno","glitch","j-rock",
-  "trap beat","darksynth","darkwave","neoclassical","chillwave","dream_pop","bedroom_pop","tropical_house"
+  "trap","darksynth","darkwave","neoclassical","chillwave","dream_pop","bedroom_pop","tropical_house",
+  "ballad","dance","industrial","urban"
 ]);
 
 const MOOD_WORDS = new Set([
