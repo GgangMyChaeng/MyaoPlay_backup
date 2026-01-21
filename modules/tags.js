@@ -80,7 +80,7 @@ const INST_WORDS = new Set([
 ]);
 
 const LYRIC_WORDS = new Set([
-  "lyric","lyrics","no lyric","instrumental","vocal","male","female"
+  "lyric","no lyric","instrumental","vocal","male","female","duet"
 ]);
 
 // (내부) raw 태그를 소문자/공백정리 + 별칭 적용 + 숫자만 있으면 bpm:xxx로 변환
