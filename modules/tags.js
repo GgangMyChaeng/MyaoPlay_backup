@@ -7,8 +7,13 @@ const TAG_ALIASES = new Map([
   ["hip-hop", "hiphop"],
   ["hip hop", "hiphop"],
   ["r&b", "rnb"],
-  ["rnb", "rnb"],
   ["lofi", "lo-fi"], // 취향
+  ["trap beats", "trap beat"],
+  ["trap", "trap beat"],
+  ["ballads", "ballad"],
+  ["vocals", "vocal"],
+  ["lyric", "vocal"],
+  ["lyrics", "vocal"],
 ]);
 
 // “문구(여러 단어)”를 통째로 확정 매핑
@@ -30,23 +35,48 @@ const PHRASE_ALIASES = new Map([
   ["night vibes", ["mood:night_vibes"]],
   ["tension", ["mood:tense"]],
   ["high-energy j-rock", ["mood:high-energy", "genre:j-rock"]],
+  // 장르 분리/정리
+  ["industrial metal", ["genre:industrial", "genre:metal"]],
+  ["dark orchestral hybrid", ["mood:dark", "inst:orchestra", "genre:hybrid"]],
+  ["cinematic dark ambient", ["mood:cinematic", "mood:dark", "genre:ambient"]],
+  ["industrial orchestral", ["genre:industrial", "inst:orchestra"]],
+  ["neoclassical darkwave", ["genre:neoclassical", "genre:darkwave"]],
+  ["orchestral dark fantasy", ["inst:orchestra", "mood:dark", "mood:fantasy"]],
+  ["dark fantasy ambient", ["mood:dark", "mood:fantasy", "genre:ambient"]],
+  ["dream pop", ["genre:dream_pop"]],
+  ["chillwave", ["genre:chillwave"]],
+  ["alternative pop", ["mood:alternative", "genre:pop"]],
+  ["bedroom pop", ["genre:bedroom_pop"]],
+  ["tropical house", ["genre:tropical_house"]],
+  ["gothic choir", ["mood:gothic", "inst:choir"]],
+  ["chamber strings", ["inst:chamber_strings"]],
+  ["electronic instrumentation", ["inst:electronic"]],
+  ["french drill", ["genre:french", "genre:drill"]],
+  ["power pop", ["genre:power_pop"]],
+  ["medieval folk", ["mood:medieval", "genre:folk"]],
+  ["celtic upbeat", ["mood:celtic", "mood:upbeat"]],
+  ["future rnb", ["genre:future_rnb"]],
+  ["lo-fi hip hop", ["genre:lofi_hiphop"]],
+  ["jazz hop", ["genre:jazz_hop"]],
 ]);
 
 const GENRE_WORDS = new Set([
   "blues","jazz","rock","pop","country","classical","folk","funk","soul","reggae","metal","ambient",
-  "electronic","edm","hiphop","rap","rnb","drill","idm","techno","glitch","j-rock"
+  "electronic","edm","hiphop","rap","rnb","drill","idm","techno","glitch","j-rock",
+  "trap beat","darksynth","darkwave","neoclassical","chillwave","dream_pop","bedroom_pop","tropical_house"
 ]);
 
 const MOOD_WORDS = new Set([
   "calm","dark","sad","happy","tense","chill","cozy","epic","mysterious",
   "alternative","chaotic","cinematic","cold","cyberpunk","tension","night","tight","lofi",
   "east asian influence","exploration","high-energy","hopeless","horizon","military",
-  "underscore","mundane","soft"
+  "underscore","mundane","soft", "gothic","fantasy","medieval","celtic","upbeat"
 ]);
 
 const INST_WORDS = new Set([
   "piano","guitar","strings","synth","bass","drums","orchestra",
-  "acoustic","808","turntable","scratch","808_bass"
+  "acoustic","808","turntable","scratch","808_bass",
+  "choir","chamber_strings","electronic"
 ]);
 
 const LYRIC_WORDS = new Set([
@@ -157,6 +187,8 @@ export function tagPretty(t){
   let v = tagVal(s).replace(/[_]+/g, " ").trim(); // neo_soul -> neo soul
   if (TAG_PRETTY_MAP.has(v)) v = TAG_PRETTY_MAP.get(v);
   if (cat === "bpm") return `${v} BPM`;
+  // 첫 글자 대문자로 (각 단어마다)
+  v = v.replace(/\b[a-z]/g, c => c.toUpperCase());
   return v;
 }
 
