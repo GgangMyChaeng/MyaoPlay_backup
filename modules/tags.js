@@ -3,6 +3,33 @@
 // - TAG_ALIASES: 단어 단위 별칭
 // - PHRASE_ALIASES: 여러 단어 문구를 “확정 태그들”로 매핑
 // - GENRE_WORDS / MOOD_WORDS / INST_WORDS / LYRIC_WORDS: 1토큰 분류 사전
+/** ========================= BPM ↔ 템포 용어 매핑 ========================= */
+const TEMPO_RANGES = [
+  { name: "grave",    min: 0,   max: 40  },
+  { name: "largo",    min: 41,  max: 60  },
+  { name: "adagio",   min: 61,  max: 80  },
+  { name: "andante",  min: 81,  max: 100 },
+  { name: "moderato", min: 101, max: 120 },
+  { name: "allegro",  min: 121, max: 160 },
+  { name: "vivace",   min: 161, max: 180 },
+  { name: "presto",   min: 181, max: 300 },
+];
+
+// BPM 숫자 → 템포 용어
+function bpmToTempo(bpm) {
+  const n = Number(bpm);
+  if (isNaN(n)) return null;
+  const found = TEMPO_RANGES.find(t => n >= t.min && n <= t.max);
+  return found ? found.name : null;
+}
+
+// 템포 용어 → BPM 범위 {min, max}
+function tempoToRange(tempo) {
+  const t = String(tempo).toLowerCase();
+  const found = TEMPO_RANGES.find(r => r.name === t);
+  return found ? { min: found.min, max: found.max } : null;
+}
+
 const TAG_ALIASES = new Map([
   ["hip-hop", "hiphop"],
   ["hip hop", "hiphop"],
@@ -90,8 +117,11 @@ function abgmCanonRawTag(raw) {
   // 2) 숫자만 있으면 bpm
   if (/^\d{2,3}$/.test(s)) {
     const bpm = Number(s);
-    if (bpm >= 40 && bpm <= 260) return `bpm:${bpm}`;
+    if (bpm >= 20 && bpm <= 300) return `bpm:${bpm}`;
   }
+  // 2-1) 템포 용어면 tempo:xxx
+  const tempoCheck = TEMPO_RANGES.find(t => t.name === s);
+  if (tempoCheck) return `tempo:${s}`;
   // 3) 통째 문구 별칭 먼저
   if (PHRASE_ALIASES.has(s)) return s;
   // 4) 단어 별칭 적용 (토큰 단위)
@@ -156,6 +186,14 @@ const TAG_PRETTY_MAP = new Map([
   ["lo-fi", "Lo-Fi"],
   ["idm", "IDM"],
   ["edm", "EDM"],
+  ["grave", "Grave"],
+  ["largo", "Largo"],
+  ["adagio", "Adagio"],
+  ["andante", "Andante"],
+  ["moderato", "Moderato"],
+  ["allegro", "Allegro"],
+  ["vivace", "Vivace"],
+  ["presto", "Presto"],
 ]);
 
 const TAG_CAT_ORDER = ["genre","mood","inst","lyric","bpm","tempo","etc"];
@@ -182,9 +220,10 @@ export function tagCat(t) {
 export function tagPretty(t){
   const s = abgmNormTag(t);
   const cat = tagCat(s);
-  let v = tagVal(s).replace(/[_]+/g, " ").trim(); // neo_soul -> neo soul
+  let v = tagVal(s).replace(/[_]+/g, " ").trim();
   if (TAG_PRETTY_MAP.has(v)) v = TAG_PRETTY_MAP.get(v);
   if (cat === "bpm") return `${v} BPM`;
+  if (cat === "tempo") return TAG_PRETTY_MAP.get(v) || v.charAt(0).toUpperCase() + v.slice(1);
   // 첫 글자 대문자로 (각 단어마다)
   v = v.replace(/\b[a-z]/g, c => c.toUpperCase());
   return v;
@@ -218,3 +257,23 @@ function tagSortKey(t){
   return [catRank, 0, s];
 }
 
+
+
+/** ========================= BPM ↔ 템포 검색 헬퍼 ========================= */
+// BPM 숫자를 검색용 템포 용어로 변환 (UI에서 태그 클릭 시 사용)
+export function bpmToSearchTempo(bpm) {
+  return bpmToTempo(bpm);
+}
+
+// 템포 용어로 검색할 때 해당 BPM 범위 반환
+export function getTempoRange(tempo) {
+  return tempoToRange(tempo);
+}
+
+// 특정 BPM이 템포 범위에 속하는지 체크
+export function bpmMatchesTempo(bpm, tempo) {
+  const range = tempoToRange(tempo);
+  if (!range) return false;
+  const n = Number(bpm);
+  return n >= range.min && n <= range.max;
+}
