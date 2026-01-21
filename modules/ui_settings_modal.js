@@ -1051,13 +1051,24 @@ root.querySelector("#abgm_reset_vol_selected")?.addEventListener("click", async 
   bindOverlay?.addEventListener("click", (e) => {
     if (e.target === bindOverlay) hideBindOverlay();
   });
-// ===== MP3 add =====
+  // ===== MP3 add =====
   const mp3Input = root.querySelector("#abgm_bgm_file");
   root.querySelector("#abgm_bgm_add")?.addEventListener("click", () => mp3Input?.click());
   mp3Input?.addEventListener("change", async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const preset = _getActivePreset(settings);
+    // ★ UI select와 settings 동기화 (ZIP과 동일)
+    const selectEl = root.querySelector("#abgm_preset_select");
+    const uiSelectedId = selectEl?.value;
+    if (uiSelectedId && uiSelectedId !== settings.activePresetId) {
+      console.warn("[MyaPl MP3] Preset mismatch! Syncing:", uiSelectedId);
+      settings.activePresetId = uiSelectedId;
+    }
+    const preset = settings.presets[settings.activePresetId];
+    if (!preset) {
+      console.error("[MyaPl MP3] Target preset not found:", settings.activePresetId);
+      return;
+    }
     const fileKey = file.name;
     await _idbPut(fileKey, file);
     const durationSec = await _abgmGetDurationSecFromBlob(file);
