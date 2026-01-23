@@ -85,7 +85,7 @@
 body[data-abgm-theme="dark"] {
   color-scheme: dark;
   /* Surface & Background - Teal/Mint */
-  --abgm-bg: #0a1011;
+  --abgm-bg: #101a1b;
   --abgm-surface: rgba(255, 255, 255, 0.04);
   --abgm-surface2: rgba(255, 255, 255, 0.06);
   --abgm-surface-hover: rgba(255, 255, 255, 0.08);
@@ -100,9 +100,9 @@ body[data-abgm-theme="dark"] {
   --abgm-text-muted: rgba(255, 255, 255, 0.4);
   
   /* Accent - Teal/Mint */
-  --abgm-accent: #5eead4;
-  --abgm-accent-soft: rgba(94, 234, 212, 0.15);
-  --abgm-accent-hover: #72edd9;
+  --abgm-accent: #5ee1ea;
+  --abgm-accent-soft: rgba(94, 234, 227, 0.15);
+  --abgm-accent-hover: #5ee1ea;
 
   /* Danger */
   --abgm-danger: #ff6b6b;
@@ -112,8 +112,8 @@ body[data-abgm-theme="dark"] {
   --abgm-chip-bg: rgba(255, 255, 255, 0.04);
   --abgm-chip-border: rgba(255, 255, 255, 0.10);
   --abgm-chip-active-bg: rgba(94, 218, 234, 0.2);
-  --abgm-chip-active-border: #5eead4;
-  --abgm-tab-active-color: #5eead4;
+  --abgm-chip-active-border: #5ee1ea;
+  --abgm-tab-active-color: #5ee1ea;
   
   /* Input */
   --abgm-input-bg: rgba(0, 0, 0, 0.25);
@@ -124,7 +124,7 @@ body[data-abgm-theme="dark"] {
   --abgm-shadow-strong: rgba(0, 0, 0, 0.4);
   
   /* Glass effect */
-  --abgm-glass-bg: rgba(26, 34, 36, 0.95);
+  --abgm-glass-bg: rgba(30, 40, 43, 0.95);
   --abgm-glass-border: rgba(255, 255, 255, 0.12);
   
   /* Overlay */
@@ -134,7 +134,7 @@ body[data-abgm-theme="dark"] {
   --abgm-modal-bg: rgba(20, 20, 20, 0.96);
   --abgm-modal-header-bg: rgba(30, 30, 30, 0.98);
   --abgm-tabbar-bg: rgba(20, 20, 20, 0.96);
-  --abgm-tab-active-color: #6bffff;
+  --abgm-tab-active-color: #6be1ff;
   
   /* Table */
   --abgm-table-header-bg: rgba(255, 255, 255, 0.05);
@@ -148,7 +148,7 @@ body[data-abgm-theme="dark"] {
   --abgm-floating-btn-hover: rgba(255, 255, 255, 0.10);
   
   /* Debug toast - Teal/Mint */
-  --abgm-toast-bg: rgba(30, 37, 40, 0.95);
+  --abgm-toast-bg: rgba(34, 42, 46, 0.95);
   --abgm-toast-border: rgba(255, 255, 255, 0.12);
   --abgm-toast-text: rgba(255, 255, 255, 0.88);
 }
