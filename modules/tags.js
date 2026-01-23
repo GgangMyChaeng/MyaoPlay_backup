@@ -82,6 +82,8 @@ const PHRASE_ALIASES = new Map([
   ["future rnb", ["genre:future_rnb"]],
   ["lo-fi hip hop", ["genre:lofi_hiphop"]],
   ["jazz hop", ["genre:jazz_hop"]],
+  ["indie pop", ["genre:indie_pop"]],
+  ["light groove pop", ["mood:light", "mood:groove", "genre:pop"]],
 ]);
 
 const GENRE_WORDS = new Set([
@@ -96,7 +98,7 @@ const MOOD_WORDS = new Set([
   "alternative","chaotic","cinematic","cold","cyberpunk","tension","night","tight","lo-fi",
   "east asian influence","exploration","high-energy","hopeless","horizon","military",
   "underscore","mundane","soft", "gothic","fantasy","medieval","celtic","upbeat",
-  "dungeon", "modern eastern fantasy", "modern fantasy", "modern myth"
+  "dungeon", "modern eastern fantasy", "modern fantasy", "modern myth",
 ]);
 
 const INST_WORDS = new Set([
