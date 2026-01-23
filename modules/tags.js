@@ -59,7 +59,7 @@ const PHRASE_ALIASES = new Map([
   ["night vibes", ["mood:night_vibes"]],
   ["tension", ["mood:tense"]],
   ["high-energy j-rock", ["mood:high-energy", "genre:j-rock"]],
-  // 장르 분리/정리
+  // dd 장르 분리/정리
   ["industrial metal", ["genre:industrial", "genre:metal"]],
   ["dark orchestral hybrid", ["mood:dark", "inst:orchestra", "genre:hybrid"]],
   ["cinematic dark ambient", ["mood:cinematic", "mood:dark", "genre:ambient"]],
@@ -88,14 +88,15 @@ const GENRE_WORDS = new Set([
   "blues","jazz","rock","pop","country","classical","folk","funk","soul","reggae","metal","ambient",
   "electronic","edm","hiphop","rap","rnb","drill","idm","techno","glitch","j-rock",
   "trap","darksynth","darkwave","neoclassical","chillwave","dream_pop","bedroom_pop","tropical_house",
-  "ballad","dance","industrial","urban"
+  "ballad","dance","industrial","urban", "warm chillhop"
 ]);
 
 const MOOD_WORDS = new Set([
   "calm","dark","sad","happy","tense","chill","cozy","epic","mysterious",
   "alternative","chaotic","cinematic","cold","cyberpunk","tension","night","tight","lo-fi",
   "east asian influence","exploration","high-energy","hopeless","horizon","military",
-  "underscore","mundane","soft", "gothic","fantasy","medieval","celtic","upbeat"
+  "underscore","mundane","soft", "gothic","fantasy","medieval","celtic","upbeat",
+  "dungeon", "modern eastern fantasy", "modern fantasy", "modern myth"
 ]);
 
 const INST_WORDS = new Set([
