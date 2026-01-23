@@ -1332,7 +1332,7 @@ root.querySelector("#abgm_reset_vol_selected")?.addEventListener("click", async 
       fileBtn.addEventListener('click', async () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.accept = '.mp3,.wav,.ogg,.flac,.m4a,.aac,.wma,.opus,.webm';
+        fileInput.accept = 'audio/*,.mp3,.wav,.ogg,.flac,.m4a,.aac,.wma,.opus,.webm';
         fileInput.addEventListener('change', async (ev) => {
           const file = ev.target.files?.[0];
           if (!file) return;
