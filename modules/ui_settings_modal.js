@@ -1336,6 +1336,14 @@ root.querySelector("#abgm_reset_vol_selected")?.addEventListener("click", async 
         fileInput.addEventListener('change', async (ev) => {
           const file = ev.target.files?.[0];
           if (!file) return;
+          // 확장자 검증 (MIME 타입 무시)
+          const validExts = ['.mp3', '.wav', '.ogg', '.flac', '.m4a', '.aac', '.wma', '.opus', '.webm'];
+          const fileName = file.name.toLowerCase();
+          const hasValidExt = validExts.some(ext => fileName.endsWith(ext));
+          if (!hasValidExt) {
+            alert('지원하는 오디오 형식: mp3, wav, ogg, flac, m4a, aac, wma, opus, webm');
+            return;
+          }
           const oldKey = String(bgm.fileKey ?? "");
           const newKey = String(file.name ?? "").trim();
           if (!newKey) return;
