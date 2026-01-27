@@ -2130,7 +2130,7 @@ function initTtsPanel(root, settings) {
       testResult.style.color = "var(--abgm-text-dim)";
     }
     try {
-      const audioUrl = await provider.getAudioUrl("Mya.", providerSettings);
+      const audioUrl = await provider.getAudioUrl("Mia", providerSettings);
       const audio = new Audio(audioUrl);
       audio.volume = 0.8;
       audio.play().catch(e => console.warn("Auto-play blocked:", e));
