@@ -208,7 +208,7 @@ export async function openModal() {
   _initModal(overlay);
   _bindNowPlayingEventsOnce();
   _updateNowPlayingUI();
-  console.log("[MyaPl] modal opened");
+  // console.log("[MyaPl] modal opened");
 } // openModal 닫기
 
 
