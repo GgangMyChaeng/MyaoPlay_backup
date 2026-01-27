@@ -480,7 +480,7 @@ async function mount() {
   // 기존대로 유지(전체 UI 업데이트/이벤트 바인딩)
   bindNowPlayingEventsOnce();
   updateNowPlayingUI();
-  console.log("[MyaPl] mounted OK");
+  // console.log("[MyaPl] mounted OK");
   } finally {
     window.__AUTOBGM_MOUNTING__ = false;
   }
@@ -488,7 +488,7 @@ async function mount() {
 
 // 앱 초기화 (의존성 주입 + 부팅 + 엔진 시작)
 async function init() {
-  console.log("[MyaPl] init entered");
+  // console.log("[MyaPl] init entered");
   // 1) 중복 로드/실행 방지 (메뉴 2개 뜨는 거 방지)
   if (window.__AUTOBGM_BOOTED__) return;
   window.__AUTOBGM_BOOTED__ = true;
@@ -588,7 +588,7 @@ function registerMyaoPlayMacros() {
       const settings = ensureSettings();
       return getActivePromptContent(settings);
     });
-    console.log("[MyaPl] Registered {{mya_p}} macro");
+    // console.log("[MyaPl] Registered {{mya_p}} macro");
   } catch (e) {
     console.warn("[MyaPl] Failed to register macros:", e);
   }
@@ -729,7 +729,7 @@ function bindDepsOnce() {
 (async () => {
   try {
     await __abgmResolveDeps();
-    console.log("[MyaPl] index.js loaded", import.meta.url);
+    // console.log("[MyaPl] index.js loaded", import.meta.url);
     const onReady = () => init();
     if (typeof jQuery === "function") {
       jQuery(() => onReady());
