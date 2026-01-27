@@ -2177,48 +2177,45 @@ function initTtsPanel(root, settings) {
       // --- 1. Generation Request (POST) ---
       let genResponse;
       let usedProxy = false;
-
-      // 시도 1: 직접 호출 (CORS 걸릴 확률 높음)
-      try {
-        genResponse = await tryPostFetch(targetUrl);
-      } catch (e) {
-        console.warn("[MyaPl] Direct fetch failed, trying proxy...", e);
-        // 시도 2: ST 프록시 (/proxy) - enableCorsProxy: true 필요
-        const proxyUrl = `/proxy?url=${encodeURIComponent(targetUrl)}`;
-        genResponse = await tryPostFetch(proxyUrl);
-        usedProxy = true;
+      // 여러 프록시 형식 다 시도 (ST 버전/환경별로 다름)
+      const proxyCandidates = [
+        targetUrl, // direct (대부분 CORS로 실패함)
+        `/proxy/${targetUrl}`, // 확인한 형식
+        `/proxy/${encodeURIComponent(targetUrl)}`, // 혹시 모를 인코딩 버전
+        `/proxy?url=${encodeURIComponent(targetUrl)}`, // 기존 방식
+      ];
+      let lastErr;
+      for (const url of proxyCandidates) {
+        try {
+          genResponse = await tryPostFetch(url);
+          usedProxy = url.startsWith("/proxy");
+          if (genResponse.ok) break;
+          // 프록시 404 같은 것도 여기서 걸러짐
+          lastErr = new Error(`HTTP ${genResponse.status} on ${url}`);
+        } catch (e) {
+          lastErr = e;
+        }
       }
-
-      if (!genResponse.ok) {
-        let errText = genResponse.statusText;
-        try { const errJson = await genResponse.json(); errText = errJson.message || errJson.code || errText; } catch {}
-        throw new Error(`Generation failed: HTTP ${genResponse.status}: ${errText}`);
+      if (!genResponse || !genResponse.ok) {
+        throw lastErr || new Error("Generation request failed");
       }
-
       const data = await genResponse.json();
       if (data.code || data.message) {
         throw new Error(`API Error: ${data.message || data.code}`);
       }
-
       const audioUrlFromApi = data?.output?.audio?.url;
       if (!audioUrlFromApi) {
         throw new Error("API 응답에서 오디오 URL을 찾을 수 없습니다.");
       }
-
-      // --- 2. Audio Fetch Request (GET) ---
-      const audioResponse = await fetch(audioUrlFromApi);
-      if (!audioResponse.ok) {
-        throw new Error(`오디오 파일 다운로드 실패: HTTP ${audioResponse.status}`);
-      }
-
-      const blob = await audioResponse.blob();
-      const audioUrl = URL.createObjectURL(blob);
-      const audio = new Audio(audioUrl);
+      // --- 2. Audio Play (CORS 회피) ---
+      // fetch(blob)로 뜯지 말고, URL 그대로 재생 시도 (CORS 덜 탐)
+      const audio = new Audio(audioUrlFromApi);
       audio.volume = 0.8;
       audio.play().catch(e => console.warn("Auto-play blocked:", e));
-
       if (testResult) {
-        testResult.innerHTML = `✅ 연결 성공! (오디오 재생 중)<br><span style="font-size:0.9em; opacity:0.8;">${usedProxy ? "(Proxy 사용됨)" : "(Direct 연결됨)"} / 설정 저장됨</span>`;
+        testResult.innerHTML =
+          `✅ 연결 성공! (오디오 재생 시도)<br>` +
+          `<span style="font-size:0.9em; opacity:0.8;">${usedProxy ? "(Proxy 사용됨)" : "(Direct 연결됨)"} / 설정 저장됨</span>`;
         testResult.style.color = "#66ff66";
       }
     } catch (e) {
