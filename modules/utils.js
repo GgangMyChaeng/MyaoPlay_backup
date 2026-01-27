@@ -118,8 +118,10 @@ export function makeAsstSig(text) {
 // TTS로 보내기 전에 불필요한 요소 제거
 export function preprocessForTts(text) {
   let t = String(text || "");
-  // 0) HTML/XML 태그 전부 제거 (state, StatusPlaceHolderImpl 등)
-  t = t.replace(/<[^>]*>/g, " ");
+  // 0) HTML/XML 태그 + 내용물 전부 제거 (state, StatusPlaceHolderImpl 등)
+  t = t.replace(/<[^>]+>[^<]*<\/[^>]+>/g, " ");  // <tag>내용</tag> 형태
+  t = t.replace(/<[^>]*\/>/g, " ");              // <SelfClosing/> 형태
+  t = t.replace(/<[^>]*>/g, " ");                // 남은 단독 태그
   // 1) *지문/액션* 제거 (별표로 감싼 부분)
   t = t.replace(/\*[^*]+\*/g, " ");
   // 2) 마크다운 제거
