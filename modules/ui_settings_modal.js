@@ -2127,11 +2127,13 @@ function initTtsPanel(root, settings) {
     // 1. 값 가져오기
     const apiKey = (qwenApiKeyInput?.value || settings.ttsMode.qwen.apiKey || "").trim();
     const model = (qwenModelSel?.value || settings.ttsMode.qwen.model || "qwen3-tts-flash");
+    const voice = settings.ttsMode.qwen.voice || "Cherry";
     
     // 2. 키 저장 (사용자 요청: 테스트 시 저장)
     if (apiKey) {
       settings.ttsMode.qwen.apiKey = apiKey;
       settings.ttsMode.qwen.model = model;
+      settings.ttsMode.qwen.voice = voice;
       _saveSettingsDebounced();
     }
 
@@ -2151,15 +2153,15 @@ function initTtsPanel(root, settings) {
     }
 
     // 5. 요청 로직 (Direct -> Proxy Fallback)
-    const targetUrl = "https://dashscope.aliyuncs.com/api/v1/services/audio/text-to-speech/generation";
+    const targetUrl = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
     const bodyData = {
       model: model,
       input: { text: "Hello, Myao Play TTS test." },
-      parameters: { format: "mp3" }
+      parameters: { voice: voice }
     };
 
     // 헬퍼: 실제 fetch 수행
-    const tryFetch = async (url) => {
+    const tryPostFetch = async (url) => {
       return fetch(url, {
         method: "POST",
         headers: {
@@ -2172,27 +2174,44 @@ function initTtsPanel(root, settings) {
     };
 
     try {
-      let response;
+      // --- 1. Generation Request (POST) ---
+      let genResponse;
       let usedProxy = false;
 
       // 시도 1: 직접 호출 (CORS 걸릴 확률 높음)
       try {
-        response = await tryFetch(targetUrl);
+        genResponse = await tryPostFetch(targetUrl);
       } catch (e) {
         console.warn("[MyaPl] Direct fetch failed, trying proxy...", e);
         // 시도 2: ST 프록시 (/proxy) - enableCorsProxy: true 필요
         const proxyUrl = `/proxy?url=${encodeURIComponent(targetUrl)}`;
-        response = await tryFetch(proxyUrl);
+        genResponse = await tryPostFetch(proxyUrl);
         usedProxy = true;
       }
 
-      if (!response.ok) {
-        let errText = response.statusText;
-        try { const errJson = await response.json(); errText = errJson.message || errJson.code || errText; } catch {}
-        throw new Error(`HTTP ${response.status}: ${errText}`);
+      if (!genResponse.ok) {
+        let errText = genResponse.statusText;
+        try { const errJson = await genResponse.json(); errText = errJson.message || errJson.code || errText; } catch {}
+        throw new Error(`Generation failed: HTTP ${genResponse.status}: ${errText}`);
       }
 
-      const blob = await response.blob();
+      const data = await genResponse.json();
+      if (data.code || data.message) {
+        throw new Error(`API Error: ${data.message || data.code}`);
+      }
+
+      const audioUrlFromApi = data?.output?.audio?.url;
+      if (!audioUrlFromApi) {
+        throw new Error("API 응답에서 오디오 URL을 찾을 수 없습니다.");
+      }
+
+      // --- 2. Audio Fetch Request (GET) ---
+      const audioResponse = await fetch(audioUrlFromApi);
+      if (!audioResponse.ok) {
+        throw new Error(`오디오 파일 다운로드 실패: HTTP ${audioResponse.status}`);
+      }
+
+      const blob = await audioResponse.blob();
       const audioUrl = URL.createObjectURL(blob);
       const audio = new Audio(audioUrl);
       audio.volume = 0.8;
@@ -2205,7 +2224,7 @@ function initTtsPanel(root, settings) {
     } catch (e) {
       console.error("[MyaPl] TTS Test Failed:", e);
       if (testResult) {
-        testResult.innerHTML = `❌ 오류: ${e.message}<br><span style="font-size:0.85em; opacity:0.7;">ST config.yaml에서 <b>enableCorsProxy: true</b>를 켜보세요.</span>`;
+        testResult.innerHTML = `❌ 오류: ${e.message}<br><span style="font-size:0.85em; opacity:0.7;">엔드포인트/API키를 확인하거나, ST config.yaml에서 <b>enableCorsProxy: true</b>를 켜보세요.</span>`;
         testResult.style.color = "#ff6666";
       }
     }
