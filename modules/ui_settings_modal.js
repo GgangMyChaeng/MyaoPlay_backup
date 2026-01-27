@@ -2179,8 +2179,8 @@ function initTtsPanel(root, settings) {
       }
       return;
     }
-    // 3) 길이 체크 (600자 제한)
-    const truncated = text.length > 600 ? text.slice(0, 597) + "..." : text;
+    // 3) 길이 체크 (테스트용 200자)
+    const truncated = text.length > 200 ? text.slice(0, 197) + "..." : text;
     if (speakStatus) {
       speakStatus.textContent = `⏳ 변환 중... (${truncated.length}자)`;
       speakStatus.style.color = "var(--abgm-text-dim)";
