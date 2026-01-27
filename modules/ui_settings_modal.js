@@ -1,5 +1,6 @@
 import { ensureSettings, migrateLegacyDataUrlsToIDB } from "./settings.js";
 import { abgmEntryDetailPrompt } from "./ui_modal.js";
+import { ttsProviders } from "./tts_providers.js";
 import { saveSettingsDebounced } from "./deps.js";
 import { openFreeSourcesModal, initFreeSourcesInPanel } from "./ui_freesources.js";
 import { escapeHtml } from "./utils.js";
@@ -2071,151 +2072,78 @@ function initTtsPanel(root, settings) {
   const ttsPanel = root.querySelector('#abgm-mode-tts');
   if (!ttsPanel) return;
 
-  // 1. 요소들 가져오기
   const providerSel = ttsPanel.querySelector('#abgm_tts_provider');
   const qwenSettings = ttsPanel.querySelector('#abgm_tts_qwen_settings');
   const corsWarning = ttsPanel.querySelector('#abgm_tts_cors_warning');
-  
   const qwenModelSel = ttsPanel.querySelector('#abgm_tts_qwen_model');
   const qwenApiKeyInput = ttsPanel.querySelector('#abgm_tts_qwen_apikey');
   const testBtn = ttsPanel.querySelector('#abgm_tts_test_btn');
   const testResult = ttsPanel.querySelector('#abgm_tts_test_result');
 
-  // 2. UI 업데이트 함수 (현재 설정에 맞춰서 보이기/숨기기)
+  // Provider 드롭다운 채우기
+  if (providerSel) {
+    providerSel.innerHTML = '<option value="">(사용 안 함)</option>';
+    Object.values(ttsProviders).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name;
+      providerSel.appendChild(opt);
+    });
+  }
+
   function updateTtsUI() {
     const provider = settings.ttsMode?.provider || "";
-    // Provider 선택창 값 반영
     if (providerSel) providerSel.value = provider;
-    // Qwen 설정창 보이기/숨기기
-    if (qwenSettings) {
-      qwenSettings.style.display = (provider === 'qwen') ? 'block' : 'none';
-    }
-    // CORS 경고 보이기/숨기기 (Provider가 선택되어 있으면 보임)
-    if (corsWarning) {
-      corsWarning.style.display = provider ? 'block' : 'none';
-    }
-    // Qwen 세부 설정 값 반영
-    if (provider === 'qwen' && settings.ttsMode.qwen) {
-      if (qwenModelSel) qwenModelSel.value = settings.ttsMode.qwen.model || "qwen3-tts-flash";
-      if (qwenApiKeyInput) qwenApiKeyInput.value = settings.ttsMode.qwen.apiKey || "";
+    if (qwenSettings) qwenSettings.style.display = (provider === 'qwen') ? 'block' : 'none';
+    if (corsWarning) corsWarning.style.display = provider ? 'block' : 'none';
+
+    if (provider === 'qwen' && settings.ttsMode.providers.qwen) {
+      const s = settings.ttsMode.providers.qwen;
+      if (qwenModelSel) qwenModelSel.value = s.model || "qwen3-tts-flash";
+      if (qwenApiKeyInput) qwenApiKeyInput.value = s.apiKey || "";
     }
   }
-  // 초기 실행
   updateTtsUI();
 
-  // 3. 이벤트 리스너 연결 (값이 바뀌면 저장하고 UI 갱신)
   providerSel?.addEventListener('change', (e) => {
     settings.ttsMode.provider = e.target.value;
-    _saveSettingsDebounced(); // 저장
-    updateTtsUI(); // UI 갱신 (설정창 뜨게)
-  });
-  qwenModelSel?.addEventListener('change', (e) => {
-    settings.ttsMode.qwen.model = e.target.value;
     _saveSettingsDebounced();
+    updateTtsUI();
   });
-  qwenApiKeyInput?.addEventListener('input', (e) => {
-    settings.ttsMode.qwen.apiKey = e.target.value;
+
+  qwenSettings?.addEventListener('input', (e) => {
+    const s = settings.ttsMode.providers.qwen;
+    if (!s) return;
+    if (e.target.id === 'abgm_tts_qwen_model') s.model = e.target.value;
+    if (e.target.id === 'abgm_tts_qwen_apikey') s.apiKey = e.target.value;
     _saveSettingsDebounced();
   });
 
-  // 테스트 버튼 (실제 API 호출)
   testBtn?.addEventListener('click', async () => {
-    // 1. 값 가져오기
-    const apiKey = (qwenApiKeyInput?.value || settings.ttsMode.qwen.apiKey || "").trim();
-    const model = (qwenModelSel?.value || settings.ttsMode.qwen.model || "qwen3-tts-flash");
-    const voice = settings.ttsMode.qwen.voice || "Cherry";
-    // 2. 키 저장 (사용자 요청: 테스트 시 저장)
-    if (apiKey) {
-      settings.ttsMode.qwen.apiKey = apiKey;
-      settings.ttsMode.qwen.model = model;
-      settings.ttsMode.qwen.voice = voice;
-      _saveSettingsDebounced();
-    }
-    // 3. 유효성 검사
-    if (!apiKey) {
+    const providerId = settings.ttsMode.provider;
+    const provider = ttsProviders[providerId];
+
+    if (!provider) {
       if (testResult) {
-        testResult.textContent = "❌ API Key를 입력해주세요.";
+        testResult.textContent = "❌ TTS 프로바이더를 선택해주세요.";
         testResult.style.color = "#ff6666";
       }
       return;
     }
-    // 4. UI 상태 업데이트
+
+    const providerSettings = settings.ttsMode.providers[providerId] || {};
     if (testResult) {
-      testResult.textContent = "⏳ 연결 및 저장 중...";
+      testResult.textContent = "⏳ 연결 중...";
       testResult.style.color = "var(--abgm-text-dim)";
     }
-    // 5. 요청 로직 (Direct -> Proxy Fallback)
-    const targetUrl = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
-    const bodyData = {
-      model,
-      input: {
-        text: "Mya.",
-      },
-      parameters: {
-        voice: voice,
-        format: "mp3",
-      },
-    };
-    // 헬퍼: 실제 fetch 수행
-    const tryPostFetch = async (url) => {
-      const isProxy = String(url).startsWith("/proxy");
-      const headers = {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        ...(isProxy ? (_getRequestHeaders?.() || {}) : {}), // 프록시일 때만 CSRF 헤더 추가
-      };
-      const opts = {
-        method: "POST",
-        headers,
-        body: JSON.stringify(bodyData),
-        ...(isProxy ? { credentials: "same-origin" } : {}), // 프록시일 때만 쿠키 포함
-      };
-      return fetch(url, opts);
-    };
 
     try {
-      // --- 1. Generation Request (POST) ---
-      let genResponse;
-      let usedProxy = false;
-      // 여러 프록시 형식 다 시도 (ST 버전/환경별로 다름)
-      const proxyCandidates = [
-        `/proxy/${targetUrl}`,
-        `/proxy/${encodeURIComponent(targetUrl)}`,
-        `/proxy?url=${encodeURIComponent(targetUrl)}`, // ST 빌드별 호환
-      ];
-      let lastErr;
-      for (const url of proxyCandidates) {
-        try {
-          genResponse = await tryPostFetch(url);
-          usedProxy = url.startsWith("/proxy");
-          if (genResponse.ok) break;
-          // 프록시 404 같은 것도 여기서 걸러짐
-          lastErr = new Error(`HTTP ${genResponse.status} on ${url}`);
-        } catch (e) {
-          lastErr = e;
-        }
-      }
-      if (!genResponse || !genResponse.ok) {
-        throw lastErr || new Error("Generation request failed");
-      }
-      const data = await genResponse.json();
-      if (data.code || data.message) {
-        throw new Error(`API Error: ${data.message || data.code}`);
-      }
-      const audioUrlFromApi = data?.output?.audio?.url;
-      if (!audioUrlFromApi) {
-        throw new Error("API 응답에서 오디오 URL을 찾을 수 없습니다.");
-      }
-      // --- 2. Audio Play (CORS 회피) ---
-      // fetch(blob)로 뜯지 말고, URL 그대로 재생 시도 (CORS 덜 탐)
-      const audio = new Audio(audioUrlFromApi);
+      const audioUrl = await provider.getAudioUrl("Mya.", providerSettings);
+      const audio = new Audio(audioUrl);
       audio.volume = 0.8;
       audio.play().catch(e => console.warn("Auto-play blocked:", e));
       if (testResult) {
-        testResult.innerHTML =
-          `✅ 연결 성공! (오디오 재생 시도)<br>` +
-          `<span style="font-size:0.9em; opacity:0.8;">${usedProxy ? "(Proxy 사용됨)" : "(Direct 연결됨)"} / 설정 저장됨</span>`;
+        testResult.textContent = `✅ 연결 성공! (${provider.name})`;
         testResult.style.color = "#66ff66";
       }
     } catch (e) {
