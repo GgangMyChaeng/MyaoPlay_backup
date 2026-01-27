@@ -1207,7 +1207,7 @@ export async function syncBundledFreeSourcesIntoSettings(settings, { force = fal
   if (save) {
     try { _saveSettingsDebounced?.(); } catch {}
   }
-  console.log("[MyaPl] freeSources synced:", settings.freeSources.length);
+  // console.log("[MyaPl] freeSources synced:", settings.freeSources.length);
 }
 
 // 제작자 툴
