@@ -40,6 +40,10 @@ async function getQwenAudioUrl(text, providerSettings) {
     for (const url of proxyCandidates) {
         try {
             const response = await tryPostFetch(url);
+            if (!response.ok) {
+              const errorText = await response.text();
+              console.error("[MyaPl] Qwen API Error Response:", response.status, errorText);
+            }
             if (response.ok) {
                 const data = await response.json();
                 if (data.code || data.message) {
