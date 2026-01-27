@@ -293,6 +293,7 @@ Example B (without keyword):
       qwen: {
         model: "qwen3-tts-flash",
         apiKey: "",
+        voice: "Cherry",
       }
     },
   };
@@ -514,7 +515,8 @@ Example B (without keyword):
   // TTS Mode 보정
   s.ttsMode ??= {};
   s.ttsMode.provider ??= "";
-  s.ttsMode.qwen ??= { model: "qwen3-tts-flash", apiKey: "" };
+  s.ttsMode.qwen ??= { model: "qwen3-tts-flash", apiKey: "", voice: "Cherry" };
+  s.ttsMode.qwen.voice ??= "Cherry";
   // > 프리셋/곡 스키마 보정 + 구버전 변환
   Object.values(s.presets).forEach((p) => {
     p.defaultBgmKey ??= "";
