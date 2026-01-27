@@ -5,36 +5,35 @@ const QWEN_ENDPOINT = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/
 
 // Qwen TTS 프리셋 보이스 목록
 export const QWEN_VOICES = [
-  // 한국어
-  { id: "Sohee", name: "소희 (한국어 여성)", lang: "ko" },
-  { id: "Jimin", name: "지민 (한국어 여성)", lang: "ko" },
-  { id: "Yuna", name: "유나 (한국어 여성)", lang: "ko" },
-  { id: "Minho", name: "민호 (한국어 남성)", lang: "ko" },
-  
-  // 영어
-  { id: "Cherry", name: "Cherry (English Female)", lang: "en" },
-  { id: "Ethan", name: "Ethan (English Male)", lang: "en" },
-  { id: "Serena", name: "Serena (English Female)", lang: "en" },
-  
-  // 중국어
-  { id: "Chelsie", name: "Chelsie (中文女性)", lang: "zh" },
-  { id: "Ayla", name: "Ayla (中文女性)", lang: "zh" },
-  
-  // 일본어
-  { id: "Haruka", name: "Haruka (日本語女性)", lang: "ja" },
-  { id: "Kazuha", name: "Kazuha (日本語女性)", lang: "ja" },
-  
-  // TODO: 나머지 voice 추가
+  { id: "Cherry",  name: "Cherry",  lang: "multi" },
+  { id: "Serena",  name: "Serena",  lang: "multi" },
+  { id: "Ethan",   name: "Ethan",   lang: "multi" },
+  { id: "Chelsie", name: "Chelsie", lang: "multi" },
+  { id: "Momo",    name: "Momo",    lang: "multi" },
+  { id: "Vivian",  name: "Vivian",  lang: "multi" },
+  { id: "Moon",    name: "Moon",    lang: "multi" },
+  { id: "Maia",    name: "Maia",    lang: "multi" },
+  { id: "Kai",     name: "Kai",     lang: "multi" },
+  { id: "Nofish",  name: "Nofish",  lang: "multi" },
+  { id: "Bella",   name: "Bella",   lang: "multi" },
 ];
+
+
 
 async function getQwenAudioUrl(text, providerSettings) {
     const { apiKey, model, voice } = providerSettings;
     console.log("[MyaPl] Voice setting:", voice, "| Full settings:", providerSettings);
     if (!apiKey) throw new Error("Qwen API Key가 없습니다.");
     const bodyData = {
-        model: model || 'qwen3-tts-flash',
-        input: { text },
-        parameters: { voice: voice || 'Cherry', format: 'mp3' },
+      model: model || "qwen3-tts-flash",
+      input: {
+        text,
+        voice: voice || "Cherry",
+        // 텍스트 언어 고정하면 발음/억양 품질 좋아짐(없으면 Auto)
+        language_type: providerSettings.languageType || "Auto",
+      },
+      // format은 문서 기준 필수 아님. 일단 빼거나 wav로
+      // parameters: { format: "wav" },
     };
     console.log("[MyaPl] Qwen TTS request:", {
       textLength: text.length,
@@ -87,6 +86,7 @@ async function getQwenAudioUrl(text, providerSettings) {
     }
     throw lastError || new Error("TTS 요청 실패. 모든 프록시 시도 실패.");
 }
+
 
 
 // --- ElevenLabs Provider (나중에 추가할 때 예시) ---
