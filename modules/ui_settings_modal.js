@@ -2122,14 +2122,67 @@ function initTtsPanel(root, settings) {
     _saveSettingsDebounced();
   });
 
-  // 테스트 버튼 (일단 UI 반응만)
-  testBtn?.addEventListener('click', () => {
+  // 테스트 버튼 (실제 API 호출)
+  testBtn?.addEventListener('click', async () => {
+    const apiKey = (qwenApiKeyInput?.value || settings.ttsMode.qwen.apiKey || "").trim();
+    const model = (qwenModelSel?.value || settings.ttsMode.qwen.model || "qwen3-tts-flash");
+    
+    if (!apiKey) {
+      if (testResult) {
+        testResult.textContent = "❌ API Key를 입력해주세요.";
+        testResult.style.color = "#ff6666";
+      }
+      return;
+    }
+
     if (testResult) {
-      testResult.textContent = "⏳ 테스트 기능은 아직 구현 중이야! (API 키 저장됨)";
+      testResult.textContent = "⏳ 연결 테스트 중...";
       testResult.style.color = "var(--abgm-text-dim)";
-      setTimeout(() => {
-         testResult.textContent = "✅ 설정이 저장되었어.";
-      }, 1000);
+    }
+
+    try {
+      // Qwen (DashScope) TTS API Endpoint
+      const url = "https://dashscope.aliyuncs.com/api/v1/services/audio/text-to-speech/generation";
+      
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: model,
+          input: { text: "Hello, Myao Play TTS test." },
+          parameters: { format: "mp3" }
+        })
+      });
+
+      if (!response.ok) {
+        let errText = response.statusText;
+        try { const errJson = await response.json(); errText = errJson.message || errJson.code || errText; } catch {}
+        throw new Error(`HTTP ${response.status}: ${errText}`);
+      }
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.volume = 0.8;
+      audio.play().catch(e => console.warn("Auto-play blocked:", e));
+
+      if (testResult) {
+        testResult.textContent = "✅ 연결 성공! (오디오 재생 중)";
+        testResult.style.color = "#66ff66";
+      }
+    } catch (e) {
+      console.error("[MyaPl] TTS Test Failed:", e);
+      if (testResult) {
+        if (e.name === 'TypeError' && e.message === 'Failed to fetch') {
+          testResult.innerHTML = "❌ CORS/네트워크 오류.<br>ST 콘솔/config를 확인하거나 API 키를 체크하세요.";
+        } else {
+          testResult.textContent = `❌ 오류: ${e.message}`;
+        }
+        testResult.style.color = "#ff6666";
+      }
     }
   });
 }
