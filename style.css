@@ -6,6 +6,8 @@
 
 
 
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang&family=Gowun+Dodum&family=Jua&family=Nanum+Gothic&family=Nanum+Myeongjo&family=Noto+Sans+KR:wght@100..900&family=Noto+Serif+KR:wght@200..900&family=Single+Day&family=Song+Myung&family=Yeon+Sung&display=swap');
+
 /* =================================================================
    THEME SYSTEM - CSS Variables (UNIFIED)
    ================================================================= */
@@ -13,6 +15,8 @@
 /* ===== Light Theme (Default) ===== */
 :root {
   color-scheme: light;
+  /* Font */
+  --abgm-font: 'Noto Sans KR', sans-serif;
   /* Surface & Background */
   --abgm-bg: #ffffff;
   --abgm-surface: #f8fafd;
@@ -426,6 +430,7 @@ body.autobgm-modal-open {
 }
 
 .autobgm-modal {
+  font-family: var(--abgm-font);
   width: min(900px, 96vw);
   max-height: calc(100vh - 24px);
   min-height: 240px;
