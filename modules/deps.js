@@ -3,6 +3,7 @@
 // 설치 경로가 달라도 찾아서 export 변수에 “주입”해주는 로더
 export let extension_settings;
 export let saveSettingsDebounced;
+export let getRequestHeaders;
 
 // deps.js의 핵심
 // 1) 현재 파일(import.meta.url) 기준으로 상대경로를 바꿔가며
@@ -40,6 +41,7 @@ const extMod =
     throw new Error("[AutoBGM] Failed to import saveSettingsDebounced (script.js path mismatch)");
   }
   saveSettingsDebounced = scriptMod.saveSettingsDebounced;
+  getRequestHeaders = scriptMod.getRequestHeaders;
 }
 
 
