@@ -597,6 +597,14 @@
         <div id="abgm_tts_test_result" style="margin-top:8px; font-size:11px;"></div>
       </div>
 
+      <!-- AI 응답 TTS 재생 -->
+      <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,.1);">
+        <button type="button" id="abgm_tts_speak_btn" class="menu_button" style="width:100%;">
+          🎤 마지막 AI 응답 읽기
+        </button>
+        <div id="abgm_tts_speak_status" style="margin-top:8px; font-size:11px;"></div>
+      </div>
+
       <!-- CORS 안내 -->
       <div id="abgm_tts_cors_warning" style="display:none; margin-top:15px; padding:10px; background:rgba(255,100,100,.15); border-radius:8px; font-size:11px;">
         ⚠️ TTS 기능을 사용하려면 ST의 <code>config.yaml</code>에서 <code>enableCorsProxy: true</code>로 설정 후 재시작이 필요합니다.
