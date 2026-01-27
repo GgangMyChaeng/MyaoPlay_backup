@@ -39,7 +39,7 @@ async function getQwenAudioUrl(text, providerSettings) {
       textLength: text.length,
       textPreview: text.slice(0, 100),
       model: bodyData.model,
-      voice: bodyData.parameters.voice
+      voice: bodyData.input.voice,
     });
     const tryPostFetch = async (url) => {
         const headers = {
