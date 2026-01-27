@@ -3,7 +3,7 @@
 import { ensureSettings } from "./settings.js";
 import { saveSettingsDebounced, getBoundPresetIdFromContext } from "./deps.js";
 import { idbGet } from "./storage.js";
-import { ttsProviders } from "./tts_providers.js";
+import { providers as ttsProviders } from "./tts/providers/index.js";
 
 // console.log("[MyaPl] engine loaded");
 
