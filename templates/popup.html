@@ -548,57 +548,57 @@
         </ul>
       </div>
     </div>
+  </div>
 
-    <!-- TTS Mode Settings -->
-    <div class="abgm-mode-subpanel" id="abgm-mode-tts" data-mode-panel="tts" style="display:none;">
-      <div class="abgm-card" style="padding:15px;">
-        <b>🗣️ TTS 설정</b>
-        <p style="opacity:.7; margin-top:6px; font-size:12px;">
-          AI 응답을 음성으로 읽어줍니다.
-        </p>
+  <!-- TTS Mode Settings -->
+  <div class="abgm-mode-subpanel" id="abgm-mode-tts" data-mode-panel="tts" style="display:none;">
+    <div class="abgm-card" style="padding:15px;">
+      <b>🗣️ TTS 설정</b>
+      <p style="opacity:.7; margin-top:6px; font-size:12px;">
+        AI 응답을 음성으로 읽어줍니다.
+      </p>
 
-        <!-- Provider 선택 -->
-        <div style="margin-top:15px;">
-          <label style="font-size:12px; opacity:.8;">Provider</label>
-          <select id="abgm_tts_provider" class="abgm-select" style="width:100%; margin-top:4px;">
-            <option value="">-- 선택 --</option>
-            <option value="qwen">Qwen (DashScope)</option>
+      <!-- Provider 선택 -->
+      <div style="margin-top:15px;">
+        <label style="font-size:12px; opacity:.8;">Provider</label>
+        <select id="abgm_tts_provider" class="abgm-select" style="width:100%; margin-top:4px;">
+          <option value="">-- 선택 --</option>
+          <option value="qwen">Qwen (DashScope)</option>
+        </select>
+      </div>
+
+      <!-- Qwen 설정 (provider 선택 시 표시) -->
+      <div id="abgm_tts_qwen_settings" style="display:none; margin-top:15px; padding:12px; background:rgba(0,0,0,.2); border-radius:8px;">
+      
+        <!-- 모델 선택 -->
+        <div>
+          <label style="font-size:12px; opacity:.8;">Model</label>
+          <select id="abgm_tts_qwen_model" class="abgm-select" style="width:100%; margin-top:4px;">
+            <option value="qwen3-tts-flash">qwen3-tts-flash (빠름, 저렴)</option>
+            <option value="qwen3-tts">qwen3-tts (고품질)</option>
+            <option value="qwen-tts">qwen-tts (구버전)</option>
           </select>
         </div>
 
-        <!-- Qwen 설정 (provider 선택 시 표시) -->
-        <div id="abgm_tts_qwen_settings" style="display:none; margin-top:15px; padding:12px; background:rgba(0,0,0,.2); border-radius:8px;">
-      
-          <!-- 모델 선택 -->
-          <div>
-            <label style="font-size:12px; opacity:.8;">Model</label>
-            <select id="abgm_tts_qwen_model" class="abgm-select" style="width:100%; margin-top:4px;">
-              <option value="qwen3-tts-flash">qwen3-tts-flash (빠름, 저렴)</option>
-              <option value="qwen3-tts">qwen3-tts (고품질)</option>
-              <option value="qwen-tts">qwen-tts (구버전)</option>
-            </select>
-          </div>
-
-          <!-- API Key 입력 -->
-          <div style="margin-top:12px;">
-            <label style="font-size:12px; opacity:.8;">API Key</label>
-            <input type="password" id="abgm_tts_qwen_apikey" class="abgm-input" placeholder="sk-xxxxxxxx" style="width:100%; margin-top:4px;">
-            <p style="font-size:10px; opacity:.5; margin-top:4px;">
-              <a href="https://modelstudio.console.alibabacloud.com/?tab=playground#/api-key" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
-            </p>
-          </div>
-
-          <!-- 테스트 버튼 -->
-          <button type="button" id="abgm_tts_test_btn" class="menu_button" style="margin-top:12px; width:100%;">
-            🔊 연결 테스트
-          </button>
-          <div id="abgm_tts_test_result" style="margin-top:8px; font-size:11px;"></div>
+        <!-- API Key 입력 -->
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">API Key</label>
+          <input type="password" id="abgm_tts_qwen_apikey" class="abgm-input" placeholder="sk-xxxxxxxx" style="width:100%; margin-top:4px;">
+          <p style="font-size:10px; opacity:.5; margin-top:4px;">
+            <a href="https://modelstudio.console.alibabacloud.com/?tab=playground#/api-key" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
+          </p>
         </div>
 
-        <!-- CORS 안내 -->
-        <div id="abgm_tts_cors_warning" style="display:none; margin-top:15px; padding:10px; background:rgba(255,100,100,.15); border-radius:8px; font-size:11px;">
-          ⚠️ TTS 기능을 사용하려면 ST의 <code>config.yaml</code>에서 <code>enableCorsProxy: true</code>로 설정 후 재시작이 필요합니다.
-        </div>
+        <!-- 테스트 버튼 -->
+        <button type="button" id="abgm_tts_test_btn" class="menu_button" style="margin-top:12px; width:100%;">
+          🔊 연결 테스트
+        </button>
+        <div id="abgm_tts_test_result" style="margin-top:8px; font-size:11px;"></div>
+      </div>
+
+      <!-- CORS 안내 -->
+      <div id="abgm_tts_cors_warning" style="display:none; margin-top:15px; padding:10px; background:rgba(255,100,100,.15); border-radius:8px; font-size:11px;">
+        ⚠️ TTS 기능을 사용하려면 ST의 <code>config.yaml</code>에서 <code>enableCorsProxy: true</code>로 설정 후 재시작이 필요합니다.
       </div>
     </div>
   </div>
