@@ -2147,9 +2147,12 @@ function initTtsPanel(root, settings) {
     // 5. 요청 로직 (Direct -> Proxy Fallback)
     const targetUrl = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
     const bodyData = {
-      model: model,
-      input: { text: "Hello, Myao Play TTS test." },
-      parameters: { voice: voice }
+      model,
+      input: {
+        text: "Mya.",
+        voice: voice,
+        language_type: "Auto",
+      },
     };
     // 헬퍼: 실제 fetch 수행
     const tryPostFetch = async (url) => {
@@ -2175,10 +2178,8 @@ function initTtsPanel(root, settings) {
       let usedProxy = false;
       // 여러 프록시 형식 다 시도 (ST 버전/환경별로 다름)
       const proxyCandidates = [
-        targetUrl, // direct (대부분 CORS로 실패함)
-        `/proxy/${targetUrl}`, // 확인한 형식
-        `/proxy/${encodeURIComponent(targetUrl)}`, // 혹시 모를 인코딩 버전
-        `/proxy?url=${encodeURIComponent(targetUrl)}`, // 기존 방식
+        `/proxy/${targetUrl}`,
+        `/proxy/${encodeURIComponent(targetUrl)}`,
       ];
       let lastErr;
       for (const url of proxyCandidates) {
