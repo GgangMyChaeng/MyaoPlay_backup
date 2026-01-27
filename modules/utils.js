@@ -85,48 +85,22 @@ export function getChatKeyFromContext(ctx) {
 
 // ST 채팅에서 “마지막 AI 메시지 텍스트”를 최대한 안전하게 찾아오는 애
 // (ctx.chat/messages → ST.getContext() → window.chat → DOM(#chat 등) 순으로 탐색)
-export function getLastAssistantText(ctx) {
+export function getLastAssistantText() {
   try {
-    let chat = (ctx && (ctx.chat || ctx.messages)) || null;
-    if (!Array.isArray(chat) || chat.length === 0) {
-      try {
-        const st = window.SillyTavern || window?.parent?.SillyTavern;
-        const gc = st && typeof st.getContext === "function" ? st.getContext() : null;
-        chat = (gc && (gc.chat || gc.messages)) || chat;
-      } catch {}
+    const ctx = window.SillyTavern?.getContext?.();
+    if (!ctx) return "";
+    const chat = ctx.chat;
+    if (!Array.isArray(chat) || !chat.length) return "";
+    // 뒤에서부터 AI 메시지 찾기
+    for (let i = chat.length - 1; i >= 0; i--) {
+      const msg = chat[i];
+      if (!msg || msg.is_user) continue;
+      const text = msg.mes || msg.message || msg.content || "";
+      if (text.trim()) return text;
     }
-    if (!Array.isArray(chat) || chat.length === 0) {
-      if (Array.isArray(window.chat)) chat = window.chat;
-    }
-    if (Array.isArray(chat) && chat.length) {
-      for (let i = chat.length - 1; i >= 0; i--) {
-        const m = chat[i] || {};
-        if (m.is_user === true) continue;
-        const role = String(m.role || m.sender || "").toLowerCase();
-        if (role === "user") continue;
-        const text = (m.content ?? m.mes ?? m.message ?? m.text ?? "");
-        if (typeof text === "string" && text.trim()) return text;
-      }
-    }
-    const root =
-      document.querySelector("#chat") ||
-      document.querySelector("#chat_content") ||
-      document.querySelector("main") ||
-      document.body;
-    if (root) {
-      const nodes = Array.from(root.querySelectorAll(".mes, .message, .chat_message"));
-      for (let i = nodes.length - 1; i >= 0; i--) {
-        const el = nodes[i];
-        if (!el) continue;
-        const cls = el.classList;
-        if (cls && (cls.contains("is_user") || cls.contains("user") || cls.contains("from_user"))) continue;
-        const textEl =
-          el.querySelector(".mes_text, .message_text, .text, .content, .mes_content") || el;
-        const txt = (textEl.innerText || textEl.textContent || "").trim();
-        if (txt) return txt;
-      }
-    }
-  } catch {}
+  } catch (e) {
+    console.warn("[MyaPl] getLastAssistantText error:", e);
+  }
   return "";
 }
 
