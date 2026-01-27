@@ -3,6 +3,30 @@ import { getRequestHeaders } from "./deps.js";
 // --- Qwen Provider ---
 const QWEN_ENDPOINT = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
 
+// Qwen TTS 프리셋 보이스 목록
+export const QWEN_VOICES = [
+  // 한국어
+  { id: "Sohee", name: "소희 (한국어 여성)", lang: "ko" },
+  { id: "Jimin", name: "지민 (한국어 여성)", lang: "ko" },
+  { id: "Yuna", name: "유나 (한국어 여성)", lang: "ko" },
+  { id: "Minho", name: "민호 (한국어 남성)", lang: "ko" },
+  
+  // 영어
+  { id: "Cherry", name: "Cherry (English Female)", lang: "en" },
+  { id: "Ethan", name: "Ethan (English Male)", lang: "en" },
+  { id: "Serena", name: "Serena (English Female)", lang: "en" },
+  
+  // 중국어
+  { id: "Chelsie", name: "Chelsie (中文女性)", lang: "zh" },
+  { id: "Ayla", name: "Ayla (中文女性)", lang: "zh" },
+  
+  // 일본어
+  { id: "Haruka", name: "Haruka (日本語女性)", lang: "ja" },
+  { id: "Kazuha", name: "Kazuha (日本語女性)", lang: "ja" },
+  
+  // TODO: 나머지 voice 추가
+];
+
 async function getQwenAudioUrl(text, providerSettings) {
     const { apiKey, model, voice } = providerSettings;
     if (!apiKey) throw new Error("Qwen API Key가 없습니다.");
