@@ -223,6 +223,7 @@
     <button type="button" class="abgm-mode-subtab is-active" data-mode-tab="keyword" role="tab" aria-selected="true">🎤 Keyword</button>
     <button type="button" class="abgm-mode-subtab" data-mode-tab="time" role="tab" aria-selected="false">⏰ Time</button>
     <button type="button" class="abgm-mode-subtab" data-mode-tab="sfx" role="tab" aria-selected="false">🔊 SFX</button>
+    <button type="button" class="abgm-mode-subtab" data-mode-tab="tts" role="tab" aria-selected="false">🗣️ TTS</button> 
   </div>
 
   <!-- Keyword Mode Settings -->
@@ -547,6 +548,59 @@
         </ul>
       </div>
     </div>
+
+    <!-- TTS Mode Settings -->
+    <div class="abgm-mode-subpanel" id="abgm-mode-tts" data-mode-panel="tts" style="display:none;">
+      <div class="abgm-card" style="padding:15px;">
+        <b>🗣️ TTS 설정</b>
+        <p style="opacity:.7; margin-top:6px; font-size:12px;">
+          AI 응답을 음성으로 읽어줍니다.
+        </p>
+
+        <!-- Provider 선택 -->
+        <div style="margin-top:15px;">
+          <label style="font-size:12px; opacity:.8;">Provider</label>
+          <select id="abgm_tts_provider" class="abgm-select" style="width:100%; margin-top:4px;">
+            <option value="">-- 선택 --</option>
+            <option value="qwen">Qwen (DashScope)</option>
+          </select>
+        </div>
+
+        <!-- Qwen 설정 (provider 선택 시 표시) -->
+        <div id="abgm_tts_qwen_settings" style="display:none; margin-top:15px; padding:12px; background:rgba(0,0,0,.2); border-radius:8px;">
+      
+          <!-- 모델 선택 -->
+          <div>
+            <label style="font-size:12px; opacity:.8;">Model</label>
+            <select id="abgm_tts_qwen_model" class="abgm-select" style="width:100%; margin-top:4px;">
+              <option value="qwen3-tts-flash">qwen3-tts-flash (빠름, 저렴)</option>
+              <option value="qwen3-tts">qwen3-tts (고품질)</option>
+              <option value="qwen-tts">qwen-tts (구버전)</option>
+            </select>
+          </div>
+
+          <!-- API Key 입력 -->
+          <div style="margin-top:12px;">
+            <label style="font-size:12px; opacity:.8;">API Key</label>
+            <input type="password" id="abgm_tts_qwen_apikey" class="abgm-input" placeholder="sk-xxxxxxxx" style="width:100%; margin-top:4px;">
+            <p style="font-size:10px; opacity:.5; margin-top:4px;">
+              <a href="https://modelstudio.console.alibabacloud.com/?tab=playground#/api-key" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
+            </p>
+          </div>
+
+          <!-- 테스트 버튼 -->
+          <button type="button" id="abgm_tts_test_btn" class="menu_button" style="margin-top:12px; width:100%;">
+            🔊 연결 테스트
+          </button>
+          <div id="abgm_tts_test_result" style="margin-top:8px; font-size:11px;"></div>
+        </div>
+
+        <!-- CORS 안내 -->
+        <div id="abgm_tts_cors_warning" style="display:none; margin-top:15px; padding:10px; background:rgba(255,100,100,.15); border-radius:8px; font-size:11px;">
+          ⚠️ TTS 기능을 사용하려면 ST의 <code>config.yaml</code>에서 <code>enableCorsProxy: true</code>로 설정 후 재시작이 필요합니다.
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -623,12 +677,13 @@
         <div>2026~</div>
         <div>01-14: v1.0.0 배포</div>
         <div>01-15: 테마를 따라가지 못하던 요소 일부(메뉴) &amp; Bind 창의 UI 및 캐릭터 이름 정렬순 개선</div>
-        <div>01-17: 깡싸 게시글 수정 / 소스 &gt; 쓸모없어진 No lyric 태그 제거 / 확장 공유 관련 라이센스 강화 / 소스 &gt; 정렬순 &amp; 가사 및 라이센스 저장 시스템 추가 &amp; options 바텀시트 내 복사&amp;정보 분리</div>
+        <div>01-17: 소스 &gt; 쓸모없어진 No lyric 태그 제거 / 확장 공유 관련 라이센스 강화 / 소스 &gt; 정렬순 &amp; 가사 및 라이센스 저장 시스템 추가 &amp; options 바텀시트 내 복사&amp;정보 분리</div>
         <div>01-18: SillyTavern 요술봉 메뉴에 버튼 추가 / BGM List 새로고침 버튼 추가</div>
         <div>01-19: Default 곡 없는 프리셋 불러오기 시 None 유지하도록 정상 개선 / 설정 창 타이틀 제거 & 해당 자리에 활성화/비활성화 버튼 추가</div>
         <div>01-20: Change Mp3 버튼을 Change Source 버튼으로 변경</div>
         <div>01-21: 단일 파일 혹은 zip을 먹였을 때 다른 프리셋으로 튕겨나가는 치명적인 버그 개선 / BPM 태그 분류 방식 개선</div>
         <div>01-23: 확장자 호환 개선</div>
+        <div>01-27: TTS 테스팅</div>
       </div>
     </details>
 
