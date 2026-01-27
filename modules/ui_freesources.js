@@ -434,7 +434,7 @@ export async function openFreeSourcesModal() {
   host.appendChild(overlay);
   window.addEventListener("keydown", abgmFsOnEsc);
   await initFreeSourcesModal(overlay);
-  console.log("[MyaPl] freesources modal opened");
+  // console.log("[MyaPl] freesources modal opened");
 }
 
 
