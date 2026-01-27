@@ -568,15 +568,15 @@
       </div>
 
       <!-- Qwen 설정 (provider 선택 시 표시) -->
-      <div id="abgm_tts_qwen_settings" style="display:none; margin-top:15px; padding:12px; background:rgba(0,0,0,.2); border-radius:8px;">
+      <div id="abgm_tts_qwen_settings" class="abgm-tts-provider-box" style="display:none;">
       
         <!-- 모델 선택 -->
         <div>
           <label style="font-size:12px; opacity:.8;">Model</label>
           <select id="abgm_tts_qwen_model" class="abgm-select" style="width:100%; margin-top:4px;">
-            <option value="qwen3-tts-flash">qwen3-tts-flash (추천)</option>
+            <option value="qwen3-tts-flash">qwen3-tts-flash</option>
             <option value="qwen3-tts-flash-2025-11-27">qwen3-tts-flash-2025-11-27</option>
-            <option value="qwen-tts-latest">qwen-tts-latest (구형 라인)</option>
+            <option value="qwen-tts-latest">qwen-tts-latest</option>
             <option value="qwen-tts-2025-05-22">qwen-tts-2025-05-22</option>
           </select>
         </div>
@@ -604,7 +604,7 @@
         </button>
         <div id="abgm_tts_test_result" style="margin-top:8px; font-size:11px;"></div>
       <!-- AI 응답 TTS 재생 -->
-      <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,.1);">
+      <div class="abgm-tts-divider">
         <button type="button" id="abgm_tts_speak_btn" class="menu_button" style="width:100%;">
           🎤 마지막 AI 응답 읽기
         </button>
@@ -613,7 +613,7 @@
     </div>
   </div>
       <!-- CORS 안내 -->
-      <div id="abgm_tts_cors_warning" style="display:none; margin-top:15px; padding:10px; background:rgba(255,100,100,.15); border-radius:8px; font-size:11px;">
+      <div id="abgm_tts_cors_warning" class="abgm-tts-warning" style="display:none;">
         ⚠️ TTS 기능을 사용하려면 ST의 <code>config.yaml</code>에서 <code>enableCorsProxy: true</code>로 설정 후 재시작이 필요합니다.
     </div>
   </div>
@@ -698,7 +698,6 @@
         <div>01-20: Change Mp3 버튼을 Change Source 버튼으로 변경</div>
         <div>01-21: 단일 파일 혹은 zip을 먹였을 때 다른 프리셋으로 튕겨나가는 치명적인 버그 개선 / BPM 태그 분류 방식 개선</div>
         <div>01-23: 확장자 호환 개선</div>
-        <div>01-27: TTS 테스팅 MVP만 구현해두자 죽겠다 대가리 펑펑 붐붐</div>
       </div>
     </details>
 
