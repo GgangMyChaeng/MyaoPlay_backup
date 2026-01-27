@@ -68,6 +68,8 @@ let _getEntryName = (bgm) => {
 };
 let _ensureBgmNames = (_preset) => {};
 
+let _getRequestHeaders = () => ({});
+
 
 
 /** ========================= 이미지 헬퍼 ========================= */
@@ -324,6 +326,7 @@ export function abgmBindSettingsModalDeps(deps = {}) {
   if (typeof deps.EXT_BIND_KEY === "string") _EXT_BIND_KEY = deps.EXT_BIND_KEY;
   if (typeof deps.getEntryName === "function") _getEntryName = deps.getEntryName;
   if (typeof deps.ensureBgmNames === "function") _ensureBgmNames = deps.ensureBgmNames;
+  if (typeof deps.getRequestHeaders === "function") _getRequestHeaders = deps.getRequestHeaders;
 }
 
 
@@ -2081,27 +2084,22 @@ function initTtsPanel(root, settings) {
   // 2. UI 업데이트 함수 (현재 설정에 맞춰서 보이기/숨기기)
   function updateTtsUI() {
     const provider = settings.ttsMode?.provider || "";
-    
     // Provider 선택창 값 반영
     if (providerSel) providerSel.value = provider;
-
     // Qwen 설정창 보이기/숨기기
     if (qwenSettings) {
       qwenSettings.style.display = (provider === 'qwen') ? 'block' : 'none';
     }
-
     // CORS 경고 보이기/숨기기 (Provider가 선택되어 있으면 보임)
     if (corsWarning) {
       corsWarning.style.display = provider ? 'block' : 'none';
     }
-
     // Qwen 세부 설정 값 반영
     if (provider === 'qwen' && settings.ttsMode.qwen) {
       if (qwenModelSel) qwenModelSel.value = settings.ttsMode.qwen.model || "qwen3-tts-flash";
       if (qwenApiKeyInput) qwenApiKeyInput.value = settings.ttsMode.qwen.apiKey || "";
     }
   }
-
   // 초기 실행
   updateTtsUI();
 
@@ -2111,12 +2109,10 @@ function initTtsPanel(root, settings) {
     _saveSettingsDebounced(); // 저장
     updateTtsUI(); // UI 갱신 (설정창 뜨게)
   });
-
   qwenModelSel?.addEventListener('change', (e) => {
     settings.ttsMode.qwen.model = e.target.value;
     _saveSettingsDebounced();
   });
-
   qwenApiKeyInput?.addEventListener('input', (e) => {
     settings.ttsMode.qwen.apiKey = e.target.value;
     _saveSettingsDebounced();
@@ -2128,7 +2124,6 @@ function initTtsPanel(root, settings) {
     const apiKey = (qwenApiKeyInput?.value || settings.ttsMode.qwen.apiKey || "").trim();
     const model = (qwenModelSel?.value || settings.ttsMode.qwen.model || "qwen3-tts-flash");
     const voice = settings.ttsMode.qwen.voice || "Cherry";
-    
     // 2. 키 저장 (사용자 요청: 테스트 시 저장)
     if (apiKey) {
       settings.ttsMode.qwen.apiKey = apiKey;
@@ -2136,7 +2131,6 @@ function initTtsPanel(root, settings) {
       settings.ttsMode.qwen.voice = voice;
       _saveSettingsDebounced();
     }
-
     // 3. 유효성 검사
     if (!apiKey) {
       if (testResult) {
@@ -2145,13 +2139,11 @@ function initTtsPanel(root, settings) {
       }
       return;
     }
-
     // 4. UI 상태 업데이트
     if (testResult) {
       testResult.textContent = "⏳ 연결 및 저장 중...";
       testResult.style.color = "var(--abgm-text-dim)";
     }
-
     // 5. 요청 로직 (Direct -> Proxy Fallback)
     const targetUrl = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
     const bodyData = {
@@ -2159,18 +2151,22 @@ function initTtsPanel(root, settings) {
       input: { text: "Hello, Myao Play TTS test." },
       parameters: { voice: voice }
     };
-
     // 헬퍼: 실제 fetch 수행
     const tryPostFetch = async (url) => {
-      return fetch(url, {
+      const isProxy = String(url).startsWith("/proxy");
+      const headers = {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        ...(isProxy ? (_getRequestHeaders?.() || {}) : {}), // 프록시일 때만 CSRF 헤더 추가
+      };
+      const opts = {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest" // 프록시 호환성용
-        },
-        body: JSON.stringify(bodyData)
-      });
+        headers,
+        body: JSON.stringify(bodyData),
+        ...(isProxy ? { credentials: "same-origin" } : {}), // 프록시일 때만 쿠키 포함
+      };
+      return fetch(url, opts);
     };
 
     try {
