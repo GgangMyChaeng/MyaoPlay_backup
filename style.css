@@ -3799,3 +3799,41 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
 .myaoplay-source-modal-btn.secondary:hover {
     background: var(--abgm-surface-hover, rgba(255, 255, 255, 0.08));
 }
+
+
+/* =================================================================
+   TTS Settings Section
+   ================================================================= */
+
+/* Provider 설정 박스 */
+.abgm-tts-provider-box {
+  margin-top: 15px;
+  padding: 12px;
+  background: var(--abgm-surface);
+  border: 1px solid var(--abgm-border);
+  border-radius: 8px;
+}
+
+/* 섹션 구분선 */
+.abgm-tts-divider {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--abgm-border);
+}
+
+/* CORS 경고 박스 */
+.abgm-tts-warning {
+  margin-top: 15px;
+  padding: 10px;
+  background: var(--abgm-danger-soft);
+  border: 1px solid var(--abgm-danger);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--abgm-danger);
+}
+
+/* TTS 라벨 스타일 통일 */
+.abgm-tts-label {
+  font-size: 12px;
+  color: var(--abgm-text-dim);
+}
