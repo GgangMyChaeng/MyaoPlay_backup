@@ -3,7 +3,7 @@ import { abgmEntryDetailPrompt } from "./ui_modal.js";
 import { ttsProviders } from "./tts_providers.js";
 import { saveSettingsDebounced } from "./deps.js";
 import { openFreeSourcesModal, initFreeSourcesInPanel } from "./ui_freesources.js";
-import { escapeHtml } from "./utils.js";
+import { escapeHtml, getLastAssistantText, preprocessForTts } from "./utils.js";
 
 
 
@@ -2071,7 +2071,6 @@ function initSfxPanel(root, settings) {
 function initTtsPanel(root, settings) {
   const ttsPanel = root.querySelector('#abgm-mode-tts');
   if (!ttsPanel) return;
-
   const providerSel = ttsPanel.querySelector('#abgm_tts_provider');
   const qwenSettings = ttsPanel.querySelector('#abgm_tts_qwen_settings');
   const corsWarning = ttsPanel.querySelector('#abgm_tts_cors_warning');
@@ -2079,7 +2078,6 @@ function initTtsPanel(root, settings) {
   const qwenApiKeyInput = ttsPanel.querySelector('#abgm_tts_qwen_apikey');
   const testBtn = ttsPanel.querySelector('#abgm_tts_test_btn');
   const testResult = ttsPanel.querySelector('#abgm_tts_test_result');
-
   // Provider 드롭다운 채우기
   if (providerSel) {
     providerSel.innerHTML = '<option value="">(사용 안 함)</option>';
@@ -2096,21 +2094,19 @@ function initTtsPanel(root, settings) {
     if (providerSel) providerSel.value = provider;
     if (qwenSettings) qwenSettings.style.display = (provider === 'qwen') ? 'block' : 'none';
     if (corsWarning) corsWarning.style.display = provider ? 'block' : 'none';
-
     if (provider === 'qwen' && settings.ttsMode.providers.qwen) {
       const s = settings.ttsMode.providers.qwen;
       if (qwenModelSel) qwenModelSel.value = s.model || "qwen3-tts-flash";
       if (qwenApiKeyInput) qwenApiKeyInput.value = s.apiKey || "";
     }
   }
-  updateTtsUI();
 
+  updateTtsUI();
   providerSel?.addEventListener('change', (e) => {
     settings.ttsMode.provider = e.target.value;
     _saveSettingsDebounced();
     updateTtsUI();
   });
-
   qwenSettings?.addEventListener('input', (e) => {
     const s = settings.ttsMode.providers.qwen;
     if (!s) return;
@@ -2118,11 +2114,9 @@ function initTtsPanel(root, settings) {
     if (e.target.id === 'abgm_tts_qwen_apikey') s.apiKey = e.target.value;
     _saveSettingsDebounced();
   });
-
   testBtn?.addEventListener('click', async () => {
     const providerId = settings.ttsMode.provider;
     const provider = ttsProviders[providerId];
-
     if (!provider) {
       if (testResult) {
         testResult.textContent = "❌ TTS 프로바이더를 선택해주세요.";
@@ -2130,13 +2124,11 @@ function initTtsPanel(root, settings) {
       }
       return;
     }
-
     const providerSettings = settings.ttsMode.providers[providerId] || {};
     if (testResult) {
       testResult.textContent = "⏳ 연결 중...";
       testResult.style.color = "var(--abgm-text-dim)";
     }
-
     try {
       const audioUrl = await provider.getAudioUrl("Mya.", providerSettings);
       const audio = new Audio(audioUrl);
@@ -2151,6 +2143,75 @@ function initTtsPanel(root, settings) {
       if (testResult) {
         testResult.innerHTML = `❌ 오류: ${e.message}<br><span style="font-size:0.85em; opacity:0.7;">엔드포인트/API키를 확인하거나, ST config.yaml에서 <b>enableCorsProxy: true</b>를 켜보세요.</span>`;
         testResult.style.color = "#ff6666";
+      }
+    }
+  });
+  // === AI 응답 TTS 재생 ===
+  const speakBtn = ttsPanel.querySelector('#abgm_tts_speak_btn');
+  const speakStatus = ttsPanel.querySelector('#abgm_tts_speak_status');
+  speakBtn?.addEventListener('click', async () => {
+    const providerId = settings.ttsMode?.provider;
+    const provider = ttsProviders[providerId];
+    if (!provider) {
+      if (speakStatus) {
+        speakStatus.textContent = "❌ TTS 프로바이더를 먼저 선택해주세요.";
+        speakStatus.style.color = "#ff6666";
+      }
+      return;
+    }
+    // 1) 마지막 AI 메시지 가져오기
+    const rawText = getLastAssistantText();
+    if (!rawText) {
+      if (speakStatus) {
+        speakStatus.textContent = "❌ 읽을 AI 응답이 없습니다.";
+        speakStatus.style.color = "#ff6666";
+      }
+      return;
+    }
+    // 2) 전처리
+    const text = preprocessForTts(rawText);
+    if (!text) {
+      if (speakStatus) {
+        speakStatus.textContent = "❌ 전처리 후 읽을 텍스트가 없습니다.";
+        speakStatus.style.color = "#ff6666";
+      }
+      return;
+    }
+    // 3) 길이 체크 (600자 제한)
+    const truncated = text.length > 600 ? text.slice(0, 597) + "..." : text;
+    if (speakStatus) {
+      speakStatus.textContent = `⏳ 변환 중... (${truncated.length}자)`;
+      speakStatus.style.color = "var(--abgm-text-dim)";
+    }
+    try {
+      // 4) TTS API 호출
+      const providerSettings = settings.ttsMode.providers[providerId] || {};
+      const audioUrl = await provider.getAudioUrl(truncated, providerSettings);
+      // 5) 재생
+      const audio = new Audio(audioUrl);
+      audio.volume = settings.globalVolume ?? 0.7;
+      audio.onended = () => {
+        if (speakStatus) {
+          speakStatus.textContent = "✅ 재생 완료";
+          speakStatus.style.color = "#66ff66";
+        }
+      };
+      audio.onerror = () => {
+        if (speakStatus) {
+          speakStatus.textContent = "❌ 오디오 재생 실패";
+          speakStatus.style.color = "#ff6666";
+        }
+      };
+      await audio.play();
+      if (speakStatus) {
+        speakStatus.textContent = `🔊 재생 중... (${truncated.length}자)`;
+        speakStatus.style.color = "#8af";
+      }
+    } catch (e) {
+      console.error("[MyaPl] TTS Speak Error:", e);
+      if (speakStatus) {
+        speakStatus.textContent = `❌ 오류: ${e.message}`;
+        speakStatus.style.color = "#ff6666";
       }
     }
   });
