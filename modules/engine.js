@@ -4,7 +4,7 @@ import { ensureSettings } from "./settings.js";
 import { saveSettingsDebounced, getBoundPresetIdFromContext } from "./deps.js";
 import { idbGet } from "./storage.js";
 
-console.log("[MyaPl] engine loaded");
+// console.log("[MyaPl] engine loaded");
 
 // ===== 외부 의존성 (index.js에서 주입받음) =====
 let _updateNowPlayingUI = () => {};
