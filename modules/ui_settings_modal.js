@@ -1,6 +1,6 @@
 import { ensureSettings, migrateLegacyDataUrlsToIDB } from "./settings.js";
 import { abgmEntryDetailPrompt } from "./ui_modal.js";
-import { ttsProviders } from "./tts_providers.js";
+import { ttsProviders, QWEN_VOICES } from "./tts_providers.js";
 import { saveSettingsDebounced } from "./deps.js";
 import { openFreeSourcesModal, initFreeSourcesInPanel } from "./ui_freesources.js";
 import { escapeHtml, getLastAssistantText, preprocessForTts } from "./utils.js";
@@ -2103,24 +2103,19 @@ function initTtsPanel(root, settings) {
       // Voice 드롭다운 채우기
       if (qwenVoiceSel) {
         if (qwenVoiceSel.options.length === 0) {
-          const voices = [
-            { id: "Cherry",  name: "Cherry (Female)" },
-            { id: "Serena",  name: "Serena (Female)" },
-            { id: "Ethan",   name: "Ethan (Male)" },
-            { id: "Chelsie", name: "Chelsie (Female)" },
-            { id: "Momo",    name: "Momo (Female)" },
-            { id: "Vivian",  name: "Vivian (Female)" },
-            { id: "Moon",    name: "Moon (Female)" },
-            { id: "Maia",    name: "Maia (Female)" },
-            { id: "Kai",     name: "Kai (Male)" },
-            { id: "Bella",   name: "Bella (Female)" },
-          ];
-          voices.forEach(v => {
-            const opt = document.createElement('option');
-            opt.value = v.id;
-            opt.textContent = v.name;
-            qwenVoiceSel.appendChild(opt);
-          });
+          // Voice 드롭다운 채우기
+          if (qwenVoiceSel) {
+            if (qwenVoiceSel.options.length === 0) {
+              // QWEN_VOICES로부터 채움
+              QWEN_VOICES.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v.id;
+                opt.textContent = v.name || v.id;
+                qwenVoiceSel.appendChild(opt);
+              });
+            }
+            qwenVoiceSel.value = s.voice || "Cherry";
+          }
         }
         qwenVoiceSel.value = s.voice || "Cherry";
       }
