@@ -7,7 +7,7 @@
 
 /** =================================================================================== */
 import { abgmNormTags, abgmNormTag, tagVal, tagPretty, tagCat, sortTags } from "./modules/tags.js";
-import { extension_settings, saveSettingsDebounced, __abgmResolveDeps, getSTContextSafe, getBoundPresetIdFromContext, EXT_BIND_KEY } from "./modules/deps.js";
+import { extension_settings, saveSettingsDebounced, __abgmResolveDeps, getSTContextSafe, getBoundPresetIdFromContext, EXT_BIND_KEY, getRequestHeaders } from "./modules/deps.js";
 import { openDb, idbPut, idbGet, idbDel, ensureAssetList, importZip, abgmGetDurationSecFromBlob, idbPutImage, idbGetImage, idbDelImage, checkIdbIntegrity, listIdbKeys } from "./modules/storage.js";
 import { ensureSettings, migrateLegacyDataUrlsToIDB, ensureEngineFields, exportPresetFile, rekeyPreset, pickPresetFromImportData, getActivePromptContent } from "./modules/settings.js";
 import { abgmBindFloatingActions, createFloatingButton, removeFloatingButton, removeFloatingMenu, openFloatingMenu, closeFloatingMenu, updateFloatingButtonPosition, abgmGetFloatingMenuEl, updateMenuDebugIcon, toggleDebugToast, setDebugToastText } from "./modules/ui_floating.js";
@@ -698,6 +698,7 @@ function bindDepsOnce() {
     fitModalToHost,
     getModalHost,
     EXT_BIND_KEY,
+    getRequestHeaders,
     
     updateNowPlayingUI,
     engineTick: () => engineTick(),
