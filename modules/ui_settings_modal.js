@@ -2161,6 +2161,8 @@ function initTtsPanel(root, settings) {
     }
     // 1) 마지막 AI 메시지 가져오기
     const rawText = getLastAssistantText();
+    console.log("[MyaPl] TTS rawText:", rawText?.slice(0, 200), "...");
+    console.log("[MyaPl] TTS rawText length:", rawText?.length);
     if (!rawText) {
       if (speakStatus) {
         speakStatus.textContent = "❌ 읽을 AI 응답이 없습니다.";
