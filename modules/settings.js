@@ -287,6 +287,14 @@ Example B (without keyword):
       overlay: true,        // true: BGM 위에 겹쳐 재생, false: BGM 일시정지 후 재생
       skipInOtherModes: true, // 키워드 모드 아닐 때 SFX 타입 곡 건너뛰기
     },
+    // TTS Mode 기본 설정
+    ttsMode: {
+      provider: "", // "qwen" | ""
+      qwen: {
+        model: "qwen3-tts-flash",
+        apiKey: "",
+      }
+    },
   };
   const s = extension_settings[SETTINGS_KEY];
   s.globalVolLocked ??= false;
@@ -503,6 +511,10 @@ Example B (without keyword):
   s.sfxMode ??= {};
   s.sfxMode.overlay ??= true;
   s.sfxMode.skipInOtherModes ??= true;
+  // TTS Mode 보정
+  s.ttsMode ??= {};
+  s.ttsMode.provider ??= "";
+  s.ttsMode.qwen ??= { model: "qwen3-tts-flash", apiKey: "" };
   // > 프리셋/곡 스키마 보정 + 구버전 변환
   Object.values(s.presets).forEach((p) => {
     p.defaultBgmKey ??= "";
