@@ -10,7 +10,7 @@
  */
 
 import { getSTContextSafe } from "../deps.js";
-import { ttsProviders } from "../tts_providers.js";
+import { providers as ttsProviders } from "./providers/index.js";
 
 /** ============================================================================
  * Public API
@@ -311,3 +311,4 @@ function _extractQuotedDialogues(text) {
   }
   return out;
 }
+
