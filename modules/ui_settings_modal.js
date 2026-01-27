@@ -2124,9 +2124,18 @@ function initTtsPanel(root, settings) {
 
   // 테스트 버튼 (실제 API 호출)
   testBtn?.addEventListener('click', async () => {
+    // 1. 값 가져오기
     const apiKey = (qwenApiKeyInput?.value || settings.ttsMode.qwen.apiKey || "").trim();
     const model = (qwenModelSel?.value || settings.ttsMode.qwen.model || "qwen3-tts-flash");
     
+    // 2. 키 저장 (사용자 요청: 테스트 시 저장)
+    if (apiKey) {
+      settings.ttsMode.qwen.apiKey = apiKey;
+      settings.ttsMode.qwen.model = model;
+      _saveSettingsDebounced();
+    }
+
+    // 3. 유효성 검사
     if (!apiKey) {
       if (testResult) {
         testResult.textContent = "❌ API Key를 입력해주세요.";
@@ -2135,27 +2144,47 @@ function initTtsPanel(root, settings) {
       return;
     }
 
+    // 4. UI 상태 업데이트
     if (testResult) {
-      testResult.textContent = "⏳ 연결 테스트 중...";
+      testResult.textContent = "⏳ 연결 및 저장 중...";
       testResult.style.color = "var(--abgm-text-dim)";
     }
 
-    try {
-      // Qwen (DashScope) TTS API Endpoint
-      const url = "https://dashscope.aliyuncs.com/api/v1/services/audio/text-to-speech/generation";
-      
-      const response = await fetch(url, {
+    // 5. 요청 로직 (Direct -> Proxy Fallback)
+    const targetUrl = "https://dashscope.aliyuncs.com/api/v1/services/audio/text-to-speech/generation";
+    const bodyData = {
+      model: model,
+      input: { text: "Hello, Myao Play TTS test." },
+      parameters: { format: "mp3" }
+    };
+
+    // 헬퍼: 실제 fetch 수행
+    const tryFetch = async (url) => {
+      return fetch(url, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest" // 프록시 호환성용
         },
-        body: JSON.stringify({
-          model: model,
-          input: { text: "Hello, Myao Play TTS test." },
-          parameters: { format: "mp3" }
-        })
+        body: JSON.stringify(bodyData)
       });
+    };
+
+    try {
+      let response;
+      let usedProxy = false;
+
+      // 시도 1: 직접 호출 (CORS 걸릴 확률 높음)
+      try {
+        response = await tryFetch(targetUrl);
+      } catch (e) {
+        console.warn("[MyaPl] Direct fetch failed, trying proxy...", e);
+        // 시도 2: ST 프록시 (/proxy) - enableCorsProxy: true 필요
+        const proxyUrl = `/proxy?url=${encodeURIComponent(targetUrl)}`;
+        response = await tryFetch(proxyUrl);
+        usedProxy = true;
+      }
 
       if (!response.ok) {
         let errText = response.statusText;
@@ -2170,17 +2199,13 @@ function initTtsPanel(root, settings) {
       audio.play().catch(e => console.warn("Auto-play blocked:", e));
 
       if (testResult) {
-        testResult.textContent = "✅ 연결 성공! (오디오 재생 중)";
+        testResult.innerHTML = `✅ 연결 성공! (오디오 재생 중)<br><span style="font-size:0.9em; opacity:0.8;">${usedProxy ? "(Proxy 사용됨)" : "(Direct 연결됨)"} / 설정 저장됨</span>`;
         testResult.style.color = "#66ff66";
       }
     } catch (e) {
       console.error("[MyaPl] TTS Test Failed:", e);
       if (testResult) {
-        if (e.name === 'TypeError' && e.message === 'Failed to fetch') {
-          testResult.innerHTML = "❌ CORS/네트워크 오류.<br>ST 콘솔/config를 확인하거나 API 키를 체크하세요.";
-        } else {
-          testResult.textContent = `❌ 오류: ${e.message}`;
-        }
+        testResult.innerHTML = `❌ 오류: ${e.message}<br><span style="font-size:0.85em; opacity:0.7;">ST config.yaml에서 <b>enableCorsProxy: true</b>를 켜보세요.</span>`;
         testResult.style.color = "#ff6666";
       }
     }
