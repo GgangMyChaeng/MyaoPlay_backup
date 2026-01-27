@@ -68,13 +68,13 @@ async function getQwenAudioUrl(text, providerSettings) {
 async function getElevenLabsAudioUrl(text, providerSettings) {
     // const { apiKey, voiceId } = providerSettings;
     // const url = `/proxy/https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
-    // ... 여기에 ElevenLabs 호출 로직을 구현하면 돼.
+    // ... 여기에 ElevenLabs 호출 로직을 구현하면 됨.
     throw new Error("ElevenLabs는 아직 구현되지 않았습니다.");
 }
 
 
 // --- 프로바이더 등록부 ---
-// 여기에 새 TTS 프로바이더를 추가하기만 하면 설정창에 자동으로 나타나게 됨.
+// 여기에 새 TTS 프로바이더를 추가하기만 하면 설정창에 자동으로 나타나게 됨. 어휴 ㅅㅂ 이것도 일이노
 export const ttsProviders = {
     qwen: {
         id: 'qwen',
