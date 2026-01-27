@@ -2104,13 +2104,16 @@ function initTtsPanel(root, settings) {
       if (qwenVoiceSel) {
         if (qwenVoiceSel.options.length === 0) {
           const voices = [
-            { id: "Sohee", name: "소희 (한국어 여성)" },
-            { id: "Jimin", name: "지민 (한국어 여성)" },
-            { id: "Yuna", name: "유나 (한국어 여성)" },
-            { id: "Minho", name: "민호 (한국어 남성)" },
-            { id: "Cherry", name: "Cherry (English Female)" },
-            { id: "Ethan", name: "Ethan (English Male)" },
-            { id: "Serena", name: "Serena (English Female)" },
+            { id: "Cherry",  name: "Cherry (Female)" },
+            { id: "Serena",  name: "Serena (Female)" },
+            { id: "Ethan",   name: "Ethan (Male)" },
+            { id: "Chelsie", name: "Chelsie (Female)" },
+            { id: "Momo",    name: "Momo (Female)" },
+            { id: "Vivian",  name: "Vivian (Female)" },
+            { id: "Moon",    name: "Moon (Female)" },
+            { id: "Maia",    name: "Maia (Female)" },
+            { id: "Kai",     name: "Kai (Male)" },
+            { id: "Bella",   name: "Bella (Female)" },
           ];
           voices.forEach(v => {
             const opt = document.createElement('option');
