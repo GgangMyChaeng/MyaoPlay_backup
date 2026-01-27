@@ -945,7 +945,7 @@ export function engineTick() {
     if (!fk) return;
     // 3) 현재 재생 중인 곡과 다르면 → 새로 재생
     if (currentFileKey !== fk) {
-      console.log(`[MyaPl] Loop One: ${currentFileKey} → ${fk}`);
+      // console.log(`[MyaPl] Loop One: ${currentFileKey} → ${fk}`);
       ensurePlayFile(fk, getVol(fk), true, preset.id);
       st.currentKey = fk;
     } else {
