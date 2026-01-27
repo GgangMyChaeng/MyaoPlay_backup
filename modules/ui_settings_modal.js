@@ -640,6 +640,24 @@ export function initModal(overlay) {
   });
   // 저장된 테마 복원
   applyTheme(settings.modalTheme || 'light');
+  // ===== Font Select =====
+  const fontSelect = root.querySelector('#abgm_font_select');
+  const fontPreview = root.querySelector('#abgm_font_preview');
+  const applyFont = (fontName) => {
+    document.documentElement.style.setProperty('--abgm-font', `'${fontName}', sans-serif`);
+    if (fontPreview) {
+      fontPreview.style.fontFamily = `'${fontName}', sans-serif`;
+    }
+    settings.font = fontName;
+    _saveSettingsDebounced();
+  };
+  if (fontSelect) {
+    fontSelect.addEventListener('change', (e) => applyFont(e.target.value));
+    // 저장된 폰트 복원
+    const savedFont = settings.font || 'Noto Sans KR';
+    fontSelect.value = savedFont;
+    applyFont(savedFont);
+  }
   // ===== Mode Panel (모드 탭) 초기화 =====
   initModePanel(root, settings);
   // ===== Free Sources (소스 탭) 초기화 =====
