@@ -5,15 +5,18 @@ const QWEN_ENDPOINT = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/
 
 async function getQwenAudioUrl(text, providerSettings) {
     const { apiKey, model, voice } = providerSettings;
-
     if (!apiKey) throw new Error("Qwen API Key가 없습니다.");
-
     const bodyData = {
         model: model || 'qwen3-tts-flash',
         input: { text },
         parameters: { voice: voice || 'Cherry', format: 'mp3' },
     };
-
+    console.log("[MyaPl] Qwen TTS request:", {
+      textLength: text.length,
+      textPreview: text.slice(0, 100),
+      model: bodyData.model,
+      voice: bodyData.parameters.voice
+    });
     const tryPostFetch = async (url) => {
         const headers = {
             "Authorization": `Bearer ${apiKey}`,
@@ -28,13 +31,11 @@ async function getQwenAudioUrl(text, providerSettings) {
             credentials: "same-origin",
         });
     };
-
     // SillyTavern 프록시 경로가 버전에 따라 다를 수 있어서 여러 개 시도
     const proxyCandidates = [
         `/proxy/${QWEN_ENDPOINT}`,
         `/proxy?url=${encodeURIComponent(QWEN_ENDPOINT)}`,
     ];
-
     let lastError;
     for (const url of proxyCandidates) {
         try {
@@ -55,7 +56,6 @@ async function getQwenAudioUrl(text, providerSettings) {
             lastError = e;
         }
     }
-    
     throw lastError || new Error("TTS 요청 실패. 모든 프록시 시도 실패.");
 }
 
