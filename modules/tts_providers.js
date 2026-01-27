@@ -29,6 +29,7 @@ export const QWEN_VOICES = [
 
 async function getQwenAudioUrl(text, providerSettings) {
     const { apiKey, model, voice } = providerSettings;
+    console.log("[MyaPl] Voice setting:", voice, "| Full settings:", providerSettings);
     if (!apiKey) throw new Error("Qwen API Key가 없습니다.");
     const bodyData = {
         model: model || 'qwen3-tts-flash',
