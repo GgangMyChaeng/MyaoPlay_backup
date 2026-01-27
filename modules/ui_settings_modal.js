@@ -2150,8 +2150,10 @@ function initTtsPanel(root, settings) {
       model,
       input: {
         text: "Mya.",
+      },
+      parameters: {
         voice: voice,
-        language_type: "Auto",
+        format: "mp3",
       },
     };
     // 헬퍼: 실제 fetch 수행
