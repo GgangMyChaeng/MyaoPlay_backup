@@ -1,9 +1,10 @@
 import { ensureSettings, migrateLegacyDataUrlsToIDB } from "./settings.js";
 import { abgmEntryDetailPrompt } from "./ui_modal.js";
-import { ttsProviders, QWEN_VOICES } from "./tts_providers.js";
 import { saveSettingsDebounced } from "./deps.js";
 import { openFreeSourcesModal, initFreeSourcesInPanel } from "./ui_freesources.js";
 import { escapeHtml, getLastAssistantText, preprocessForTts } from "./utils.js";
+import { providers as ttsProviders } from "./tts/providers/index.js";
+import { QWEN_VOICES } from "./tts/providers/qwen.js";
 
 
 
