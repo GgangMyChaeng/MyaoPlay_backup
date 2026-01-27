@@ -245,7 +245,7 @@ function createFloatingMenu() {
       toggleDebugMode();
     } else if (action === "help") {
       // 4) Help 섹션 열기 (나중에 구현)
-      console.log("[MyaPl] Help clicked");
+      // console.log("[MyaPl] Help clicked");
     } else if (action === "settings") {
       openModal();
       closeFloatingMenu();
