@@ -2058,3 +2058,76 @@ function initSfxPanel(root, settings) {
     _saveSettingsDebounced();
   });
 } // initSfxPanel 닫기
+
+
+
+/** ========================= TTS Mode Panel 초기화 ========================= */
+function initTtsPanel(root, settings) {
+  const ttsPanel = root.querySelector('#abgm-mode-tts');
+  if (!ttsPanel) return;
+
+  // 1. 요소들 가져오기
+  const providerSel = ttsPanel.querySelector('#abgm_tts_provider');
+  const qwenSettings = ttsPanel.querySelector('#abgm_tts_qwen_settings');
+  const corsWarning = ttsPanel.querySelector('#abgm_tts_cors_warning');
+  
+  const qwenModelSel = ttsPanel.querySelector('#abgm_tts_qwen_model');
+  const qwenApiKeyInput = ttsPanel.querySelector('#abgm_tts_qwen_apikey');
+  const testBtn = ttsPanel.querySelector('#abgm_tts_test_btn');
+  const testResult = ttsPanel.querySelector('#abgm_tts_test_result');
+
+  // 2. UI 업데이트 함수 (현재 설정에 맞춰서 보이기/숨기기)
+  function updateTtsUI() {
+    const provider = settings.ttsMode?.provider || "";
+    
+    // Provider 선택창 값 반영
+    if (providerSel) providerSel.value = provider;
+
+    // Qwen 설정창 보이기/숨기기
+    if (qwenSettings) {
+      qwenSettings.style.display = (provider === 'qwen') ? 'block' : 'none';
+    }
+
+    // CORS 경고 보이기/숨기기 (Provider가 선택되어 있으면 보임)
+    if (corsWarning) {
+      corsWarning.style.display = provider ? 'block' : 'none';
+    }
+
+    // Qwen 세부 설정 값 반영
+    if (provider === 'qwen' && settings.ttsMode.qwen) {
+      if (qwenModelSel) qwenModelSel.value = settings.ttsMode.qwen.model || "qwen3-tts-flash";
+      if (qwenApiKeyInput) qwenApiKeyInput.value = settings.ttsMode.qwen.apiKey || "";
+    }
+  }
+
+  // 초기 실행
+  updateTtsUI();
+
+  // 3. 이벤트 리스너 연결 (값이 바뀌면 저장하고 UI 갱신)
+  providerSel?.addEventListener('change', (e) => {
+    settings.ttsMode.provider = e.target.value;
+    _saveSettingsDebounced(); // 저장
+    updateTtsUI(); // UI 갱신 (설정창 뜨게)
+  });
+
+  qwenModelSel?.addEventListener('change', (e) => {
+    settings.ttsMode.qwen.model = e.target.value;
+    _saveSettingsDebounced();
+  });
+
+  qwenApiKeyInput?.addEventListener('input', (e) => {
+    settings.ttsMode.qwen.apiKey = e.target.value;
+    _saveSettingsDebounced();
+  });
+
+  // 테스트 버튼 (일단 UI 반응만)
+  testBtn?.addEventListener('click', () => {
+    if (testResult) {
+      testResult.textContent = "⏳ 테스트 기능은 아직 구현 중이야! (API 키 저장됨)";
+      testResult.style.color = "var(--abgm-text-dim)";
+      setTimeout(() => {
+         testResult.textContent = "✅ 설정이 저장되었어.";
+      }, 1000);
+    }
+  });
+}
