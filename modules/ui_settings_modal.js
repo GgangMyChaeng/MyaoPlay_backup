@@ -1922,6 +1922,8 @@ function initModePanel(root, settings) {
   initTimePanel(root, settings);
   // > SFX Mode Panel 초기화
   initSfxPanel(root, settings);
+  // > TTS Mode Panel 초기화
+  initTtsPanel(root, settings);
 } // initModePanel 닫기
 
 
