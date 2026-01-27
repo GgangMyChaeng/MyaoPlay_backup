@@ -2180,6 +2180,7 @@ function initTtsPanel(root, settings) {
       const proxyCandidates = [
         `/proxy/${targetUrl}`,
         `/proxy/${encodeURIComponent(targetUrl)}`,
+        `/proxy?url=${encodeURIComponent(targetUrl)}`, // ST 빌드별 호환
       ];
       let lastErr;
       for (const url of proxyCandidates) {
