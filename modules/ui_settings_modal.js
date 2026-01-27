@@ -2076,6 +2076,7 @@ function initTtsPanel(root, settings) {
   const corsWarning = ttsPanel.querySelector('#abgm_tts_cors_warning');
   const qwenModelSel = ttsPanel.querySelector('#abgm_tts_qwen_model');
   const qwenApiKeyInput = ttsPanel.querySelector('#abgm_tts_qwen_apikey');
+  const qwenVoiceSel = ttsPanel.querySelector('#abgm_tts_qwen_voice');
   const testBtn = ttsPanel.querySelector('#abgm_tts_test_btn');
   const testResult = ttsPanel.querySelector('#abgm_tts_test_result');
   // Provider 드롭다운 채우기
@@ -2098,6 +2099,28 @@ function initTtsPanel(root, settings) {
       const s = settings.ttsMode.providers.qwen;
       if (qwenModelSel) qwenModelSel.value = s.model || "qwen3-tts-flash";
       if (qwenApiKeyInput) qwenApiKeyInput.value = s.apiKey || "";
+  
+      // Voice 드롭다운 채우기
+      if (qwenVoiceSel) {
+        if (qwenVoiceSel.options.length === 0) {
+          const voices = [
+            { id: "Sohee", name: "소희 (한국어 여성)" },
+            { id: "Jimin", name: "지민 (한국어 여성)" },
+            { id: "Yuna", name: "유나 (한국어 여성)" },
+            { id: "Minho", name: "민호 (한국어 남성)" },
+            { id: "Cherry", name: "Cherry (English Female)" },
+            { id: "Ethan", name: "Ethan (English Male)" },
+            { id: "Serena", name: "Serena (English Female)" },
+          ];
+          voices.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.id;
+            opt.textContent = v.name;
+            qwenVoiceSel.appendChild(opt);
+          });
+        }
+        qwenVoiceSel.value = s.voice || "Cherry";
+      }
     }
   }
 
@@ -2112,6 +2135,7 @@ function initTtsPanel(root, settings) {
     if (!s) return;
     if (e.target.id === 'abgm_tts_qwen_model') s.model = e.target.value;
     if (e.target.id === 'abgm_tts_qwen_apikey') s.apiKey = e.target.value;
+    if (e.target.id === 'abgm_tts_qwen_voice') s.voice = e.target.value;
     _saveSettingsDebounced();
   });
   testBtn?.addEventListener('click', async () => {
