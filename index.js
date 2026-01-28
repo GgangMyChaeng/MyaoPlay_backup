@@ -529,6 +529,10 @@ async function init() {
   if (settings.fontSize) {
     document.documentElement.style.setProperty('--abgm-font-size', `${settings.fontSize}%`);
   }
+  // 폰트 굵기 초기화
+  if (settings.fontWeight) {
+    document.documentElement.style.setProperty('--abgm-font-weight', settings.fontWeight);
+  }
   // 3) 디버그: 콘솔에서 설정 확인용
   window.__ABGM_DBG__ = {
     getSettings: () => ensureSettings(),
