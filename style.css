@@ -3039,16 +3039,21 @@ textarea.abgm-lyrics-input:focus {
    Isolates the extension UI to ignore all interference from the SillyTavern theme.
    ================================================================= */
 
-/* --- 1. Global Isolation Container --- */
-/* #abgm_modal_overlay,
+/* --- 1. Force Font Family --- */
+#abgm_modal_overlay,
+#abgm_modal_overlay *,
 #ABGM_NP_GLASS_OVERLAY,
+#ABGM_NP_GLASS_OVERLAY *,
 .abgm-floating-menu,
+.abgm-floating-menu *,
 .abgm-confirm-wrap,
-#abgm_addto_overlay {
-*/  /* Break font-family inheritance from ST theme and use system default */
-/*  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
-* }
-*/ 
+.abgm-confirm-wrap *,
+#abgm_addto_overlay,
+#abgm_addto_overlay *,
+#abgm_bind_overlay,
+#abgm_bind_overlay * {
+  font-family: var(--abgm-font) !important;
+}
 
 /* --- 2. Force All Text Colors --- */
 #abgm_modal_overlay, #abgm_modal_overlay *,
