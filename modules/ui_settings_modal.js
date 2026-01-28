@@ -657,6 +657,28 @@ export function initModal(overlay) {
     const savedFont = settings.font || 'Noto Sans KR';
     fontSelect.value = savedFont;
     applyFont(savedFont);
+    // ===== Font Size =====
+    const fontSizeSlider = root.querySelector('#abgm_font_size');
+    const fontSizeVal = root.querySelector('#abgm_font_size_val');
+    const fontSizeBtns = root.querySelectorAll('[data-fontsize]');
+    const applyFontSize = (size) => {
+      const s = Math.max(80, Math.min(120, Number(size) || 100));
+      document.documentElement.style.setProperty('--abgm-font-size', `${s}%`);
+      if (fontSizeSlider) fontSizeSlider.value = s;
+      if (fontSizeVal) fontSizeVal.textContent = `${s}%`;
+      if (fontPreview) fontPreview.style.fontSize = `${s}%`;
+      settings.fontSize = s;
+      _saveSettingsDebounced();
+    };
+    if (fontSizeSlider) {
+      fontSizeSlider.addEventListener('input', (e) => applyFontSize(e.target.value));
+    }
+    fontSizeBtns.forEach(btn => {
+      btn.addEventListener('click', () => applyFontSize(btn.dataset.fontsize));
+    });
+    // 저장된 폰트 크기 복원
+    const savedFontSize = settings.fontSize || 100;
+    applyFontSize(savedFontSize);
   }
   // ===== Mode Panel (모드 탭) 초기화 =====
   initModePanel(root, settings);
