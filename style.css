@@ -3097,6 +3097,9 @@ textarea.abgm-lyrics-input:focus {
 #abgm_modal_overlay input[type="search"],
 #abgm_modal_overlay textarea,
 #abgm_modal_overlay select {
+  font-family: var(--abgm-font) !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
   background-color: var(--abgm-input-bg) !important;
   border: 1px solid var(--abgm-input-border) !important;
   color: var(--abgm-text) !important;
@@ -3104,6 +3107,7 @@ textarea.abgm-lyrics-input:focus {
   padding: 8px 10px !important;
   box-shadow: none !important;
 }
+
 #abgm_modal_overlay input:focus,
 #abgm_modal_overlay textarea:focus,
 #abgm_modal_overlay select:focus {
@@ -3111,12 +3115,25 @@ textarea.abgm-lyrics-input:focus {
   outline: none !important;
   box-shadow: 0 0 0 2px var(--abgm-accent-soft) !important;
 }
+
 /* Force <option> colors inside dropdowns to follow theme */
 #abgm_modal_overlay select option,
 #ABGM_NP_GLASS_OVERLAY select option,
 .abgm-floating-menu select option {
+  font-family: var(--abgm-font) !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
   background: var(--abgm-input-bg) !important;
   color: var(--abgm-text) !important;
+}
+
+/* NP Glass input/select 폰트 */
+#ABGM_NP_GLASS_OVERLAY input,
+#ABGM_NP_GLASS_OVERLAY textarea,
+#ABGM_NP_GLASS_OVERLAY select {
+  font-family: var(--abgm-font) !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
 }
 
 /* --- 4. Force All Button Styles --- */
