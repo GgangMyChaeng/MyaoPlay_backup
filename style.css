@@ -3886,13 +3886,13 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
 /* TTS 라벨 스타일 통일 */
 .abgm-tts-label {
   font-size: 12px;
-  color: var(--abgm-text-dim, rgb(223, 80, 92)) !important;
+  color: var(--abgm-text-dim);
 }
 
 /* TTS 섹션 code 태그 */
 #abgm-mode-tts code,
 .abgm-tts-warning code {
-  background: var(--abgm-accent-soft);
+  background: var(--abgm-accent-soft, rgb(223, 80, 92)) !important;
   color: var(--abgm-accent);
   padding: 2px 6px;
   border-radius: 4px;
