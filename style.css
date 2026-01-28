@@ -3892,10 +3892,10 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
 /* TTS 섹션 code 태그 */
 #abgm-mode-tts code,
 .abgm-tts-warning code {
-  background: rgb(219, 128, 135) !important;
+  background: rgb(255, 175, 182) !important;
   color: var(--abgm-accent);
   padding: 2px 6px;
-  border: 1px solid #ff5555;
+  border: 1px solid #fc8383;
   border-radius: 4px;
   font-family: monospace;
   font-size: 0.9em;
