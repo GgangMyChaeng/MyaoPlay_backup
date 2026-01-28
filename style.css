@@ -466,6 +466,7 @@ body.autobgm-modal-open {
 .autobgm-modal input,
 .autobgm-modal select,
 .autobgm-modal .text_pole {
+  font-family: var(--abgm-font);
   min-width: 0;
   max-width: 100%;
   background: var(--abgm-input-bg);
@@ -600,6 +601,7 @@ body.autobgm-modal-open {
 }
 
 .abgm-select {
+  font-family: var(--abgm-font);
   width: 100%;
   padding: 6px 10px;
   border-radius: 10px;
@@ -774,6 +776,7 @@ body.autobgm-modal-open {
 }
 
 .abgm-confirm {
+  font-family: var(--abgm-font);
   position: relative;
   width: min(420px, calc(100vw - 24px));
   border: 1px solid var(--abgm-border-strong);
@@ -2302,6 +2305,7 @@ body.autobgm-modal-open {
 }
 
 .abgm-pl-select {
+  font-family: var(--abgm-font);
   width: 100%;
   padding: 8px 12px;
   border-radius: 10px;
