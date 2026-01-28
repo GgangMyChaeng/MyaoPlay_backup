@@ -525,6 +525,10 @@ async function init() {
   if (settings.font) {
     document.documentElement.style.setProperty('--abgm-font', `'${settings.font}', sans-serif`);
   }
+  // 폰트 크기 초기화
+  if (settings.fontSize) {
+    document.documentElement.style.setProperty('--abgm-font-size', `${settings.fontSize}%`);
+  }
   // 3) 디버그: 콘솔에서 설정 확인용
   window.__ABGM_DBG__ = {
     getSettings: () => ensureSettings(),
