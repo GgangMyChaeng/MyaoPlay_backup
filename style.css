@@ -1459,7 +1459,7 @@ body.autobgm-modal-open {
   gap: 6px;
   padding: 10px 15px;
   border-bottom: 1px solid var(--abgm-border);
-  background: var(--abgm-surface);
+  background: transparent;
 }
 
 .abgm-mode-subtab {
