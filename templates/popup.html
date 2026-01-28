@@ -697,6 +697,19 @@
       <p id="abgm_font_preview" style="margin-top:12px; padding:10px; background:var(--abgm-surface); border-radius:6px; font-size:14px;">
         미리보기: 다람쥐 헌 쳇바퀴에 타고파 🐿️
       </p>
+      <!-- 폰트 크기 -->
+      <div style="margin-top:16px;">
+        <label style="font-size:12px; opacity:0.8;">폰트 크기</label>
+        <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">
+          <input type="range" id="abgm_font_size" min="80" max="120" step="5" value="100" style="flex:1;">
+          <span id="abgm_font_size_val" style="min-width:45px; text-align:right;">100%</span>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button type="button" class="menu_button" data-fontsize="85" style="flex:1;">작게</button>
+          <button type="button" class="menu_button" data-fontsize="100" style="flex:1;">기본</button>
+          <button type="button" class="menu_button" data-fontsize="115" style="flex:1;">크게</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
