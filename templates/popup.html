@@ -713,10 +713,14 @@
       <!-- 폰트 굵기 -->
       <div style="margin-top:16px;">
         <label style="font-size:12px; opacity:0.8;">폰트 굵기</label>
-        <div style="display:flex; gap:8px; margin-top:6px;">
-          <button type="button" class="menu_button abgm-fontweight-btn" data-fontweight="300" style="flex:1; font-weight:300;">가늘게</button>
-          <button type="button" class="menu_button abgm-fontweight-btn" data-fontweight="400" style="flex:1; font-weight:400;">기본</button>
-          <button type="button" class="menu_button abgm-fontweight-btn" data-fontweight="600" style="flex:1; font-weight:600;">굵게</button>
+        <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">
+          <input type="range" id="abgm_font_weight" min="100" max="900" step="100" value="400" style="flex:1;">
+          <span id="abgm_font_weight_val" style="min-width:35px; text-align:right;">400</span>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button type="button" class="menu_button abgm-fontweight-btn" data-fontweight="300" style="flex:1;">가늘게</button>
+          <button type="button" class="menu_button abgm-fontweight-btn" data-fontweight="400" style="flex:1;">기본</button>
+          <button type="button" class="menu_button abgm-fontweight-btn" data-fontweight="700" style="flex:1;">굵게</button>
         </div>
       </div>
     </div>
