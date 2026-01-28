@@ -17,6 +17,7 @@
   color-scheme: light;
   /* Font */
   --abgm-font: 'Noto Sans KR', sans-serif;
+  --abgm-font-size: 100%;
   /* Surface & Background */
   --abgm-bg: #ffffff;
   --abgm-surface: #f8fafd;
@@ -431,6 +432,7 @@ body.autobgm-modal-open {
 
 .autobgm-modal {
   font-family: var(--abgm-font);
+  font-size: var(--abgm-font-size);
   width: min(900px, 96vw);
   max-height: calc(100vh - 24px);
   min-height: 240px;
@@ -3039,20 +3041,24 @@ textarea.abgm-lyrics-input:focus {
    Isolates the extension UI to ignore all interference from the SillyTavern theme.
    ================================================================= */
 
-/* --- 1. Force Font Family --- */
+/* --- 1. Force Font Family & Size --- */
 #abgm_modal_overlay,
-#abgm_modal_overlay *,
 #ABGM_NP_GLASS_OVERLAY,
-#ABGM_NP_GLASS_OVERLAY *,
 .abgm-floating-menu,
-.abgm-floating-menu *,
 .abgm-confirm-wrap,
-.abgm-confirm-wrap *,
 #abgm_addto_overlay,
-#abgm_addto_overlay *,
-#abgm_bind_overlay,
-#abgm_bind_overlay * {
+#abgm_bind_overlay {
   font-family: var(--abgm-font) !important;
+  font-size: var(--abgm-font-size) !important;
+}
+
+#abgm_modal_overlay *,
+#ABGM_NP_GLASS_OVERLAY *,
+.abgm-floating-menu *,
+.abgm-confirm-wrap *,
+#abgm_addto_overlay *,
+#abgm_bind_overlay * {
+  font-family: inherit !important;
 }
 
 /* --- 2. Force All Text Colors --- */
