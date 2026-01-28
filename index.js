@@ -521,6 +521,10 @@ async function init() {
   if (settings.modalTheme === 'dark') {
     document.body.setAttribute('data-abgm-theme', 'dark');
   }
+  // 폰트 초기화 (저장된 폰트 적용)
+  if (settings.font) {
+    document.documentElement.style.setProperty('--abgm-font', `'${settings.font}', sans-serif`);
+  }
   // 3) 디버그: 콘솔에서 설정 확인용
   window.__ABGM_DBG__ = {
     getSettings: () => ensureSettings(),
