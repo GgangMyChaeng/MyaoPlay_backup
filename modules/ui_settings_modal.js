@@ -680,24 +680,30 @@ export function initModal(overlay) {
     const savedFontSize = settings.fontSize || 100;
     applyFontSize(savedFontSize);
     // ===== Font Weight =====
+    const fontWeightSlider = root.querySelector('#abgm_font_weight');
+    const fontWeightVal = root.querySelector('#abgm_font_weight_val');
     const fontWeightBtns = root.querySelectorAll('.abgm-fontweight-btn');
     const applyFontWeight = (weight) => {
-      const w = Number(weight) || 400;
+      const w = Math.max(100, Math.min(900, Number(weight) || 400));
       document.documentElement.style.setProperty('--abgm-font-weight', w);
+      if (fontWeightSlider) fontWeightSlider.value = w;
+      if (fontWeightVal) fontWeightVal.textContent = w;
       if (fontPreview) fontPreview.style.fontWeight = w;
-      // 버튼 활성화 상태
-      fontWeightBtns.forEach(btn => {
-        btn.classList.toggle('is-active', Number(btn.dataset.fontweight) === w);
-      });
       settings.fontWeight = w;
       _saveSettingsDebounced();
     };
+    if (fontWeightSlider) {
+      fontWeightSlider.addEventListener('input', (e) => applyFontWeight(e.target.value));
+    }
     fontWeightBtns.forEach(btn => {
       btn.addEventListener('click', () => applyFontWeight(btn.dataset.fontweight));
     });
     // 저장된 폰트 굵기 복원
     const savedFontWeight = settings.fontWeight || 400;
     applyFontWeight(savedFontWeight);
+    fontWeightBtns.forEach(btn => {
+      btn.addEventListener('click', () => applyFontWeight(btn.dataset.fontweight));
+    });
   }
   // ===== Mode Panel (모드 탭) 초기화 =====
   initModePanel(root, settings);
