@@ -3895,7 +3895,7 @@ body[data-abgm-theme="dark"] #abgm_bind_overlay > div {
   background: rgb(219, 128, 135) !important;
   color: #ffffff !important;
   padding: 2px 6px;
-  border: 1px solid #ffffff;
+  border: 1px solid #ff5555;
   border-radius: 4px;
   font-family: monospace;
   font-size: 0.9em;
