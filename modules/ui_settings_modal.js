@@ -679,6 +679,25 @@ export function initModal(overlay) {
     // 저장된 폰트 크기 복원
     const savedFontSize = settings.fontSize || 100;
     applyFontSize(savedFontSize);
+    // ===== Font Weight =====
+    const fontWeightBtns = root.querySelectorAll('.abgm-fontweight-btn');
+    const applyFontWeight = (weight) => {
+      const w = Number(weight) || 400;
+      document.documentElement.style.setProperty('--abgm-font-weight', w);
+      if (fontPreview) fontPreview.style.fontWeight = w;
+      // 버튼 활성화 상태
+      fontWeightBtns.forEach(btn => {
+        btn.classList.toggle('is-active', Number(btn.dataset.fontweight) === w);
+      });
+      settings.fontWeight = w;
+      _saveSettingsDebounced();
+    };
+    fontWeightBtns.forEach(btn => {
+      btn.addEventListener('click', () => applyFontWeight(btn.dataset.fontweight));
+    });
+    // 저장된 폰트 굵기 복원
+    const savedFontWeight = settings.fontWeight || 400;
+    applyFontWeight(savedFontWeight);
   }
   // ===== Mode Panel (모드 탭) 초기화 =====
   initModePanel(root, settings);
