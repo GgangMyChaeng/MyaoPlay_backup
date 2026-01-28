@@ -2027,6 +2027,7 @@ body.autobgm-modal-open {
 }
 
 .abgm-np-glass {
+  font-family: var(--abgm-font);
   background: var(--abgm-glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -2429,6 +2430,7 @@ body.autobgm-modal-open {
 }
 
 .abgm-pl-sortmenu {
+  font-family: var(--abgm-font);
   position: relative;
   width: min(220px, calc(100% - 24px));
   padding: 8px;
@@ -2490,6 +2492,7 @@ body.autobgm-modal-open {
   border-radius: 8px;
   box-shadow: 0 4px 12px var(--abgm-shadow);
   
+  font-family: var(--abgm-font);
   font-size: 12px;
   line-height: 1.4;
   color: var(--abgm-toast-text);
@@ -2543,6 +2546,7 @@ body.autobgm-modal-open {
   border: none;
   background: transparent;
   color: var(--abgm-text-dim);
+  font-family: var(--abgm-font);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
