@@ -136,10 +136,10 @@ body[data-abgm-theme="dark"] {
   /* Overlay */
   --abgm-overlay: rgba(0, 0, 0, 0.85);
   
-  /* Modal specific - Teal/Mint */
+  /* Modal specific */
   --abgm-modal-bg: rgba(20, 20, 20, 0.96);
-  --abgm-modal-header-bg: rgba(30, 30, 30, 0.98);
-  --abgm-tabbar-bg: rgba(20, 20, 20, 0.96);
+  --abgm-modal-header-bg: rgba(45, 45, 48, 0.98);
+  --abgm-tabbar-bg: rgba(35, 35, 38, 0.98);
   --abgm-tab-active-color: #6be1ff;
   
   /* Table */
