@@ -250,38 +250,39 @@ export function removeTtsButtonsFromAllMessages() {
 let messageObserver = null;
 
 export function startMessageObserver() {
-  if (messageObserver) return;
-
+  // 기존 observer 정리
+  if (messageObserver) {
+    messageObserver.disconnect();
+    messageObserver = null;
+  }
   const chatContainer = document.querySelector("#chat");
   if (!chatContainer) {
-    console.warn("[MyaPl] Chat container not found");
+    console.warn("[MyaPl] Chat container not found, will retry");
+    // 채팅방이 아직 안 열렸으면 나중에 다시 시도
+    setTimeout(() => startMessageObserver(), 1000);
     return;
   }
-
   messageObserver = new MutationObserver((mutations) => {
     const _settings = ensureSettings();
     if (!_settings?.ttsMode?.msgButtonEnabled) return;
-
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node.nodeType === Node.ELEMENT_NODE) {
           // 새로 추가된 메시지 확인
           if (node.classList?.contains("mes") && !node.classList?.contains("is_user")) {
-            addTtsButtonToMessage(node);
+            setTimeout(() => addTtsButtonToMessage(node), 50); // 약간 딜레이
           }
           // 내부에 메시지가 있는 경우
           const innerMsgs = node.querySelectorAll?.(".mes:not(.is_user)");
-          innerMsgs?.forEach(msg => addTtsButtonToMessage(msg));
+          innerMsgs?.forEach(msg => setTimeout(() => addTtsButtonToMessage(msg), 50));
         }
       }
     }
   });
-
   messageObserver.observe(chatContainer, {
     childList: true,
     subtree: true
   });
-
   console.log("[MyaPl] Message observer started");
 }
 
@@ -319,12 +320,63 @@ export function setMessageButtonsEnabled(enabled) {
  * 초기화 (확장 로드 시 호출)
  */
 export function initMessageButtons(settings) {
-  const _settings = ensureSettings();
-  if (settings?.ttsMode?.msgButtonEnabled) {
+  // ST 이벤트 등록 (최초 1회)
+  registerSTEvents();
+  const s = ensureSettings();
+  if (s?.ttsMode?.msgButtonEnabled) {
     // 약간의 딜레이 후 실행 (DOM 로드 대기)
     setTimeout(() => {
       addTtsButtonsToAllMessages();
       startMessageObserver();
     }, 1000);
   }
+}
+
+/**
+ * ST 이벤트 기반 자동 초기화
+ * - chatLoaded: 채팅방 로드/전환 시
+ * - CHARACTER_MESSAGE_RENDERED: 새 AI 메시지 렌더링 시
+ */
+let _stEventsRegistered = false;
+
+export function registerSTEvents() {
+  if (_stEventsRegistered) return;
+  _stEventsRegistered = true;
+  // ST 이벤트 타입 가져오기
+  const eventSource = window.eventSource;
+  const event_types = window.event_types;
+  if (!eventSource || !event_types) {
+    console.warn("[MyaPl] ST event system not found, falling back to interval check");
+    // fallback: 주기적으로 체크
+    setInterval(() => {
+      const settings = ensureSettings();
+      if (settings?.ttsMode?.msgButtonEnabled) {
+        addTtsButtonsToAllMessages();
+      }
+    }, 2000);
+    return;
+  }
+  // 채팅방 로드/전환 시
+  eventSource.on(event_types.CHAT_CHANGED, () => {
+    console.log("[MyaPl] CHAT_CHANGED event");
+    setTimeout(() => {
+      const settings = ensureSettings();
+      if (settings?.ttsMode?.msgButtonEnabled) {
+        // observer 재시작 (새 #chat 컨테이너에 연결)
+        stopMessageObserver();
+        addTtsButtonsToAllMessages();
+        startMessageObserver();
+      }
+    }, 500); // DOM 렌더링 대기
+  });
+  // 새 AI 메시지 렌더링 시
+  eventSource.on(event_types.CHARACTER_MESSAGE_RENDERED, () => {
+    console.log("[MyaPl] CHARACTER_MESSAGE_RENDERED event");
+    const settings = ensureSettings();
+    if (settings?.ttsMode?.msgButtonEnabled) {
+      // 약간의 딜레이 후 버튼 추가 (DOM 안정화 대기)
+      setTimeout(() => addTtsButtonsToAllMessages(), 100);
+    }
+  });
+  console.log("[MyaPl] ST events registered for TTS message buttons");
 }
