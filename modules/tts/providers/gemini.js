@@ -94,9 +94,6 @@ export async function getAudioUrl(text, providerSettings = {}) {
   if (!apiKey) throw new Error("Gemini API Key가 없습니다.");
   const modelId = model || "gemini-2.5-flash-preview-tts";
   
-  // URL에 key 포함 (기존 방식)
-  const endpointWithKey = `${GEMINI_BASE}/${modelId}:generateContent?key=${apiKey}`;
-  // URL에 key 없이 (헤더로만)
   const endpointNoKey = `${GEMINI_BASE}/${modelId}:generateContent`;
   
   const bodyData = {
@@ -122,100 +119,54 @@ export async function getAudioUrl(text, providerSettings = {}) {
     voice: voice || "Kore",
   });
 
-  // 여러 조합 시도
-  const attempts = [
-    // 1) 프록시 + URL에 key (기존 방식)
-    {
-      url: `/proxy/${endpointWithKey}`,
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        ...(getRequestHeaders?.() || {}),
-      },
+  // 직접 호출 + x-goog-api-key 헤더 (가장 잘 되는 방식)
+  const response = await fetch(endpointNoKey, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
     },
-    // 2) 프록시 + 헤더에 key
-    {
-      url: `/proxy/${endpointNoKey}`,
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-        "X-Requested-With": "XMLHttpRequest",
-        ...(getRequestHeaders?.() || {}),
-      },
-    },
-    // 3) 직접 호출 + 헤더에 key (CORS 안 되면 실패)
-    {
-      url: endpointNoKey,
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-    },
-    // 4) 직접 호출 + URL에 key
-    {
-      url: endpointWithKey,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  ];
-
-  let lastError;
-  for (const attempt of attempts) {
-    try {
-      console.log("[MyaPl][Gemini] Trying:", attempt.url.substring(0, 80) + "...");
-      const response = await fetch(attempt.url, {
-        method: "POST",
-        headers: attempt.headers,
-        body: JSON.stringify(bodyData),
-        credentials: "same-origin",
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("[MyaPl][Gemini] API Error:", response.status, errorText.substring(0, 200));
-        lastError = new Error(`HTTP ${response.status}`);
-        continue;
-      }
-      
-      const data = await response.json();
-      console.log("[MyaPl][Gemini] Response received, extracting audio...");
-      
-      // 응답에서 audio data 추출
-      const audioPart = data?.candidates?.[0]?.content?.parts?.find(
-        (p) => p.inlineData?.mimeType?.startsWith("audio/")
-      );
-      if (!audioPart?.inlineData?.data) {
-        throw new Error("Gemini 응답에서 오디오를 찾을 수 없습니다.");
-      }
-      
-      const audioData = audioPart.inlineData.data;
-      const mimeType = audioPart.inlineData.mimeType || "audio/L16;codec=pcm;rate=24000";
-      console.log("[MyaPl][Gemini] Audio mimeType:", mimeType);
-      
-      // base64 -> Uint8Array
-      const pcmData = Uint8Array.from(atob(audioData), (c) => c.charCodeAt(0));
-      
-      let blob;
-      // L16/PCM 포맷이면 WAV로 변환 필요
-      if (mimeType.includes("L16") || mimeType.includes("pcm")) {
-        const sampleRate = parseSampleRate(mimeType);
-        console.log("[MyaPl][Gemini] Converting L16 PCM to WAV (rate:", sampleRate, ")");
-        const wavData = pcmToWav(pcmData, sampleRate);
-        blob = new Blob([wavData], { type: "audio/wav" });
-      } else {
-        // 다른 포맷이면 그대로 사용 (mp3 등)
-        blob = new Blob([pcmData], { type: mimeType });
-      }
-      
-      console.log("[MyaPl][Gemini] Success! Audio blob created:", blob.type, blob.size, "bytes");
-      return URL.createObjectURL(blob);
-    } catch (e) {
-      console.error("[MyaPl][Gemini] Attempt failed:", e.message);
-      lastError = e;
-    }
+    body: JSON.stringify(bodyData),
+  });
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("[MyaPl][Gemini] API Error:", response.status, errorText.substring(0, 300));
+    throw new Error(`Gemini API Error: ${response.status}`);
   }
-  throw lastError || new Error("Gemini TTS 요청 실패");
+  
+  const data = await response.json();
+  
+  // 응답에서 audio data 추출
+  const audioPart = data?.candidates?.[0]?.content?.parts?.find(
+    (p) => p.inlineData?.mimeType?.startsWith("audio/")
+  );
+  if (!audioPart?.inlineData?.data) {
+    console.error("[MyaPl][Gemini] Response:", JSON.stringify(data).substring(0, 500));
+    throw new Error("Gemini 응답에서 오디오를 찾을 수 없습니다.");
+  }
+  
+  const audioData = audioPart.inlineData.data;
+  const mimeType = audioPart.inlineData.mimeType || "audio/L16;codec=pcm;rate=24000";
+  console.log("[MyaPl][Gemini] Audio mimeType:", mimeType);
+  
+  // base64 -> Uint8Array
+  const pcmData = Uint8Array.from(atob(audioData), (c) => c.charCodeAt(0));
+  
+  let blob;
+  // L16/PCM 포맷이면 WAV로 변환 필요
+  if (mimeType.includes("L16") || mimeType.includes("pcm")) {
+    const sampleRate = parseSampleRate(mimeType);
+    console.log("[MyaPl][Gemini] Converting L16 PCM to WAV (rate:", sampleRate, ")");
+    const wavData = pcmToWav(pcmData, sampleRate);
+    blob = new Blob([wavData], { type: "audio/wav" });
+  } else {
+    // 다른 포맷이면 그대로 사용 (mp3 등)
+    blob = new Blob([pcmData], { type: mimeType });
+  }
+  
+  console.log("[MyaPl][Gemini] Success!", blob.size, "bytes");
+  return URL.createObjectURL(blob);
 }
 
 export const meta = {
