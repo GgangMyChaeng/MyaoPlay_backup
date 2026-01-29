@@ -295,7 +295,7 @@ export function startMessageObserver() {
     childList: true,
     subtree: true
   });
-  console.log("[MyaPl] Message observer started");
+  // console.log("[MyaPl] Message observer started");
 }
 
 export function stopMessageObserver() {
