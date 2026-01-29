@@ -29,7 +29,7 @@ export async function getAudioUrl(text, providerSettings = {}) {
   const { apiKey, model, voice } = providerSettings;
   if (!apiKey) throw new Error("Gemini API Key가 없습니다.");
   const modelId = model || "gemini-2.5-flash-preview-tts";
-  const endpoint = `${GEMINI_BASE}/${modelId}:generateContent?key=${apiKey}`;
+  const endpoint = `${GEMINI_BASE}/${modelId}:generateContent`;
   const bodyData = {
     contents: [
       {
@@ -52,11 +52,11 @@ export async function getAudioUrl(text, providerSettings = {}) {
     model: modelId,
     voice: voice || "Kore",
   });
-  // Gemini는 API key가 URL param이라 프록시 처리 다름
+  // 프록시만 사용
   const proxyCandidates = [
-    `/proxy/${endpoint}`,
-    endpoint, // 직접 시도 (CORS 될 수도)
-  ];
+     `/proxy/${endpoint}`,
+     `/proxy?url=${encodeURIComponent(endpoint)}`,
+   ];
   let lastError;
   for (const url of proxyCandidates) {
     try {
@@ -64,9 +64,12 @@ export async function getAudioUrl(text, providerSettings = {}) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+          "X-Requested-With": "XMLHttpRequest",
           ...(getRequestHeaders?.() || {}),
         },
         body: JSON.stringify(bodyData),
+        credentials: "same-origin",
       });
       if (!response.ok) {
         const errorText = await response.text();
