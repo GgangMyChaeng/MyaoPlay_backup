@@ -16,6 +16,8 @@ let _saveSettingsDebounced = () => {};
 let currentAudio = null;
 let currentPlayingBtn = null;
 let _delegationSetup = false;
+let _lastAudioUrl = null;  // 마지막 오디오 URL 저장
+let _lastAudioBlob = null; // 마지막 오디오 Blob 저장
 
 /**
  * 의존성 주입
@@ -120,6 +122,14 @@ async function playTts(text, btn) {
     // });
     // TTS 호출
     const audioUrl = await provider.getAudioUrl(processedText, providerSettings);
+    // Blob 저장 (다운로드용)
+    try {
+      const response = await fetch(audioUrl);
+      const blob = await response.blob();
+      _lastAudioBlob = blob;
+    } catch (e) {
+      console.warn("[MyaPl] Failed to save audio blob:", e);
+    }
     // 오디오 재생
     currentAudio = new Audio(audioUrl);
     currentAudio.onended = () => {
@@ -382,4 +392,18 @@ export function registerSTEvents() {
     }
   });
   console.log("[MyaPl] ST events registered for TTS message buttons");
+}
+
+/**
+ * 마지막 오디오 Blob 저장 (외부에서 호출)
+ */
+export function setLastAudioBlob(blob) {
+  _lastAudioBlob = blob;
+}
+
+/**
+ * 마지막 오디오 Blob 가져오기
+ */
+export function getLastAudioBlob() {
+  return _lastAudioBlob;
 }
