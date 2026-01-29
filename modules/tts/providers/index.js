@@ -7,6 +7,7 @@ import * as qwen from "./qwen.js";
 import * as openai from "./openai.js";
 import * as gemini from "./gemini.js";
 import * as lmnt from "./lmnt.js";
+import * as elevenlabs from "./elevenlabs.js";
 
 export const providers = {
   qwen: {
@@ -24,6 +25,10 @@ export const providers = {
   lmnt: {
     ...lmnt.meta,
     getAudioUrl: lmnt.getAudioUrl,
+  },
+  elevenlabs: {
+    ...elevenlabs.meta,
+    getAudioUrl: elevenlabs.getAudioUrl,
   },
 };
 
