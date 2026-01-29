@@ -733,6 +733,52 @@
         </div>
       </div>
 
+      <!-- ========== ElevenLabs 설정 ========== -->
+      <div id="abgm_tts_elevenlabs_settings" class="abgm-tts-provider-box" style="display:none;">
+        <div class="abgm-tts-provider-title">ElevenLabs</div>
+        
+        <div>
+          <label style="font-size:12px; opacity:.8;">Model</label>
+          <select id="abgm_tts_elevenlabs_model" class="abgm-select" style="width:100%; margin-top:4px;">
+            <!-- JS에서 동적으로 채움 -->
+          </select>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">Voice</label>
+          <select id="abgm_tts_elevenlabs_voice" class="abgm-select" style="width:100%; margin-top:4px;">
+            <!-- JS에서 동적으로 채움 -->
+          </select>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">Stability (안정성)</label>
+          <input type="range" id="abgm_tts_elevenlabs_stability" min="0" max="1" step="0.05" value="0.5" style="width:100%; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:10px; opacity:.5;">
+            <span>0 (변화↑)</span>
+            <span id="abgm_tts_elevenlabs_stability_val">0.5</span>
+            <span>1 (안정↑)</span>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">Similarity Boost (유사도)</label>
+          <input type="range" id="abgm_tts_elevenlabs_similarity" min="0" max="1" step="0.05" value="0.75" style="width:100%; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:10px; opacity:.5;">
+            <span>0 (자유↑)</span>
+            <span id="abgm_tts_elevenlabs_similarity_val">0.75</span>
+            <span>1 (원본↑)</span>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">API Key</label>
+          <input type="password" id="abgm_tts_elevenlabs_apikey" class="abgm-input" placeholder="your-api-key" style="width:100%; margin-top:4px;">
+          <div style="font-size:10px; opacity:.5; margin-top:4px;">
+            elevenlabs.io → Profile → API Keys
+          </div>
+        </div>
+      </div>
 
       <!-- ========== 공통: 테스트 & 재생 버튼 ========== -->
       <div id="abgm_tts_common_actions" class="abgm-tts-divider" style="display:none;">
