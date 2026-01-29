@@ -113,11 +113,11 @@ export async function getAudioUrl(text, providerSettings = {}) {
       },
     },
   };
-  console.log("[MyaPl][Gemini] TTS request:", {
-    textLength: text.length,
-    model: modelId,
-    voice: voice || "Kore",
-  });
+  //console.log("[MyaPl][Gemini] TTS request:", {
+  //  textLength: text.length,
+  //  model: modelId,
+  //  voice: voice || "Kore",
+  //});
 
   // 직접 호출 + x-goog-api-key 헤더 (가장 잘 되는 방식)
   const response = await fetch(endpointNoKey, {
