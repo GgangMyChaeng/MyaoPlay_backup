@@ -2,7 +2,7 @@
  * LMNT TTS Provider
  * - 엔드포인트: api.lmnt.com
  * - 저렴하고 빠른 TTS, 감정 표현 좋음
- * - 출력: binary audio (mp3/wav)
+ * - 응답: JSON { audio: base64, seed, durations }
  */
 
 import { getRequestHeaders } from "../../deps.js";
@@ -21,6 +21,18 @@ export const LMNT_VOICES = [
   { id: "zoe",      name: "Zoe (여성, 활기)",        lang: "en" },
   { id: "chloe",    name: "Chloe (여성, 따뜻함)",    lang: "en" },
 ];
+
+/**
+ * base64 → Blob 변환
+ */
+function base64ToBlob(base64, mimeType = "audio/mpeg") {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mimeType });
+}
 
 /**
  * LMNT TTS API 호출
@@ -49,57 +61,8 @@ export async function getAudioUrl(text, providerSettings = {}) {
     model: bodyData.model,
   });
 
-  // 프록시 후보
-  const proxyCandidates = [
-    `/proxy/${LMNT_ENDPOINT}`,
-    `/proxy?url=${encodeURIComponent(LMNT_ENDPOINT)}`,
-  ];
-
-  let lastError;
-  for (const url of proxyCandidates) {
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key": apiKey,
-          "X-Requested-With": "XMLHttpRequest",
-          ...(getRequestHeaders?.() || {}),
-        },
-        body: JSON.stringify(bodyData),
-        credentials: "same-origin",
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("[MyaPl][LMNT] API Error:", response.status, errorText.substring(0, 200));
-        lastError = new Error(`HTTP ${response.status}`);
-        continue;
-      }
-
-      // LMNT는 바이너리 오디오 직접 반환
-      const rawBlob = await response.blob();
-      const contentType = response.headers.get("Content-Type") || rawBlob.type;
-      console.log("[MyaPl][LMNT] Response Content-Type:", contentType, "Blob type:", rawBlob.type);
-      
-      // 프록시가 Content-Type을 제대로 전달 안 하면 강제 지정
-      let blob = rawBlob;
-      if (!contentType || contentType === "application/octet-stream" || !contentType.startsWith("audio/")) {
-        console.log("[MyaPl][LMNT] Forcing audio/mpeg type");
-        blob = new Blob([rawBlob], { type: "audio/mpeg" });
-      }
-      
-      console.log("[MyaPl][LMNT] Success!", blob.size, "bytes, type:", blob.type);
-      return URL.createObjectURL(blob);
-    } catch (e) {
-      console.error("[MyaPl][LMNT] Attempt failed:", e.message);
-      lastError = e;
-    }
-  }
-
-  // 프록시 실패 시 직접 호출 시도
+  // LMNT는 CORS 허용하므로 직접 호출
   try {
-    console.log("[MyaPl][LMNT] Trying direct call...");
     const response = await fetch(LMNT_ENDPOINT, {
       method: "POST",
       headers: {
@@ -114,23 +77,24 @@ export async function getAudioUrl(text, providerSettings = {}) {
       throw new Error(`HTTP ${response.status}: ${errorText.substring(0, 100)}`);
     }
 
-    const rawBlob = await response.blob();
-    const contentType = response.headers.get("Content-Type") || rawBlob.type;
-    console.log("[MyaPl][LMNT] Direct Content-Type:", contentType);
+    // JSON 응답에서 base64 audio 추출
+    const json = await response.json();
     
-    let blob = rawBlob;
-    if (!contentType || !contentType.startsWith("audio/")) {
-      blob = new Blob([rawBlob], { type: "audio/mpeg" });
+    if (!json.audio) {
+      throw new Error("응답에 audio 필드가 없습니다.");
     }
+
+    console.log("[MyaPl][LMNT] Got audio data, seed:", json.seed);
     
-    console.log("[MyaPl][LMNT] Success (direct)!", blob.size, "bytes, type:", blob.type);
+    // base64 → Blob 변환
+    const blob = base64ToBlob(json.audio, "audio/mpeg");
+    console.log("[MyaPl][LMNT] Success!", blob.size, "bytes");
+    
     return URL.createObjectURL(blob);
   } catch (e) {
-    console.error("[MyaPl][LMNT] Direct call failed:", e.message);
-    lastError = e;
+    console.error("[MyaPl][LMNT] API call failed:", e.message);
+    throw e;
   }
-
-  throw lastError || new Error("LMNT TTS 요청 실패");
 }
 
 export const meta = {
