@@ -9,17 +9,56 @@ import { getRequestHeaders } from "../../deps.js";
 
 const LMNT_ENDPOINT = "https://api.lmnt.com/v1/ai/speech";
 
-// LMNT 프리빌트 보이스 (일부 주요 보이스만)
-// 전체 목록: https://app.lmnt.com/voices
+// LMNT 전체 시스템 보이스 (44개)
+// professional = 고품질, instant = 빠른 생성
 export const LMNT_VOICES = [
-  { id: "lily",     name: "Lily (여성, 차분)",       lang: "en" },
-  { id: "daniel",   name: "Daniel (남성, 내레이션)", lang: "en" },
-  { id: "mia",      name: "Mia (여성, 밝음)",        lang: "en" },
-  { id: "leah",     name: "Leah (여성, 자연스러움)", lang: "en" },
-  { id: "morgan",   name: "Morgan (중성)",          lang: "en" },
-  { id: "ava",      name: "Ava (여성, 부드러움)",    lang: "en" },
-  { id: "zoe",      name: "Zoe (여성, 활기)",        lang: "en" },
-  { id: "chloe",    name: "Chloe (여성, 따뜻함)",    lang: "en" },
+  // === Professional (고품질) ===
+  { id: "amy",      name: "Amy (여성, Pro)",      type: "professional" },
+  { id: "ava",      name: "Ava (여성, Pro)",      type: "professional" },
+  { id: "caleb",    name: "Caleb (남성, Pro)",    type: "professional" },
+  { id: "chloe",    name: "Chloe (여성, Pro)",    type: "professional" },
+  { id: "dalton",   name: "Dalton (남성, Pro)",   type: "professional" },
+  { id: "daniel",   name: "Daniel (남성, Pro)",   type: "professional" },
+  { id: "dustin",   name: "Dustin (남성, Pro)",   type: "professional" },
+  { id: "james",    name: "James (남성, Pro)",    type: "professional" },
+  { id: "lauren",   name: "Lauren (여성, Pro)",   type: "professional" },
+  { id: "lily",     name: "Lily (여성, Pro)",     type: "professional" },
+  { id: "magnus",   name: "Magnus (남성, Pro)",   type: "professional" },
+  { id: "miles",    name: "Miles (남성, Pro)",    type: "professional" },
+  { id: "morgan",   name: "Morgan (중성, Pro)",   type: "professional" },
+  { id: "nathan",   name: "Nathan (남성, Pro)",   type: "professional" },
+  { id: "noah",     name: "Noah (남성, Pro)",     type: "professional" },
+  { id: "oliver",   name: "Oliver (남성, Pro)",   type: "professional" },
+  { id: "paige",    name: "Paige (여성, Pro)",    type: "professional" },
+  { id: "sophie",   name: "Sophie (여성, Pro)",   type: "professional" },
+  { id: "terrence", name: "Terrence (남성, Pro)", type: "professional" },
+  { id: "zain",     name: "Zain (남성, Pro)",     type: "professional" },
+  { id: "zeke",     name: "Zeke (남성, Pro)",     type: "professional" },
+  { id: "zoe",      name: "Zoe (여성, Pro)",      type: "professional" },
+  
+  // === Instant (빠른 생성) ===
+  { id: "ansel",    name: "Ansel (남성)",    type: "instant" },
+  { id: "autumn",   name: "Autumn (여성)",   type: "instant" },
+  { id: "bella",    name: "Bella (여성)",    type: "instant" },
+  { id: "brandon",  name: "Brandon (남성)",  type: "instant" },
+  { id: "cassian",  name: "Cassian (남성)",  type: "instant" },
+  { id: "elowen",   name: "Elowen (여성)",   type: "instant" },
+  { id: "evander",  name: "Evander (남성)",  type: "instant" },
+  { id: "huxley",   name: "Huxley (남성)",   type: "instant" },
+  { id: "jacob",    name: "Jacob (남성)",    type: "instant" },
+  { id: "juniper",  name: "Juniper (여성)",  type: "instant" },
+  { id: "kennedy",  name: "Kennedy (여성)",  type: "instant" },
+  { id: "leah",     name: "Leah (여성)",     type: "instant" },
+  { id: "lucas",    name: "Lucas (남성)",    type: "instant" },
+  { id: "natalie",  name: "Natalie (여성)",  type: "instant" },
+  { id: "nyssa",    name: "Nyssa (여성)",    type: "instant" },
+  { id: "ryan",     name: "Ryan (남성)",     type: "instant" },
+  { id: "sadie",    name: "Sadie (여성)",    type: "instant" },
+  { id: "stella",   name: "Stella (여성)",   type: "instant" },
+  { id: "tyler",    name: "Tyler (남성)",    type: "instant" },
+  { id: "vesper",   name: "Vesper (여성)",   type: "instant" },
+  { id: "violet",   name: "Violet (여성)",   type: "instant" },
+  { id: "warrick",  name: "Warrick (남성)",  type: "instant" },
 ];
 
 /**
