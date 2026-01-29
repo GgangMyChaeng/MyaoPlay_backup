@@ -55,7 +55,6 @@ MyaoPlay/
             ├─ openai.js          # OpenAI TTS
             ├─ gemini.js          # Google Gemini
             ├─ lmnt.js            # LMNT
-            └─ playht.js          # PlayHT
 
 
 [2] 모듈 역할 상세
@@ -170,10 +169,6 @@ providers/gemini.js (178줄)
 providers/lmnt.js (151줄)
   - LMNT API
   - JSON base64 응답 처리
-
-providers/playht.js (129줄)
-  - PlayHT API
-  - Play3.0-mini, PlayDialog 엔진
 
 
 [3] 의존성 방향 (단방향만 허용)
