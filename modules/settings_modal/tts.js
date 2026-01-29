@@ -7,6 +7,8 @@ import { providers as ttsProviders } from "../tts/providers/index.js";
 import { QWEN_VOICES } from "../tts/providers/qwen.js";
 import { OPENAI_VOICES } from "../tts/providers/openai.js";
 import { GEMINI_VOICES } from "../tts/providers/gemini.js";
+import { LMNT_VOICES } from "../tts/providers/lmnt.js";
+import { PLAYHT_VOICES } from "../tts/providers/playht.js";
 import { getLastAssistantText, preprocessForTts } from "../utils.js";
 
 // 의존성 (부모 모듈에서 주입받음)
@@ -59,6 +61,21 @@ export function initTtsPanel(root, settings) {
   const geminiVoiceSel = ttsPanel.querySelector('#abgm_tts_gemini_voice');
   const geminiApiKeyInput = ttsPanel.querySelector('#abgm_tts_gemini_apikey');
 
+  // === LMNT 요소 ===
+  const lmntSettings = ttsPanel.querySelector('#abgm_tts_lmnt_settings');
+  const lmntModelSel = ttsPanel.querySelector('#abgm_tts_lmnt_model');
+  const lmntVoiceSel = ttsPanel.querySelector('#abgm_tts_lmnt_voice');
+  const lmntSpeedInput = ttsPanel.querySelector('#abgm_tts_lmnt_speed');
+  const lmntSpeedVal = ttsPanel.querySelector('#abgm_tts_lmnt_speed_val');
+  const lmntApiKeyInput = ttsPanel.querySelector('#abgm_tts_lmnt_apikey');
+
+  // === PlayHT 요소 ===
+  const playhtSettings = ttsPanel.querySelector('#abgm_tts_playht_settings');
+  const playhtEngineSel = ttsPanel.querySelector('#abgm_tts_playht_engine');
+  const playhtVoiceSel = ttsPanel.querySelector('#abgm_tts_playht_voice');
+  const playhtApiKeyInput = ttsPanel.querySelector('#abgm_tts_playht_apikey');
+  const playhtUserIdInput = ttsPanel.querySelector('#abgm_tts_playht_userid');
+
   // === settings.ttsMode 구조 보장 ===
   settings.ttsMode ??= {};
   settings.ttsMode.provider ??= "";
@@ -66,6 +83,8 @@ export function initTtsPanel(root, settings) {
   settings.ttsMode.providers.qwen ??= {};
   settings.ttsMode.providers.openai ??= {};
   settings.ttsMode.providers.gemini ??= {};
+  settings.ttsMode.providers.lmnt ??= {};
+  settings.ttsMode.providers.playht ??= {};
   // Provider 드롭다운 채우기
   if (providerSel) {
     providerSel.innerHTML = '<option value="">(사용 안 함)</option>';
@@ -92,6 +111,8 @@ export function initTtsPanel(root, settings) {
   fillVoiceSelect(qwenVoiceSel, QWEN_VOICES, "Cherry");
   fillVoiceSelect(openaiVoiceSel, OPENAI_VOICES, "nova");
   fillVoiceSelect(geminiVoiceSel, GEMINI_VOICES, "Kore");
+  fillVoiceSelect(lmntVoiceSel, LMNT_VOICES, "lily");
+  fillVoiceSelect(playhtVoiceSel, PLAYHT_VOICES, "s3://voice-cloning-zero-shot/775ae416-49bb-4fb6-bd45-740f205d20a1/jennifersaad/manifest.json");
 
   function updateTtsUI() {
     const provider = settings.ttsMode?.provider || "";
@@ -103,6 +124,8 @@ export function initTtsPanel(root, settings) {
     if (qwenSettings) qwenSettings.style.display = (provider === 'qwen') ? 'block' : 'none';
     if (openaiSettings) openaiSettings.style.display = (provider === 'openai') ? 'block' : 'none';
     if (geminiSettings) geminiSettings.style.display = (provider === 'gemini') ? 'block' : 'none';
+    if (lmntSettings) lmntSettings.style.display = (provider === 'lmnt') ? 'block' : 'none';
+    if (playhtSettings) playhtSettings.style.display = (provider === 'playht') ? 'block' : 'none';
     
     // 공통 액션 버튼 & CORS 경고
     if (commonActions) commonActions.style.display = provider ? 'block' : 'none';
@@ -133,6 +156,25 @@ export function initTtsPanel(root, settings) {
       if (geminiModelSel) geminiModelSel.value = s.model || "gemini-2.5-flash-preview-tts";
       if (geminiVoiceSel) geminiVoiceSel.value = s.voice || "Kore";
       if (geminiApiKeyInput) geminiApiKeyInput.value = s.apiKey || "";
+    }
+
+    // LMNT 값 복원
+    if (provider === 'lmnt') {
+      const s = settings.ttsMode.providers.lmnt;
+      if (lmntModelSel) lmntModelSel.value = s.model || "blizzard";
+      if (lmntVoiceSel) lmntVoiceSel.value = s.voice || "lily";
+      if (lmntSpeedInput) lmntSpeedInput.value = s.speed ?? 1.0;
+      if (lmntSpeedVal) lmntSpeedVal.textContent = `${s.speed ?? 1.0}x`;
+      if (lmntApiKeyInput) lmntApiKeyInput.value = s.apiKey || "";
+    }
+
+    // PlayHT 값 복원
+    if (provider === 'playht') {
+      const s = settings.ttsMode.providers.playht;
+      if (playhtEngineSel) playhtEngineSel.value = s.voiceEngine || "Play3.0-mini";
+      if (playhtVoiceSel) playhtVoiceSel.value = s.voice || "s3://voice-cloning-zero-shot/775ae416-49bb-4fb6-bd45-740f205d20a1/jennifersaad/manifest.json";
+      if (playhtApiKeyInput) playhtApiKeyInput.value = s.apiKey || "";
+      if (playhtUserIdInput) playhtUserIdInput.value = s.userId || "";
     }
   }
 
@@ -174,6 +216,33 @@ export function initTtsPanel(root, settings) {
     if (e.target.id === 'abgm_tts_gemini_apikey') s.apiKey = e.target.value;
     _saveSettingsDebounced();
   });
+
+  // === LMNT 설정 이벤트 ===
+  lmntSettings?.addEventListener('input', (e) => {
+    const s = settings.ttsMode.providers.lmnt;
+    if (!s) return;
+    if (e.target.id === 'abgm_tts_lmnt_model') s.model = e.target.value;
+    if (e.target.id === 'abgm_tts_lmnt_voice') s.voice = e.target.value;
+    if (e.target.id === 'abgm_tts_lmnt_speed') {
+      s.speed = parseFloat(e.target.value);
+      if (lmntSpeedVal) lmntSpeedVal.textContent = `${s.speed}x`;
+    }
+    if (e.target.id === 'abgm_tts_lmnt_apikey') s.apiKey = e.target.value;
+    _saveSettingsDebounced();
+  });
+
+  // === PlayHT 설정 이벤트 ===
+  playhtSettings?.addEventListener('input', (e) => {
+    const s = settings.ttsMode.providers.playht;
+    if (!s) return;
+    if (e.target.id === 'abgm_tts_playht_engine') s.voiceEngine = e.target.value;
+    if (e.target.id === 'abgm_tts_playht_voice') s.voice = e.target.value;
+    if (e.target.id === 'abgm_tts_playht_apikey') s.apiKey = e.target.value;
+    if (e.target.id === 'abgm_tts_playht_userid') s.userId = e.target.value;
+    _saveSettingsDebounced();
+  });
+
+  // TTS 테스트
   testBtn?.addEventListener('click', async () => {
     const providerId = settings.ttsMode.provider;
     const provider = ttsProviders[providerId];
