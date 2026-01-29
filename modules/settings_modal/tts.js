@@ -5,6 +5,8 @@
 
 import { providers as ttsProviders } from "../tts/providers/index.js";
 import { QWEN_VOICES } from "../tts/providers/qwen.js";
+import { OPENAI_VOICES } from "../tts/providers/openai.js";
+import { GEMINI_VOICES } from "../tts/providers/gemini.js";
 import { getLastAssistantText, preprocessForTts } from "../utils.js";
 
 // 의존성 (부모 모듈에서 주입받음)
@@ -27,14 +29,43 @@ export function bindTtsPanelDeps(deps = {}) {
 export function initTtsPanel(root, settings) {
   const ttsPanel = root.querySelector('#abgm-mode-tts');
   if (!ttsPanel) return;
+  // === 공통 요소 ===
   const providerSel = ttsPanel.querySelector('#abgm_tts_provider');
-  const qwenSettings = ttsPanel.querySelector('#abgm_tts_qwen_settings');
+  const commonActions = ttsPanel.querySelector('#abgm_tts_common_actions');
   const corsWarning = ttsPanel.querySelector('#abgm_tts_cors_warning');
-  const qwenModelSel = ttsPanel.querySelector('#abgm_tts_qwen_model');
-  const qwenApiKeyInput = ttsPanel.querySelector('#abgm_tts_qwen_apikey');
-  const qwenVoiceSel = ttsPanel.querySelector('#abgm_tts_qwen_voice');
   const testBtn = ttsPanel.querySelector('#abgm_tts_test_btn');
   const testResult = ttsPanel.querySelector('#abgm_tts_test_result');
+  const speakBtn = ttsPanel.querySelector('#abgm_tts_speak_btn');
+  const speakStatus = ttsPanel.querySelector('#abgm_tts_speak_status');
+
+  // === Qwen 요소 ===
+  const qwenSettings = ttsPanel.querySelector('#abgm_tts_qwen_settings');
+  const qwenModelSel = ttsPanel.querySelector('#abgm_tts_qwen_model');
+  const qwenVoiceSel = ttsPanel.querySelector('#abgm_tts_qwen_voice');
+  const qwenApiKeyInput = ttsPanel.querySelector('#abgm_tts_qwen_apikey');
+
+  // === OpenAI 요소 ===
+  const openaiSettings = ttsPanel.querySelector('#abgm_tts_openai_settings');
+  const openaiModelSel = ttsPanel.querySelector('#abgm_tts_openai_model');
+  const openaiVoiceSel = ttsPanel.querySelector('#abgm_tts_openai_voice');
+  const openaiSpeedInput = ttsPanel.querySelector('#abgm_tts_openai_speed');
+  const openaiSpeedVal = ttsPanel.querySelector('#abgm_tts_openai_speed_val');
+  const openaiInstructionsInput = ttsPanel.querySelector('#abgm_tts_openai_instructions');
+  const openaiApiKeyInput = ttsPanel.querySelector('#abgm_tts_openai_apikey');
+
+  // === Gemini 요소 ===
+  const geminiSettings = ttsPanel.querySelector('#abgm_tts_gemini_settings');
+  const geminiModelSel = ttsPanel.querySelector('#abgm_tts_gemini_model');
+  const geminiVoiceSel = ttsPanel.querySelector('#abgm_tts_gemini_voice');
+  const geminiApiKeyInput = ttsPanel.querySelector('#abgm_tts_gemini_apikey');
+
+  // === settings.ttsMode 구조 보장 ===
+  settings.ttsMode ??= {};
+  settings.ttsMode.provider ??= "";
+  settings.ttsMode.providers ??= {};
+  settings.ttsMode.providers.qwen ??= {};
+  settings.ttsMode.providers.openai ??= {};
+  settings.ttsMode.providers.gemini ??= {};
   // Provider 드롭다운 채우기
   if (providerSel) {
     providerSel.innerHTML = '<option value="">(사용 안 함)</option>';
@@ -46,37 +77,65 @@ export function initTtsPanel(root, settings) {
     });
   }
 
+  // === Voice 드롭다운 채우기 (한 번만) ===
+  function fillVoiceSelect(selectEl, voices, defaultVoice) {
+    if (!selectEl || selectEl.options.length > 0) return;
+    voices.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.id;
+      opt.textContent = v.name || v.id;
+      selectEl.appendChild(opt);
+    });
+    if (defaultVoice) selectEl.value = defaultVoice;
+  }
+
+  fillVoiceSelect(qwenVoiceSel, QWEN_VOICES, "Cherry");
+  fillVoiceSelect(openaiVoiceSel, OPENAI_VOICES, "nova");
+  fillVoiceSelect(geminiVoiceSel, GEMINI_VOICES, "Kore");
+
   function updateTtsUI() {
     const provider = settings.ttsMode?.provider || "";
+    
+    // Provider 드롭다운
     if (providerSel) providerSel.value = provider;
+    
+    // Provider 설정 박스 show/hide
     if (qwenSettings) qwenSettings.style.display = (provider === 'qwen') ? 'block' : 'none';
+    if (openaiSettings) openaiSettings.style.display = (provider === 'openai') ? 'block' : 'none';
+    if (geminiSettings) geminiSettings.style.display = (provider === 'gemini') ? 'block' : 'none';
+    
+    // 공통 액션 버튼 & CORS 경고
+    if (commonActions) commonActions.style.display = provider ? 'block' : 'none';
     if (corsWarning) corsWarning.style.display = provider ? 'block' : 'none';
-    if (provider === 'qwen' && settings.ttsMode.providers.qwen) {
+
+    // Qwen 값 복원
+    if (provider === 'qwen') {
       const s = settings.ttsMode.providers.qwen;
       if (qwenModelSel) qwenModelSel.value = s.model || "qwen3-tts-flash";
+      if (qwenVoiceSel) qwenVoiceSel.value = s.voice || "Cherry";
       if (qwenApiKeyInput) qwenApiKeyInput.value = s.apiKey || "";
-  
-      // Voice 드롭다운 채우기
-      if (qwenVoiceSel) {
-        if (qwenVoiceSel.options.length === 0) {
-          // Voice 드롭다운 채우기
-          if (qwenVoiceSel) {
-            if (qwenVoiceSel.options.length === 0) {
-              // QWEN_VOICES로부터 채움
-              QWEN_VOICES.forEach(v => {
-                const opt = document.createElement('option');
-                opt.value = v.id;
-                opt.textContent = v.name || v.id;
-                qwenVoiceSel.appendChild(opt);
-              });
-            }
-            qwenVoiceSel.value = s.voice || "Cherry";
-          }
-        }
-        qwenVoiceSel.value = s.voice || "Cherry";
-      }
+    }
+
+    // OpenAI 값 복원
+    if (provider === 'openai') {
+      const s = settings.ttsMode.providers.openai;
+      if (openaiModelSel) openaiModelSel.value = s.model || "tts-1";
+      if (openaiVoiceSel) openaiVoiceSel.value = s.voice || "nova";
+      if (openaiSpeedInput) openaiSpeedInput.value = s.speed ?? 1.0;
+      if (openaiSpeedVal) openaiSpeedVal.textContent = `${s.speed ?? 1.0}x`;
+      if (openaiInstructionsInput) openaiInstructionsInput.value = s.instructions || "";
+      if (openaiApiKeyInput) openaiApiKeyInput.value = s.apiKey || "";
+    }
+
+    // Gemini 값 복원
+    if (provider === 'gemini') {
+      const s = settings.ttsMode.providers.gemini;
+      if (geminiModelSel) geminiModelSel.value = s.model || "gemini-2.5-flash-preview-tts";
+      if (geminiVoiceSel) geminiVoiceSel.value = s.voice || "Kore";
+      if (geminiApiKeyInput) geminiApiKeyInput.value = s.apiKey || "";
     }
   }
+
   updateTtsUI();
   providerSel?.addEventListener('change', (e) => {
     settings.ttsMode.provider = e.target.value;
@@ -89,6 +148,30 @@ export function initTtsPanel(root, settings) {
     if (e.target.id === 'abgm_tts_qwen_model') s.model = e.target.value;
     if (e.target.id === 'abgm_tts_qwen_apikey') s.apiKey = e.target.value;
     if (e.target.id === 'abgm_tts_qwen_voice') s.voice = e.target.value;
+    _saveSettingsDebounced();
+  });
+  // === OpenAI 설정 이벤트 ===
+  openaiSettings?.addEventListener('input', (e) => {
+    const s = settings.ttsMode.providers.openai;
+    if (!s) return;
+    if (e.target.id === 'abgm_tts_openai_model') s.model = e.target.value;
+    if (e.target.id === 'abgm_tts_openai_voice') s.voice = e.target.value;
+    if (e.target.id === 'abgm_tts_openai_speed') {
+      s.speed = parseFloat(e.target.value);
+      if (openaiSpeedVal) openaiSpeedVal.textContent = `${s.speed}x`;
+    }
+    if (e.target.id === 'abgm_tts_openai_instructions') s.instructions = e.target.value;
+    if (e.target.id === 'abgm_tts_openai_apikey') s.apiKey = e.target.value;
+    _saveSettingsDebounced();
+  });
+
+  // === Gemini 설정 이벤트 ===
+  geminiSettings?.addEventListener('input', (e) => {
+    const s = settings.ttsMode.providers.gemini;
+    if (!s) return;
+    if (e.target.id === 'abgm_tts_gemini_model') s.model = e.target.value;
+    if (e.target.id === 'abgm_tts_gemini_voice') s.voice = e.target.value;
+    if (e.target.id === 'abgm_tts_gemini_apikey') s.apiKey = e.target.value;
     _saveSettingsDebounced();
   });
   testBtn?.addEventListener('click', async () => {
@@ -124,8 +207,6 @@ export function initTtsPanel(root, settings) {
     }
   });
   // === AI 응답 TTS 재생 ===
-  const speakBtn = ttsPanel.querySelector('#abgm_tts_speak_btn');
-  const speakStatus = ttsPanel.querySelector('#abgm_tts_speak_status');
   speakBtn?.addEventListener('click', async () => {
     const providerId = settings.ttsMode?.provider;
     const provider = ttsProviders[providerId];
