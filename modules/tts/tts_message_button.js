@@ -6,6 +6,7 @@
 
 import { providers as ttsProviders } from "./providers/index.js";
 import { preprocessForTts } from "../utils.js";
+import { ensureSettings } from "../settings.js";
 
 // 의존성
 let _settings = null;
@@ -71,19 +72,17 @@ function extractDialogues(text) {
  * @param {HTMLElement} btn - 버튼 요소 (상태 표시용)
  */
 async function playTts(text, btn) {
+  const _settings = ensureSettings();
   if (!_settings?.ttsMode) {
     console.warn("[MyaPl] TTS settings not found");
     return;
   }
-
   const providerId = _settings.ttsMode.provider;
   const provider = ttsProviders[providerId];
-  
   if (!provider) {
     console.error("[MyaPl] TTS provider not found:", providerId);
     return;
   }
-
   // 이전 재생 중지
   if (currentAudio) {
     currentAudio.pause();
@@ -93,24 +92,19 @@ async function playTts(text, btn) {
       currentPlayingBtn.textContent = "🔊";
     }
   }
-
   // 같은 버튼 다시 누르면 정지만
   if (currentPlayingBtn === btn) {
     currentPlayingBtn = null;
     return;
   }
-
   try {
     btn.classList.add("is-playing");
     btn.textContent = "⏹️";
     currentPlayingBtn = btn;
-
     // provider settings 가져오기
     const providerSettings = _settings.ttsMode.providers?.[providerId] || {};
-    
     // 텍스트 전처리
     const processedText = preprocessForTts(text);
-    
     if (!processedText || processedText.length === 0) {
       console.warn("[MyaPl] No text to speak after preprocessing");
       btn.classList.remove("is-playing");
@@ -118,19 +112,15 @@ async function playTts(text, btn) {
       currentPlayingBtn = null;
       return;
     }
-
     console.log("[MyaPl] TTS Message Button - Playing:", {
       provider: providerId,
       textLength: processedText.length,
       preview: processedText.substring(0, 50) + "..."
     });
-
     // TTS 호출
     const audioUrl = await provider.getAudioUrl(processedText, providerSettings);
-    
     // 오디오 재생
     currentAudio = new Audio(audioUrl);
-    
     currentAudio.onended = () => {
       btn.classList.remove("is-playing");
       btn.textContent = "🔊";
@@ -138,7 +128,6 @@ async function playTts(text, btn) {
       currentAudio = null;
       URL.revokeObjectURL(audioUrl);
     };
-
     currentAudio.onerror = (e) => {
       console.error("[MyaPl] Audio playback error:", e);
       btn.classList.remove("is-playing");
@@ -146,9 +135,7 @@ async function playTts(text, btn) {
       currentPlayingBtn = null;
       currentAudio = null;
     };
-
     await currentAudio.play();
-
   } catch (e) {
     console.error("[MyaPl] TTS error:", e);
     btn.classList.remove("is-playing");
@@ -202,6 +189,7 @@ function addTtsButtonToMessage(messageEl) {
     const fullText = mesText.innerText || mesText.textContent || "";
     
     // 읽기 모드에 따라 처리
+    const _settings = ensureSettings();
     const readMode = _settings?.ttsMode?.msgButtonReadMode || "dialogue";
     
     let textToRead = "";
@@ -234,6 +222,7 @@ function addTtsButtonToMessage(messageEl) {
  * 모든 AI 메시지에 TTS 버튼 추가
  */
 export function addTtsButtonsToAllMessages() {
+  const _settings = ensureSettings();
   if (!_settings?.ttsMode?.msgButtonEnabled) return;
 
   // AI 메시지만 선택 (is_user가 아닌 것)
@@ -270,6 +259,7 @@ export function startMessageObserver() {
   }
 
   messageObserver = new MutationObserver((mutations) => {
+    const _settings = ensureSettings();
     if (!_settings?.ttsMode?.msgButtonEnabled) return;
 
     for (const mutation of mutations) {
@@ -329,8 +319,7 @@ export function setMessageButtonsEnabled(enabled) {
  * 초기화 (확장 로드 시 호출)
  */
 export function initMessageButtons(settings) {
-  _settings = settings;
-  
+  const _settings = ensureSettings();
   if (settings?.ttsMode?.msgButtonEnabled) {
     // 약간의 딜레이 후 실행 (DOM 로드 대기)
     setTimeout(() => {
