@@ -151,11 +151,9 @@ async function playTts(text, btn) {
 function addTtsButtonToMessage(messageEl) {
   // 이미 버튼이 있으면 스킵
   if (messageEl.querySelector(".myaoplay-msg-tts-btn")) return;
-
   // 버튼 영역 찾기 (SillyTavern의 메시지 버튼 영역)
   // 연두색으로 표시한 영역: .mes_buttons 또는 유사한 클래스
   const buttonArea = messageEl.querySelector(".mes_buttons, .mes_block .mes_text + div, .extraMesButtons");
-  
   if (!buttonArea) {
     // 대안: 메시지 텍스트 영역 찾아서 그 옆에 삽입
     const mesText = messageEl.querySelector(".mes_text");
@@ -166,34 +164,28 @@ function addTtsButtonToMessage(messageEl) {
     }
     return;
   }
-
   // TTS 버튼 생성
   const ttsBtn = document.createElement("button");
   ttsBtn.className = "myaoplay-msg-tts-btn";
   ttsBtn.textContent = "🔊";
   ttsBtn.title = "TTS로 읽기";
   ttsBtn.type = "button";
-
   // 클릭 이벤트
   ttsBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     e.stopPropagation();
-
+    console.log("[MyaPl] TTS Button clicked!"); // 디버그 로그
     // 메시지 텍스트 가져오기
     const mesText = messageEl.querySelector(".mes_text");
     if (!mesText) {
       console.warn("[MyaPl] Message text not found");
       return;
     }
-
     const fullText = mesText.innerText || mesText.textContent || "";
-    
     // 읽기 모드에 따라 처리
     const _settings = ensureSettings();
     const readMode = _settings?.ttsMode?.msgButtonReadMode || "dialogue";
-    
     let textToRead = "";
-    
     if (readMode === "dialogue") {
       // 대사만 추출
       const dialogues = extractDialogues(fullText);
@@ -210,10 +202,8 @@ function addTtsButtonToMessage(messageEl) {
       // 전체 (나중에 구현)
       textToRead = fullText;
     }
-
     await playTts(textToRead, ttsBtn);
   });
-
   // 버튼 영역 앞쪽에 삽입
   buttonArea.insertBefore(ttsBtn, buttonArea.firstChild);
 }
