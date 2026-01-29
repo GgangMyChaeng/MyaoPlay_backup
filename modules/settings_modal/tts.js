@@ -10,7 +10,7 @@ import { GEMINI_VOICES } from "../tts/providers/gemini.js";
 import { LMNT_VOICES } from "../tts/providers/lmnt.js";
 import { PLAYHT_VOICES } from "../tts/providers/playht.js";
 import { getLastAssistantText, preprocessForTts } from "../utils.js";
-import { setMessageButtonsEnabled, updateSettingsRef as updateMsgBtnSettingsRef, initMessageButtons } from "../tts/tts_message_button.js";
+import { setMessageButtonsEnabled, updateSettingsRef as updateMsgBtnSettingsRef, initMessageButtons, setLastAudioBlob, getLastAudioBlob } from "../tts/tts_message_button.js";
 
 // 의존성 (부모 모듈에서 주입받음)
 let _saveSettingsDebounced = () => {};
@@ -294,71 +294,34 @@ export function initTtsPanel(root, settings) {
       }
     }
   });
-  // === AI 응답 TTS 재생 ===
+  // === 마지막 오디오 다운로드 ===
   speakBtn?.addEventListener('click', async () => {
-    const providerId = settings.ttsMode?.provider;
-    const provider = ttsProviders[providerId];
-    if (!provider) {
+    const blob = getLastAudioBlob();
+    if (!blob) {
       if (speakStatus) {
-        speakStatus.textContent = "❌ TTS 프로바이더를 먼저 선택해주세요.";
+        speakStatus.textContent = "❌ 다운로드할 오디오가 없습니다. 먼저 TTS를 재생해주세요.";
         speakStatus.style.color = "#ff6666";
       }
       return;
-    }
-    // 1) 마지막 AI 메시지 가져오기
-    const rawText = getLastAssistantText();
-    console.log("[MyaPl] TTS rawText:", rawText?.slice(0, 200), "...");
-    console.log("[MyaPl] TTS rawText length:", rawText?.length);
-    if (!rawText) {
-      if (speakStatus) {
-        speakStatus.textContent = "❌ 읽을 AI 응답이 없습니다.";
-        speakStatus.style.color = "#ff6666";
-      }
-      return;
-    }
-    // 2) 전처리
-    const text = preprocessForTts(rawText);
-    if (!text) {
-      if (speakStatus) {
-        speakStatus.textContent = "❌ 전처리 후 읽을 텍스트가 없습니다.";
-        speakStatus.style.color = "#ff6666";
-      }
-      return;
-    }
-    // 3) 길이 체크 (테스트용 200자)
-    const truncated = text.length > 200 ? text.slice(0, 197) + "..." : text;
-    if (speakStatus) {
-      speakStatus.textContent = `⏳ 변환 중... (${truncated.length}자)`;
-      speakStatus.style.color = "var(--abgm-text-dim)";
     }
     try {
-      // 4) TTS API 호출
-      const providerSettings = settings.ttsMode.providers[providerId] || {};
-      const audioUrl = await provider.getAudioUrl(truncated, providerSettings);
-      // 5) 재생
-      const audio = new Audio(audioUrl);
-      audio.volume = settings.globalVolume ?? 0.7;
-      audio.onended = () => {
-        if (speakStatus) {
-          speakStatus.textContent = "✅ 재생 완료";
-          speakStatus.style.color = "#66ff66";
-        }
-      };
-      audio.onerror = () => {
-        if (speakStatus) {
-          speakStatus.textContent = "❌ 오디오 재생 실패";
-          speakStatus.style.color = "#ff6666";
-        }
-      };
-      await audio.play();
+      // 다운로드 링크 생성
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tts_${Date.now()}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
       if (speakStatus) {
-        speakStatus.textContent = `🔊 재생 중... (${truncated.length}자)`;
-        speakStatus.style.color = "#8af";
+        speakStatus.textContent = "✅ 다운로드 완료!";
+        speakStatus.style.color = "#66ff66";
       }
     } catch (e) {
-      console.error("[MyaPl] TTS Speak Error:", e);
+      console.error("[MyaPl] Download error:", e);
       if (speakStatus) {
-        speakStatus.textContent = `❌ 오류: ${e.message}`;
+        speakStatus.textContent = `❌ 다운로드 실패: ${e.message}`;
         speakStatus.style.color = "#ff6666";
       }
     }
