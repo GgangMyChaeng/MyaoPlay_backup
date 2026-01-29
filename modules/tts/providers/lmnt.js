@@ -2,7 +2,7 @@
  * LMNT TTS Provider
  * - 엔드포인트: api.lmnt.com
  * - 저렴하고 빠른 TTS, 감정 표현 좋음
- * - 응답: JSON { audio: base64, seed, durations }
+ * - 응답: JSON { audio: base64, seed, durations } 또는 { audio: "", error: "..." }
  */
 
 import { getRequestHeaders } from "../../deps.js";
@@ -118,6 +118,12 @@ export async function getAudioUrl(text, providerSettings = {}) {
 
     // JSON 응답에서 base64 audio 추출
     const json = await response.json();
+    
+    // 에러 응답 체크
+    if (json.error) {
+      console.error("[MyaPl][LMNT] Server error:", json.error);
+      throw new Error(`LMNT 서버 에러: ${json.error}`);
+    }
     
     if (!json.audio) {
       throw new Error("응답에 audio 필드가 없습니다.");
