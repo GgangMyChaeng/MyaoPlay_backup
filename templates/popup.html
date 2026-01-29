@@ -562,15 +562,14 @@
       <div style="margin-top:15px;">
         <label style="font-size:12px; opacity:.8;">Provider</label>
         <select id="abgm_tts_provider" class="abgm-select" style="width:100%; margin-top:4px;">
-          <option value="">-- 선택 --</option>
-          <option value="qwen">Qwen (DashScope)</option>
+          <!-- JS에서 동적으로 채움 -->
         </select>
       </div>
 
-      <!-- Qwen 설정 (provider 선택 시 표시) -->
+      <!-- ========== Qwen 설정 ========== -->
       <div id="abgm_tts_qwen_settings" class="abgm-tts-provider-box" style="display:none;">
-      
-        <!-- 모델 선택 -->
+        <div class="abgm-tts-provider-title">Qwen (Alibaba)</div>
+        
         <div>
           <label style="font-size:12px; opacity:.8;">Model</label>
           <select id="abgm_tts_qwen_model" class="abgm-select" style="width:100%; margin-top:4px;">
@@ -581,7 +580,6 @@
           </select>
         </div>
 
-        <!-- Voice 선택 -->
         <div style="margin-top:12px;">
           <label style="font-size:12px; opacity:.8;">Voice</label>
           <select id="abgm_tts_qwen_voice" class="abgm-select" style="width:100%; margin-top:4px;">
@@ -589,35 +587,107 @@
           </select>
         </div>
 
-        <!-- API Key 입력 -->
         <div style="margin-top:12px;">
           <label style="font-size:12px; opacity:.8;">API Key</label>
           <input type="password" id="abgm_tts_qwen_apikey" class="abgm-input" placeholder="sk-xxxxxxxx" style="width:100%; margin-top:4px;">
           <p style="font-size:10px; opacity:.5; margin-top:4px;">
-            <a href="https://modelstudio.console.alibabacloud.com/?tab=playground#/api-key" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
+            <a href="https://bailian.console.alibabacloud.com/?tab=model#/api-key" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
           </p>
         </div>
+      </div>
 
-        <!-- 테스트 버튼 -->
-        <button type="button" id="abgm_tts_test_btn" class="menu_button" style="margin-top:12px; width:100%;">
+      <!-- ========== OpenAI 설정 ========== -->
+      <div id="abgm_tts_openai_settings" class="abgm-tts-provider-box" style="display:none;">
+        <div class="abgm-tts-provider-title">OpenAI TTS</div>
+        
+        <div>
+          <label style="font-size:12px; opacity:.8;">Model</label>
+          <select id="abgm_tts_openai_model" class="abgm-select" style="width:100%; margin-top:4px;">
+            <option value="tts-1">tts-1 (빠름)</option>
+            <option value="tts-1-hd">tts-1-hd (고품질)</option>
+            <option value="gpt-4o-mini-tts">gpt-4o-mini-tts</option>
+          </select>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">Voice</label>
+          <select id="abgm_tts_openai_voice" class="abgm-select" style="width:100%; margin-top:4px;">
+            <!-- JS에서 동적으로 채움 -->
+          </select>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">Speed</label>
+          <input type="range" id="abgm_tts_openai_speed" min="0.25" max="4.0" step="0.05" value="1.0" style="width:100%; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:10px; opacity:.5;">
+            <span>0.25x</span>
+            <span id="abgm_tts_openai_speed_val">1.0x</span>
+            <span>4.0x</span>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">Instructions <span style="opacity:.5;">(선택)</span></label>
+          <textarea id="abgm_tts_openai_instructions" class="abgm-input" rows="2" placeholder="예: Speak in a cheerful tone..." style="width:100%; margin-top:4px; resize:vertical;"></textarea>
+          <p style="font-size:10px; opacity:.5; margin-top:2px;">gpt-4o-mini-tts만 지원</p>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">API Key</label>
+          <input type="password" id="abgm_tts_openai_apikey" class="abgm-input" placeholder="sk-xxxxxxxx" style="width:100%; margin-top:4px;">
+          <p style="font-size:10px; opacity:.5; margin-top:4px;">
+            <a href="https://platform.openai.com/api-keys" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- ========== Gemini 설정 ========== -->
+      <div id="abgm_tts_gemini_settings" class="abgm-tts-provider-box" style="display:none;">
+        <div class="abgm-tts-provider-title">Gemini (Google)</div>
+        
+        <div>
+          <label style="font-size:12px; opacity:.8;">Model</label>
+          <select id="abgm_tts_gemini_model" class="abgm-select" style="width:100%; margin-top:4px;">
+            <option value="gemini-2.5-flash-preview-tts">gemini-2.5-flash-preview-tts</option>
+            <option value="gemini-2.0-flash-live-001">gemini-2.0-flash-live-001</option>
+          </select>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">Voice</label>
+          <select id="abgm_tts_gemini_voice" class="abgm-select" style="width:100%; margin-top:4px;">
+            <!-- JS에서 동적으로 채움 -->
+          </select>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; opacity:.8;">API Key</label>
+          <input type="password" id="abgm_tts_gemini_apikey" class="abgm-input" placeholder="AIzaSy..." style="width:100%; margin-top:4px;">
+          <p style="font-size:10px; opacity:.5; margin-top:4px;">
+            <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- ========== 공통: 테스트 & 재생 버튼 ========== -->
+      <div id="abgm_tts_common_actions" class="abgm-tts-divider" style="display:none;">
+        <button type="button" id="abgm_tts_test_btn" class="menu_button" style="width:100%;">
           🔊 연결 테스트
         </button>
         <div id="abgm_tts_test_result" style="margin-top:8px; font-size:11px;"></div>
-      <!-- AI 응답 TTS 재생 -->
-      <div class="abgm-tts-divider">
-        <button type="button" id="abgm_tts_speak_btn" class="menu_button" style="width:100%;">
+        
+        <button type="button" id="abgm_tts_speak_btn" class="menu_button" style="width:100%; margin-top:10px;">
           🎤 마지막 AI 응답 읽기
         </button>
         <div id="abgm_tts_speak_status" style="margin-top:8px; font-size:11px;"></div>
       </div>
-    </div>
-  </div>
+
       <!-- CORS 안내 -->
       <div id="abgm_tts_cors_warning" class="abgm-tts-warning" style="display:none;">
         ⚠️ TTS 기능을 사용하려면 ST의 <code>config.yaml</code>에서 <code>enableCorsProxy: true</code>로 설정 후 재시작이 필요합니다.
+      </div>
     </div>
   </div>
-</div>
 
 <!-- Sources Panel -->
 <div class="myaoplay-tab-panel" role="tabpanel" id="myaoplay-panel-sources" aria-labelledby="myaoplay-tab-sources" tabindex="0">
@@ -757,7 +827,7 @@
     <div>✔️ 본 확장은 비상업적 용도에 한하여 깡싸(https://kkangtong.xyz/) 내에서만 재배포를 허용하며, 그 외 모든 외부 사이트·플랫폼으로의 재배포를 금지함</div>
     <div>✔️ 해당 확장 공유 시 출처 표기 필수 (깃허브/깡싸 주소 중에 편한 곳)</div>
     <div>✔️ 확장 자체의 코드 일부를 가져다 쓰거나 일부 수정하여 배포하는 행위는 일체 금지</div>
-    <div>✔️ 프리소스 오디오는 제작자가 직접 제작한 것으로, 비상업적 용도에 한해 깡싸 내 자유 사용·편집·공유 허용</div>
+    <div>✔️ 프리소스 오디오는 제작자가 Suno를 통해 직접 제작한 것으로, 비상업적 용도에 한해 깡싸 내 자유 사용·편집·공유 허용</div>
     <div>✔️ 확장을 통해 생성된 프리셋 및 사용자 데이터는 자유 사용 가능 (단, 아래 사항 확인)</div>
 
     <hr class="abgm-hr">
