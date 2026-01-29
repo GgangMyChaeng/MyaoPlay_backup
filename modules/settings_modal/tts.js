@@ -8,7 +8,6 @@ import { QWEN_VOICES } from "../tts/providers/qwen.js";
 import { OPENAI_VOICES } from "../tts/providers/openai.js";
 import { GEMINI_VOICES } from "../tts/providers/gemini.js";
 import { LMNT_VOICES } from "../tts/providers/lmnt.js";
-import { PLAYHT_VOICES } from "../tts/providers/playht.js";
 import { getLastAssistantText, preprocessForTts } from "../utils.js";
 import { setMessageButtonsEnabled, updateSettingsRef as updateMsgBtnSettingsRef, initMessageButtons, setLastAudioBlob, getLastAudioBlob } from "../tts/tts_message_button.js";
 
@@ -70,13 +69,6 @@ export function initTtsPanel(root, settings) {
   const lmntSpeedVal = ttsPanel.querySelector('#abgm_tts_lmnt_speed_val');
   const lmntApiKeyInput = ttsPanel.querySelector('#abgm_tts_lmnt_apikey');
 
-  // === PlayHT 요소 ===
-  const playhtSettings = ttsPanel.querySelector('#abgm_tts_playht_settings');
-  const playhtEngineSel = ttsPanel.querySelector('#abgm_tts_playht_engine');
-  const playhtVoiceSel = ttsPanel.querySelector('#abgm_tts_playht_voice');
-  const playhtApiKeyInput = ttsPanel.querySelector('#abgm_tts_playht_apikey');
-  const playhtUserIdInput = ttsPanel.querySelector('#abgm_tts_playht_userid');
-
   // === 메시지 버튼 토글 요소 ===
   const msgButtonToggle = ttsPanel.querySelector('#abgm_tts_msg_button_toggle');
   const msgButtonOptions = ttsPanel.querySelector('#abgm_tts_msg_button_options');
@@ -90,7 +82,6 @@ export function initTtsPanel(root, settings) {
   settings.ttsMode.providers.openai ??= {};
   settings.ttsMode.providers.gemini ??= {};
   settings.ttsMode.providers.lmnt ??= {};
-  settings.ttsMode.providers.playht ??= {};
   settings.ttsMode.msgButtonEnabled ??= false;
   settings.ttsMode.msgButtonReadMode ??= "dialogue";
   // Provider 드롭다운 채우기
@@ -120,7 +111,6 @@ export function initTtsPanel(root, settings) {
   fillVoiceSelect(openaiVoiceSel, OPENAI_VOICES, "nova");
   fillVoiceSelect(geminiVoiceSel, GEMINI_VOICES, "Kore");
   fillVoiceSelect(lmntVoiceSel, LMNT_VOICES, "lily");
-  fillVoiceSelect(playhtVoiceSel, PLAYHT_VOICES, "s3://voice-cloning-zero-shot/775ae416-49bb-4fb6-bd45-740f205d20a1/jennifersaad/manifest.json");
 
   function updateTtsUI() {
     const provider = settings.ttsMode?.provider || "";
@@ -133,7 +123,6 @@ export function initTtsPanel(root, settings) {
     if (openaiSettings) openaiSettings.style.display = (provider === 'openai') ? 'block' : 'none';
     if (geminiSettings) geminiSettings.style.display = (provider === 'gemini') ? 'block' : 'none';
     if (lmntSettings) lmntSettings.style.display = (provider === 'lmnt') ? 'block' : 'none';
-    if (playhtSettings) playhtSettings.style.display = (provider === 'playht') ? 'block' : 'none';
     
     // 공통 액션 버튼 & CORS 경고
     if (commonActions) commonActions.style.display = provider ? 'block' : 'none';
@@ -174,15 +163,6 @@ export function initTtsPanel(root, settings) {
       if (lmntSpeedInput) lmntSpeedInput.value = s.speed ?? 1.0;
       if (lmntSpeedVal) lmntSpeedVal.textContent = `${s.speed ?? 1.0}x`;
       if (lmntApiKeyInput) lmntApiKeyInput.value = s.apiKey || "";
-    }
-
-    // PlayHT 값 복원
-    if (provider === 'playht') {
-      const s = settings.ttsMode.providers.playht;
-      if (playhtEngineSel) playhtEngineSel.value = s.voiceEngine || "Play3.0-mini";
-      if (playhtVoiceSel) playhtVoiceSel.value = s.voice || "s3://voice-cloning-zero-shot/775ae416-49bb-4fb6-bd45-740f205d20a1/jennifersaad/manifest.json";
-      if (playhtApiKeyInput) playhtApiKeyInput.value = s.apiKey || "";
-      if (playhtUserIdInput) playhtUserIdInput.value = s.userId || "";
     }
 
     // 메시지 버튼 토글 상태 복원
@@ -247,17 +227,6 @@ export function initTtsPanel(root, settings) {
       if (lmntSpeedVal) lmntSpeedVal.textContent = `${s.speed}x`;
     }
     if (e.target.id === 'abgm_tts_lmnt_apikey') s.apiKey = e.target.value;
-    _saveSettingsDebounced();
-  });
-
-  // === PlayHT 설정 이벤트 ===
-  playhtSettings?.addEventListener('input', (e) => {
-    const s = settings.ttsMode.providers.playht;
-    if (!s) return;
-    if (e.target.id === 'abgm_tts_playht_engine') s.voiceEngine = e.target.value;
-    if (e.target.id === 'abgm_tts_playht_voice') s.voice = e.target.value;
-    if (e.target.id === 'abgm_tts_playht_apikey') s.apiKey = e.target.value;
-    if (e.target.id === 'abgm_tts_playht_userid') s.userId = e.target.value;
     _saveSettingsDebounced();
   });
 
