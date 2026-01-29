@@ -558,6 +558,34 @@
         AI 응답을 음성으로 읽어줍니다.
       </p>
 
+        <!-- 메시지 TTS 버튼 토글 -->
+      <div style="margin-top:15px; padding:12px; background:rgba(100,200,100,.1); border:1px solid rgba(100,200,100,.3); border-radius:8px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <b style="font-size:13px;">💬 메시지 TTS 버튼</b>
+            <p style="font-size:11px; opacity:.7; margin-top:4px;">
+              AI 메시지에 TTS 버튼을 표시합니다.
+            </p>
+          </div>
+          <label class="abgm-switch" style="flex-shrink:0;">
+            <input type="checkbox" id="abgm_tts_msg_button_toggle">
+            <span class="abgm-slider"></span>
+          </label>
+        </div>
+        
+        <!-- 버튼 모드 선택 (토글 켜졌을 때만 표시) -->
+        <div id="abgm_tts_msg_button_options" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,.1);">
+          <label style="font-size:12px; opacity:.8;">읽기 모드</label>
+          <select id="abgm_tts_msg_read_mode" class="abgm-select" style="width:100%; margin-top:4px;">
+            <option value="dialogue">대사만 ("")</option>
+            <option value="all" disabled>전체 (🚧 준비 중)</option>
+          </select>
+          <p style="font-size:10px; opacity:.5; margin-top:4px;">
+            대사만: 따옴표 안의 대사만 읽습니다.
+          </p>
+        </div>
+      </div>
+
       <!-- Provider 선택 -->
       <div style="margin-top:15px;">
         <label style="font-size:12px; opacity:.8;">Provider</label>
