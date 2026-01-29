@@ -36,11 +36,11 @@ export async function getAudioUrl(text, providerSettings = {}) {
     speed: speed || 1.0,
     response_format: "mp3",
   };
-  console.log("[MyaPl][OpenAI] TTS request:", {
-    textLength: text.length,
-    model: bodyData.model,
-    voice: bodyData.voice,
-  });
+  //console.log("[MyaPl][OpenAI] TTS request:", {
+  //  textLength: text.length,
+  //  model: bodyData.model,
+  //  voice: bodyData.voice,
+  //});
   const proxyCandidates = [
     `/proxy/${OPENAI_ENDPOINT}`,
     `/proxy?url=${encodeURIComponent(OPENAI_ENDPOINT)}`,
