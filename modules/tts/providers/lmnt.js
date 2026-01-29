@@ -78,8 +78,18 @@ export async function getAudioUrl(text, providerSettings = {}) {
       }
 
       // LMNT는 바이너리 오디오 직접 반환
-      const blob = await response.blob();
-      console.log("[MyaPl][LMNT] Success!", blob.size, "bytes");
+      const rawBlob = await response.blob();
+      const contentType = response.headers.get("Content-Type") || rawBlob.type;
+      console.log("[MyaPl][LMNT] Response Content-Type:", contentType, "Blob type:", rawBlob.type);
+      
+      // 프록시가 Content-Type을 제대로 전달 안 하면 강제 지정
+      let blob = rawBlob;
+      if (!contentType || contentType === "application/octet-stream" || !contentType.startsWith("audio/")) {
+        console.log("[MyaPl][LMNT] Forcing audio/mpeg type");
+        blob = new Blob([rawBlob], { type: "audio/mpeg" });
+      }
+      
+      console.log("[MyaPl][LMNT] Success!", blob.size, "bytes, type:", blob.type);
       return URL.createObjectURL(blob);
     } catch (e) {
       console.error("[MyaPl][LMNT] Attempt failed:", e.message);
@@ -104,8 +114,16 @@ export async function getAudioUrl(text, providerSettings = {}) {
       throw new Error(`HTTP ${response.status}: ${errorText.substring(0, 100)}`);
     }
 
-    const blob = await response.blob();
-    console.log("[MyaPl][LMNT] Success (direct)!", blob.size, "bytes");
+    const rawBlob = await response.blob();
+    const contentType = response.headers.get("Content-Type") || rawBlob.type;
+    console.log("[MyaPl][LMNT] Direct Content-Type:", contentType);
+    
+    let blob = rawBlob;
+    if (!contentType || !contentType.startsWith("audio/")) {
+      blob = new Blob([rawBlob], { type: "audio/mpeg" });
+    }
+    
+    console.log("[MyaPl][LMNT] Success (direct)!", blob.size, "bytes, type:", blob.type);
     return URL.createObjectURL(blob);
   } catch (e) {
     console.error("[MyaPl][LMNT] Direct call failed:", e.message);
