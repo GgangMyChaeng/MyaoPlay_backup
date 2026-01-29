@@ -85,6 +85,10 @@ export async function getAudioUrl(text, providerSettings = {}) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("[MyaPl][ElevenLabs] API Error:", response.status, errorText.substring(0, 200));
+      // quota 초과 에러 친절하게 처리
+      if (errorText.includes("quota_exceeded")) {
+        throw new Error("ElevenLabs 크레딧이 부족합니다. 대시보드에서 확인해주세요.");
+      }
       throw new Error(`HTTP ${response.status}: ${errorText.substring(0, 100)}`);
     }
 
