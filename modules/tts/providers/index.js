@@ -6,6 +6,8 @@
 import * as qwen from "./qwen.js";
 import * as openai from "./openai.js";
 import * as gemini from "./gemini.js";
+import * as lmnt from "./lmnt.js";
+import * as playht from "./playht.js";
 
 export const providers = {
   qwen: {
@@ -19,6 +21,14 @@ export const providers = {
   gemini: {
     ...gemini.meta,
     getAudioUrl: gemini.getAudioUrl,
+  },
+  lmnt: {
+    ...lmnt.meta,
+    getAudioUrl: lmnt.getAudioUrl,
+  },
+  playht: {
+    ...playht.meta,
+    getAudioUrl: playht.getAudioUrl,
   },
 };
 
