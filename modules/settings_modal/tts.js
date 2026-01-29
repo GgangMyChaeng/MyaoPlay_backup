@@ -10,7 +10,7 @@ import { GEMINI_VOICES } from "../tts/providers/gemini.js";
 import { LMNT_VOICES } from "../tts/providers/lmnt.js";
 import { PLAYHT_VOICES } from "../tts/providers/playht.js";
 import { getLastAssistantText, preprocessForTts } from "../utils.js";
-import { setMessageButtonsEnabled, updateSettingsRef as updateMsgBtnSettingsRef } from "../tts/tts_message_button.js";
+import { setMessageButtonsEnabled, updateSettingsRef as updateMsgBtnSettingsRef, initMessageButtons } from "../tts/tts_message_button.js";
 
 // 의존성 (부모 모듈에서 주입받음)
 let _saveSettingsDebounced = () => {};
@@ -380,4 +380,6 @@ export function initTtsPanel(root, settings) {
   });
   // settings 참조 업데이트 (tts_message_button.js에 전달)
   updateMsgBtnSettingsRef(settings);
+  // 저장된 설정에 따라 메시지 버튼 초기화
+  initMessageButtons(settings);
 }
