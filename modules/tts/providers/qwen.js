@@ -39,12 +39,12 @@ export async function getAudioUrl(text, providerSettings = {}) {
       language_type: languageType || "Auto",
     },
   };
-  console.log("[MyaPl][Qwen] TTS request:", {
-    textLength: text.length,
-    textPreview: text.slice(0, 100),
-    model: bodyData.model,
-    voice: bodyData.input.voice,
-  });
+  //console.log("[MyaPl][Qwen] TTS request:", {
+  //  textLength: text.length,
+  //  textPreview: text.slice(0, 100),
+  //  model: bodyData.model,
+  //  voice: bodyData.input.voice,
+  //});
   const tryPostFetch = async (url) => {
     const headers = {
       Authorization: `Bearer ${apiKey}`,
