@@ -64,11 +64,11 @@ export async function getAudioUrl(text, providerSettings = {}) {
     },
   };
 
-  console.log("[MyaPl][ElevenLabs] TTS request:", {
-    textLength: text.length,
-    voice: voiceId,
-    model: bodyData.model_id,
-  });
+  //console.log("[MyaPl][ElevenLabs] TTS request:", {
+  //  textLength: text.length,
+  //  voice: voiceId,
+  //  model: bodyData.model_id,
+  //});
 
   // ElevenLabs는 CORS 허용 - 직접 호출
   try {
@@ -94,7 +94,7 @@ export async function getAudioUrl(text, providerSettings = {}) {
 
     // 바이너리 오디오 스트림 반환
     const blob = await response.blob();
-    console.log("[MyaPl][ElevenLabs] Success!", blob.size, "bytes");
+    //console.log("[MyaPl][ElevenLabs] Success!", blob.size, "bytes");
     return URL.createObjectURL(blob);
   } catch (e) {
     console.error("[MyaPl][ElevenLabs] API call failed:", e.message);
