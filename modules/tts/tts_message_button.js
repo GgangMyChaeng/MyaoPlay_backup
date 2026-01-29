@@ -6,30 +6,17 @@
 
 import { providers as ttsProviders } from "./providers/index.js";
 import { preprocessForTts } from "../utils.js";
-
-// 의존성
-let _settings = null;
-let _saveSettingsDebounced = () => {};
+import { ensureSettings } from "../settings.js";
 
 // 현재 재생 중인 오디오
 let currentAudio = null;
 let currentPlayingBtn = null;
 
 /**
- * 의존성 주입
+ * settings 가져오기 (항상 최신)
  */
-export function bindMessageButtonDeps(deps = {}) {
-  if (deps.settings) _settings = deps.settings;
-  if (typeof deps.saveSettingsDebounced === "function") {
-    _saveSettingsDebounced = deps.saveSettingsDebounced;
-  }
-}
-
-/**
- * settings 참조 업데이트 (외부에서 호출)
- */
-export function updateSettingsRef(settings) {
-  _settings = settings;
+function getSettings() {
+  return ensureSettings();
 }
 
 /**
@@ -60,8 +47,7 @@ function extractDialogues(text) {
     }
   }
   
-  // 중복 제거 및 순서 유지 (원본 텍스트에서의 위치 기준)
-  // 간단하게 Set으로 중복만 제거
+  // 중복 제거
   return [...new Set(dialogues)];
 }
 
@@ -71,12 +57,14 @@ function extractDialogues(text) {
  * @param {HTMLElement} btn - 버튼 요소 (상태 표시용)
  */
 async function playTts(text, btn) {
-  if (!_settings?.ttsMode) {
+  const settings = getSettings();
+  
+  if (!settings?.ttsMode) {
     console.warn("[MyaPl] TTS settings not found");
     return;
   }
 
-  const providerId = _settings.ttsMode.provider;
+  const providerId = settings.ttsMode.provider;
   const provider = ttsProviders[providerId];
   
   if (!provider) {
@@ -106,7 +94,7 @@ async function playTts(text, btn) {
     currentPlayingBtn = btn;
 
     // provider settings 가져오기
-    const providerSettings = _settings.ttsMode.providers?.[providerId] || {};
+    const providerSettings = settings.ttsMode.providers?.[providerId] || {};
     
     // 텍스트 전처리
     const processedText = preprocessForTts(text);
@@ -166,17 +154,9 @@ function addTtsButtonToMessage(messageEl) {
   if (messageEl.querySelector(".myaoplay-msg-tts-btn")) return;
 
   // 버튼 영역 찾기 (SillyTavern의 메시지 버튼 영역)
-  // 연두색으로 표시한 영역: .mes_buttons 또는 유사한 클래스
   const buttonArea = messageEl.querySelector(".mes_buttons, .mes_block .mes_text + div, .extraMesButtons");
   
   if (!buttonArea) {
-    // 대안: 메시지 텍스트 영역 찾아서 그 옆에 삽입
-    const mesText = messageEl.querySelector(".mes_text");
-    if (mesText && mesText.parentElement) {
-      // 버튼 영역이 없으면 새로 만들거나 스킵
-      console.log("[MyaPl] Button area not found for message");
-      return;
-    }
     return;
   }
 
@@ -192,6 +172,8 @@ function addTtsButtonToMessage(messageEl) {
     e.preventDefault();
     e.stopPropagation();
 
+    const settings = getSettings();
+
     // 메시지 텍스트 가져오기
     const mesText = messageEl.querySelector(".mes_text");
     if (!mesText) {
@@ -202,7 +184,7 @@ function addTtsButtonToMessage(messageEl) {
     const fullText = mesText.innerText || mesText.textContent || "";
     
     // 읽기 모드에 따라 처리
-    const readMode = _settings?.ttsMode?.msgButtonReadMode || "dialogue";
+    const readMode = settings?.ttsMode?.msgButtonReadMode || "dialogue";
     
     let textToRead = "";
     
@@ -211,12 +193,10 @@ function addTtsButtonToMessage(messageEl) {
       const dialogues = extractDialogues(fullText);
       if (dialogues.length === 0) {
         console.log("[MyaPl] No dialogues found in message");
-        // 대사가 없으면 전체 텍스트 사용? 아니면 알림?
-        // 일단 알림
         alert("이 메시지에서 대사를 찾을 수 없습니다.");
         return;
       }
-      // 대사들을 연결 (나중에 순차 재생으로 변경 가능)
+      // 대사들을 연결
       textToRead = dialogues.join(" ");
     } else {
       // 전체 (나중에 구현)
@@ -234,7 +214,8 @@ function addTtsButtonToMessage(messageEl) {
  * 모든 AI 메시지에 TTS 버튼 추가
  */
 export function addTtsButtonsToAllMessages() {
-  if (!_settings?.ttsMode?.msgButtonEnabled) return;
+  const settings = getSettings();
+  if (!settings?.ttsMode?.msgButtonEnabled) return;
 
   // AI 메시지만 선택 (is_user가 아닌 것)
   const messages = document.querySelectorAll(".mes:not(.is_user)");
@@ -265,12 +246,15 @@ export function startMessageObserver() {
 
   const chatContainer = document.querySelector("#chat");
   if (!chatContainer) {
-    console.warn("[MyaPl] Chat container not found");
+    console.warn("[MyaPl] Chat container not found, will retry...");
+    // 나중에 다시 시도
+    setTimeout(startMessageObserver, 2000);
     return;
   }
 
   messageObserver = new MutationObserver((mutations) => {
-    if (!_settings?.ttsMode?.msgButtonEnabled) return;
+    const settings = getSettings();
+    if (!settings?.ttsMode?.msgButtonEnabled) return;
 
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
@@ -326,16 +310,38 @@ export function setMessageButtonsEnabled(enabled) {
 }
 
 /**
- * 초기화 (확장 로드 시 호출)
+ * 수동 초기화 (외부에서 호출 가능)
  */
-export function initMessageButtons(settings) {
-  _settings = settings;
+export function initMessageButtons() {
+  const settings = getSettings();
   
   if (settings?.ttsMode?.msgButtonEnabled) {
-    // 약간의 딜레이 후 실행 (DOM 로드 대기)
+    console.log("[MyaPl] Initializing message TTS buttons...");
+    addTtsButtonsToAllMessages();
+    startMessageObserver();
+  }
+}
+
+// ========================================
+// 자동 초기화 - 문서 로드 후 실행
+// ========================================
+function autoInit() {
+  const settings = getSettings();
+  
+  if (settings?.ttsMode?.msgButtonEnabled) {
+    console.log("[MyaPl] Auto-initializing message TTS buttons...");
+    // DOM이 완전히 로드된 후 실행
     setTimeout(() => {
       addTtsButtonsToAllMessages();
       startMessageObserver();
-    }, 1000);
+    }, 1500);
   }
+}
+
+// 문서 로드 상태에 따라 자동 초기화
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", autoInit);
+} else {
+  // 이미 로드됨 - 약간 딜레이 후 실행
+  setTimeout(autoInit, 1000);
 }
