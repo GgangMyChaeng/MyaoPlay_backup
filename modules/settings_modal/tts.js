@@ -10,6 +10,7 @@ import { GEMINI_VOICES } from "../tts/providers/gemini.js";
 import { LMNT_VOICES } from "../tts/providers/lmnt.js";
 import { PLAYHT_VOICES } from "../tts/providers/playht.js";
 import { getLastAssistantText, preprocessForTts } from "../utils.js";
+import { setMessageButtonsEnabled, updateSettingsRef as updateMsgBtnSettingsRef } from "../tts/tts_message_button.js";
 
 // 의존성 (부모 모듈에서 주입받음)
 let _saveSettingsDebounced = () => {};
@@ -76,6 +77,11 @@ export function initTtsPanel(root, settings) {
   const playhtApiKeyInput = ttsPanel.querySelector('#abgm_tts_playht_apikey');
   const playhtUserIdInput = ttsPanel.querySelector('#abgm_tts_playht_userid');
 
+  // === 메시지 버튼 토글 요소 ===
+  const msgButtonToggle = ttsPanel.querySelector('#abgm_tts_msg_button_toggle');
+  const msgButtonOptions = ttsPanel.querySelector('#abgm_tts_msg_button_options');
+  const msgReadModeSel = ttsPanel.querySelector('#abgm_tts_msg_read_mode');
+
   // === settings.ttsMode 구조 보장 ===
   settings.ttsMode ??= {};
   settings.ttsMode.provider ??= "";
@@ -85,6 +91,8 @@ export function initTtsPanel(root, settings) {
   settings.ttsMode.providers.gemini ??= {};
   settings.ttsMode.providers.lmnt ??= {};
   settings.ttsMode.providers.playht ??= {};
+  settings.ttsMode.msgButtonEnabled ??= false;
+  settings.ttsMode.msgButtonReadMode ??= "dialogue";
   // Provider 드롭다운 채우기
   if (providerSel) {
     providerSel.innerHTML = '<option value="">(사용 안 함)</option>';
@@ -175,6 +183,17 @@ export function initTtsPanel(root, settings) {
       if (playhtVoiceSel) playhtVoiceSel.value = s.voice || "s3://voice-cloning-zero-shot/775ae416-49bb-4fb6-bd45-740f205d20a1/jennifersaad/manifest.json";
       if (playhtApiKeyInput) playhtApiKeyInput.value = s.apiKey || "";
       if (playhtUserIdInput) playhtUserIdInput.value = s.userId || "";
+    }
+
+    // 메시지 버튼 토글 상태 복원
+    if (msgButtonToggle) {
+      msgButtonToggle.checked = settings.ttsMode.msgButtonEnabled || false;
+    }
+    if (msgButtonOptions) {
+      msgButtonOptions.style.display = settings.ttsMode.msgButtonEnabled ? 'block' : 'none';
+    }
+    if (msgReadModeSel) {
+      msgReadModeSel.value = settings.ttsMode.msgButtonReadMode || 'dialogue';
     }
   }
 
@@ -344,4 +363,21 @@ export function initTtsPanel(root, settings) {
       }
     }
   });
+  // === 메시지 버튼 토글 이벤트 ===
+  msgButtonToggle?.addEventListener('change', (e) => {
+    settings.ttsMode.msgButtonEnabled = e.target.checked;
+    // 옵션 영역 표시/숨김
+    if (msgButtonOptions) {
+      msgButtonOptions.style.display = e.target.checked ? 'block' : 'none';
+    }
+    // 실제 버튼 활성화/비활성화
+    setMessageButtonsEnabled(e.target.checked);
+    _saveSettingsDebounced();
+  });
+  msgReadModeSel?.addEventListener('change', (e) => {
+    settings.ttsMode.msgButtonReadMode = e.target.value;
+    _saveSettingsDebounced();
+  });
+  // settings 참조 업데이트 (tts_message_button.js에 전달)
+  updateMsgBtnSettingsRef(settings);
 }
