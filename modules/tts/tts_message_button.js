@@ -222,15 +222,19 @@ function addTtsButtonToMessage(messageEl) {
 export function addTtsButtonsToAllMessages() {
   const _settings = ensureSettings();
   if (!_settings?.ttsMode?.msgButtonEnabled) return;
-
   // AI 메시지만 선택 (is_user가 아닌 것)
   const messages = document.querySelectorAll(".mes:not(.is_user)");
-  
+  let addedCount = 0;
   messages.forEach(msg => {
+    // 이미 버튼 있으면 스킵
+    if (msg.querySelector(".myaoplay-msg-tts-btn")) return;
     addTtsButtonToMessage(msg);
+    addedCount++;
   });
-  
-  console.log(`[MyaPl] Added TTS buttons to ${messages.length} messages`);
+  // 실제로 추가했을 때만 로그
+  if (addedCount > 0) {
+    console.log(`[MyaPl] Added TTS buttons to ${addedCount} new messages`);
+  }
 }
 
 /**
