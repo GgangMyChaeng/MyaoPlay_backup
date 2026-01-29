@@ -113,11 +113,11 @@ async function playTts(text, btn) {
       currentPlayingBtn = null;
       return;
     }
-    console.log("[MyaPl] TTS Message Button - Playing:", {
-      provider: providerId,
-      textLength: processedText.length,
-      preview: processedText.substring(0, 50) + "..."
-    });
+    // console.log("[MyaPl] TTS Message Button - Playing:", {
+    //  provider: providerId,
+    //  textLength: processedText.length,
+    //  preview: processedText.substring(0, 50) + "..."
+    // });
     // TTS 호출
     const audioUrl = await provider.getAudioUrl(processedText, providerSettings);
     // 오디오 재생
@@ -158,7 +158,7 @@ function setupEventDelegation() {
     if (!btn) return;
     e.preventDefault();
     e.stopPropagation();
-    console.log("[MyaPl] TTS Button clicked! (delegation)");
+    // console.log("[MyaPl] TTS Button clicked! (delegation)");
     // 메시지 컨테이너 찾기
     const messageEl = btn.closest(".mes");
     if (!messageEl) {
