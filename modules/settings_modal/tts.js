@@ -8,6 +8,7 @@ import { QWEN_VOICES } from "../tts/providers/qwen.js";
 import { OPENAI_VOICES } from "../tts/providers/openai.js";
 import { GEMINI_VOICES } from "../tts/providers/gemini.js";
 import { LMNT_VOICES } from "../tts/providers/lmnt.js";
+import { ELEVENLABS_VOICES, ELEVENLABS_MODELS } from "../tts/providers/elevenlabs.js";
 import { getLastAssistantText, preprocessForTts } from "../utils.js";
 import { setMessageButtonsEnabled, updateSettingsRef as updateMsgBtnSettingsRef, initMessageButtons, setLastAudioBlob, getLastAudioBlob } from "../tts/tts_message_button.js";
 
@@ -69,6 +70,16 @@ export function initTtsPanel(root, settings) {
   const lmntSpeedVal = ttsPanel.querySelector('#abgm_tts_lmnt_speed_val');
   const lmntApiKeyInput = ttsPanel.querySelector('#abgm_tts_lmnt_apikey');
 
+  // === ElevenLabs 요소 ===
+  const elevenlabsSettings = ttsPanel.querySelector('#abgm_tts_elevenlabs_settings');
+  const elevenlabsModelSel = ttsPanel.querySelector('#abgm_tts_elevenlabs_model');
+  const elevenlabsVoiceSel = ttsPanel.querySelector('#abgm_tts_elevenlabs_voice');
+  const elevenlabsStabilityInput = ttsPanel.querySelector('#abgm_tts_elevenlabs_stability');
+  const elevenlabsStabilityVal = ttsPanel.querySelector('#abgm_tts_elevenlabs_stability_val');
+  const elevenlabsSimilarityInput = ttsPanel.querySelector('#abgm_tts_elevenlabs_similarity');
+  const elevenlabsSimilarityVal = ttsPanel.querySelector('#abgm_tts_elevenlabs_similarity_val');
+  const elevenlabsApiKeyInput = ttsPanel.querySelector('#abgm_tts_elevenlabs_apikey');
+
   // === 메시지 버튼 토글 요소 ===
   const msgButtonToggle = ttsPanel.querySelector('#abgm_tts_msg_button_toggle');
   const msgButtonOptions = ttsPanel.querySelector('#abgm_tts_msg_button_options');
@@ -82,6 +93,7 @@ export function initTtsPanel(root, settings) {
   settings.ttsMode.providers.openai ??= {};
   settings.ttsMode.providers.gemini ??= {};
   settings.ttsMode.providers.lmnt ??= {};
+  settings.ttsMode.providers.elevenlabs ??= {};
   settings.ttsMode.msgButtonEnabled ??= false;
   settings.ttsMode.msgButtonReadMode ??= "dialogue";
   // Provider 드롭다운 채우기
@@ -111,6 +123,16 @@ export function initTtsPanel(root, settings) {
   fillVoiceSelect(openaiVoiceSel, OPENAI_VOICES, "nova");
   fillVoiceSelect(geminiVoiceSel, GEMINI_VOICES, "Kore");
   fillVoiceSelect(lmntVoiceSel, LMNT_VOICES, "lily");
+  fillVoiceSelect(elevenlabsVoiceSel, ELEVENLABS_VOICES, "21m00Tcm4TlvDq8ikWAM");
+  // 모델도 채우기
+  if (elevenlabsModelSel && elevenlabsModelSel.options.length === 0) {
+    ELEVENLABS_MODELS.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = m.name;
+      elevenlabsModelSel.appendChild(opt);
+    });
+  }
 
   function updateTtsUI() {
     const provider = settings.ttsMode?.provider || "";
@@ -123,6 +145,7 @@ export function initTtsPanel(root, settings) {
     if (openaiSettings) openaiSettings.style.display = (provider === 'openai') ? 'block' : 'none';
     if (geminiSettings) geminiSettings.style.display = (provider === 'gemini') ? 'block' : 'none';
     if (lmntSettings) lmntSettings.style.display = (provider === 'lmnt') ? 'block' : 'none';
+    if (elevenlabsSettings) elevenlabsSettings.style.display = (provider === 'elevenlabs') ? 'block' : 'none';
     
     // 공통 액션 버튼 & CORS 경고
     if (commonActions) commonActions.style.display = provider ? 'block' : 'none';
@@ -164,6 +187,18 @@ export function initTtsPanel(root, settings) {
       if (lmntSpeedVal) lmntSpeedVal.textContent = `${s.speed ?? 1.0}x`;
       if (lmntApiKeyInput) lmntApiKeyInput.value = s.apiKey || "";
     }
+
+  // ElevenLabs 값 복원
+  if (provider === 'elevenlabs') {
+    const s = settings.ttsMode.providers.elevenlabs;
+    if (elevenlabsModelSel) elevenlabsModelSel.value = s.model || "eleven_flash_v2_5";
+    if (elevenlabsVoiceSel) elevenlabsVoiceSel.value = s.voice || "21m00Tcm4TlvDq8ikWAM";
+    if (elevenlabsStabilityInput) elevenlabsStabilityInput.value = s.stability ?? 0.5;
+    if (elevenlabsStabilityVal) elevenlabsStabilityVal.textContent = s.stability ?? 0.5;
+    if (elevenlabsSimilarityInput) elevenlabsSimilarityInput.value = s.similarityBoost ?? 0.75;
+    if (elevenlabsSimilarityVal) elevenlabsSimilarityVal.textContent = s.similarityBoost ?? 0.75;
+    if (elevenlabsApiKeyInput) elevenlabsApiKeyInput.value = s.apiKey || "";
+  }
 
     // 메시지 버튼 토글 상태 복원
     if (msgButtonToggle) {
@@ -227,6 +262,24 @@ export function initTtsPanel(root, settings) {
       if (lmntSpeedVal) lmntSpeedVal.textContent = `${s.speed}x`;
     }
     if (e.target.id === 'abgm_tts_lmnt_apikey') s.apiKey = e.target.value;
+    _saveSettingsDebounced();
+  });
+
+  // === ElevenLabs 설정 이벤트 ===
+  elevenlabsSettings?.addEventListener('input', (e) => {
+    const s = settings.ttsMode.providers.elevenlabs;
+    if (!s) return;
+    if (e.target.id === 'abgm_tts_elevenlabs_model') s.model = e.target.value;
+    if (e.target.id === 'abgm_tts_elevenlabs_voice') s.voice = e.target.value;
+    if (e.target.id === 'abgm_tts_elevenlabs_stability') {
+      s.stability = parseFloat(e.target.value);
+      if (elevenlabsStabilityVal) elevenlabsStabilityVal.textContent = s.stability;
+    }
+    if (e.target.id === 'abgm_tts_elevenlabs_similarity') {
+      s.similarityBoost = parseFloat(e.target.value);
+      if (elevenlabsSimilarityVal) elevenlabsSimilarityVal.textContent = s.similarityBoost;
+    }
+    if (e.target.id === 'abgm_tts_elevenlabs_apikey') s.apiKey = e.target.value;
     _saveSettingsDebounced();
   });
 
