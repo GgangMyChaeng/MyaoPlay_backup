@@ -178,14 +178,11 @@ function pickByToken(preset, text, preferKey = "", avoidKey = "", typeWanted = "
     const fk = String(b.fileKey ?? "");
     if (!fk) continue;
     if (avoidKey && fk === avoidKey) continue;
-    
     const kws = parseKeywords(b.keywords);
     if (!kws.length) continue;
-    
     // 토큰 키워드가 BGM의 키워드 목록에 있는지 확인
     const hit = kws.some((kw) => kw.toLowerCase() === tokenKw);
     if (!hit) continue;
-    
     const pri = Number(b.priority ?? 0);
     if (pri > bestPri) {
       bestPri = pri;
@@ -194,7 +191,6 @@ function pickByToken(preset, text, preferKey = "", avoidKey = "", typeWanted = "
       candidates.push(b);
     }
   }
-  
   if (!candidates.length) return null;
   if (candidates.length === 1) return candidates[0];
   if (preferKey) {
@@ -679,7 +675,8 @@ export function engineTick() {
 
       // 타겟 프리셋 결정 (Bind 있으면 무조건 그 프리셋, 없으면 현재 유저가 선택한 activePreset 유지)
       // "Bind 없는 방"은 "기본 프리셋"으로 돌아가는 게 아니라 "현재 듣던 프리셋"을 유지하는 것이 일반적
-      const targetPresetId = boundPresetId || settings.activePresetId;
+      // 일반 모드에서는 Bind 무시 - 현재 프리셋 유지
+      const targetPresetId = settings.activePresetId;
       const targetPreset = settings.presets?.[targetPresetId];
 
       if (!targetPreset) {
@@ -945,7 +942,12 @@ export function engineTick() {
     if (!fk) return;
     // 3) 현재 재생 중인 곡과 다르면 → 새로 재생
     if (currentFileKey !== fk) {
-      // console.log(`[MyaPl] Loop One: ${currentFileKey} → ${fk}`);
+      // 조용했으면(pause 또는 아무것도 안 틀음) 재생 안 함, 상태만 세팅
+      const wasActuallyPlaying = !_bgmAudio.paused && !_bgmAudio.ended && !!currentFileKey;
+      if (!wasActuallyPlaying) {
+        st.currentKey = fk;
+        return;
+      }
       ensurePlayFile(fk, getVol(fk), true, preset.id);
       st.currentKey = fk;
     } else {
@@ -967,6 +969,13 @@ export function engineTick() {
       const idx = Math.max(0, Math.min(st.listIndex ?? 0, keys.length - 1));
       const fk = keys[idx] || "";
       if (fk) {
+        // 조용했으면 재생 안 함, 상태만 세팅
+        const wasActuallyPlaying = !_bgmAudio.paused && !_bgmAudio.ended && !!_engineCurrentFileKey;
+        if (!wasActuallyPlaying) {
+          st.currentKey = fk;
+          st.listIndex = idx;
+          return;
+        }
         ensurePlayFile(fk, getVol(fk), false, preset.id);
         st.currentKey = fk;
         st.listIndex = idx;
@@ -976,6 +985,12 @@ export function engineTick() {
     if (mode === "random") {
       const fk = pickRandomKey(keys, st.currentKey || "");
       if (fk) {
+        // 조용했으면 재생 안 함, 상태만 세팅
+        const wasActuallyPlaying = !_bgmAudio.paused && !_bgmAudio.ended && !!_engineCurrentFileKey;
+        if (!wasActuallyPlaying) {
+          st.currentKey = fk;
+          return;
+        }
         ensurePlayFile(fk, getVol(fk), false, preset.id);
         st.currentKey = fk;
       }
