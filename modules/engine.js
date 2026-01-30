@@ -649,7 +649,7 @@ export function engineTick() {
   if (isKeywordModeEntered) {
     const boundId = getBoundPresetIdFromContext(ctx);
     if (boundId && settings.activePresetId !== boundId) {
-      console.log(`[MyaPl] 키워드 모드 진입: Bind 프리셋 적용 (${boundId})`);
+      //console.log(`[MyaPl] 키워드 모드 진입: Bind 프리셋 적용 (${boundId})`);
       stopRuntime();
       settings.activePresetId = boundId;
       _engineCurrentPresetId = boundId;
@@ -779,7 +779,7 @@ export function engineTick() {
   _engineCurrentPresetId = preset.id;
   // 채팅 전환이 없었지만, UI 등에서 프리셋이 수동으로 변경된 경우에만 정리
   if (!(isChatChanged || isBindMismatch) && _engineLastPresetId && _engineLastPresetId !== String(preset.id)) {
-    console.log(`[MyaPl] 수동 프리셋 변경 감지: ${String(_engineLastPresetId)} -> ${String(preset.id)}`);
+    //console.log(`[MyaPl] 수동 프리셋 변경 감지: ${String(_engineLastPresetId)} -> ${String(preset.id)}`);
     stopRuntime();
     st.currentKey = "";
     st.listIndex = 0;
