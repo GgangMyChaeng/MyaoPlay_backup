@@ -14,7 +14,6 @@
 
 /* ===== Light Theme (Default) ===== */
 :root {
-  color-scheme: light;
   /* Font */
   --abgm-font: 'Noto Sans KR', sans-serif;
   --abgm-font-size: 100%;
@@ -89,7 +88,6 @@
 
 /* ===== Dark Theme ===== */
 body[data-abgm-theme="dark"] {
-  color-scheme: dark;
   /* Surface & Background - Teal/Mint */
   --abgm-bg: #262929;
   --abgm-surface: rgba(255, 255, 255, 0.04);
