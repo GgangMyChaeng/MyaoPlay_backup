@@ -45,6 +45,7 @@ let _engineLastChatKey = "";
 let _engineCurrentFileKey = "";
 let _engineCurrentPresetId = "";
 let _engineLastPresetId = "";
+let _engineLastPlayMode = "";
 // 로비 pause/resume용
 let _enginePausedByLobby = false;
 let _engineLobbyStreak = 0;
@@ -643,6 +644,24 @@ export function engineTick() {
   if (!preset) preset = Object.values(settings.presets ?? {})[0];
   if (!preset) return;
   const mode = settings.playMode ?? "manual";
+  // === 모드 전환 감지: 키워드 모드 진입 시 Bind 체크 ===
+  const isModeChanged = _engineLastPlayMode && _engineLastPlayMode !== mode;
+  if (isModeChanged && settings.keywordMode) {
+    // 키워드 모드로 진입했을 때 Bind 체크
+    const boundPresetId = getBoundPresetIdFromContext(ctx);
+    if (boundPresetId && settings.activePresetId !== boundPresetId) {
+      console.log(`[MyaPl] 키워드 모드 진입: Bind 프리셋 적용 (${boundPresetId})`);
+      stopRuntime();
+      settings.activePresetId = boundPresetId;
+      _engineCurrentPresetId = boundPresetId;
+      preset = settings.presets?.[boundPresetId] || preset;
+      st.currentKey = "";
+      _engineCurrentFileKey = "";
+      try { saveSettingsDebounced(); } catch {}
+      try { _updateNowPlayingUI(); } catch {}
+    }
+  }
+  _engineLastPlayMode = mode;
   const sort = _getBgmSort(settings);
   let keys = _getSortedKeys(preset, sort);
   // 키워드 모드 아닐 때는 SFX를 BGM 재생 후보에서 제외 (옵션)
