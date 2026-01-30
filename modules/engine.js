@@ -674,18 +674,21 @@ export function engineTick() {
   const isBindMismatch = !_engineLastChatKey && boundPresetId && settings.activePresetId !== boundPresetId;
 
   if (isChatChanged || isBindMismatch) {
-    if (settings.keywordMode) {
-      stopRuntime(); // 키워드 모드는 무조건 정리
-      // Bind 프리셋이 있으면 적용
-      if (boundPresetId && settings.activePresetId !== boundPresetId) {
-        console.log(`[MyaPl] 채팅방 전환(키워드): Bind 프리셋 적용 (${boundPresetId})`);
-        settings.activePresetId = boundPresetId;
-        _engineCurrentPresetId = boundPresetId;
-        preset = settings.presets?.[boundPresetId] || preset; // preset 변수 갱신
-        try { saveSettingsDebounced(); } catch {}
-        try { _updateNowPlayingUI(); } catch {}
-      }
-    } else {
+  if (settings.keywordMode) {
+    stopRuntime(); // 키워드 모드는 무조건 정리
+    // Bind 프리셋이 있으면 적용
+    if (boundPresetId && settings.activePresetId !== boundPresetId) {
+      console.log(`[MyaPl] 채팅방 전환(키워드): Bind 프리셋 적용 (${boundPresetId})`);
+      settings.activePresetId = boundPresetId;
+      _engineCurrentPresetId = boundPresetId;
+      preset = settings.presets?.[boundPresetId] || preset;
+      // 이전 곡 상태 초기화 (다른 프리셋 곡이 재생되는 거 방지)
+      st.currentKey = "";
+      _engineCurrentFileKey = "";
+      try { saveSettingsDebounced(); } catch {}
+      try { _updateNowPlayingUI(); } catch {}
+    }
+  } else {
       // === 일반 모드(Manual/Loop/Random) ===
       const currentFileKey = String(_engineCurrentFileKey || "").trim();
       // 재생 중이었거나, 재생 로딩 중이면 true
