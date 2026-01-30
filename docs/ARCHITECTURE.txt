@@ -55,6 +55,7 @@ MyaoPlay/
             ├─ openai.js          # OpenAI TTS
             ├─ gemini.js          # Google Gemini
             ├─ lmnt.js            # LMNT
+            ├─ elevenlabs.js      # ElevenLabs
 
 
 [2] 모듈 역할 상세
