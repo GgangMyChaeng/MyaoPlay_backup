@@ -647,14 +647,13 @@ export function engineTick() {
   // === 모드 전환 감지: 키워드 모드 진입 시 Bind 체크 ===
   const isModeChanged = _engineLastPlayMode && _engineLastPlayMode !== mode;
   if (isModeChanged && settings.keywordMode) {
-    // 키워드 모드로 진입했을 때 Bind 체크
-    const boundPresetId = getBoundPresetIdFromContext(ctx);
-    if (boundPresetId && settings.activePresetId !== boundPresetId) {
-      console.log(`[MyaPl] 키워드 모드 진입: Bind 프리셋 적용 (${boundPresetId})`);
+    const boundId = getBoundPresetIdFromContext(ctx);
+    if (boundId && settings.activePresetId !== boundId) {
+      console.log(`[MyaPl] 키워드 모드 진입: Bind 프리셋 적용 (${boundId})`);
       stopRuntime();
-      settings.activePresetId = boundPresetId;
-      _engineCurrentPresetId = boundPresetId;
-      preset = settings.presets?.[boundPresetId] || preset;
+      settings.activePresetId = boundId;
+      _engineCurrentPresetId = boundId;
+      preset = settings.presets?.[boundId] || preset;
       st.currentKey = "";
       _engineCurrentFileKey = "";
       try { saveSettingsDebounced(); } catch {}
