@@ -199,7 +199,7 @@ function setupEventDelegation() {
     }
     await playTts(textToRead, btn);
   });
-  console.log("[MyaPl] Event delegation setup complete");
+  //console.log("[MyaPl] Event delegation setup complete");
 }
 
 
@@ -242,9 +242,9 @@ export function addTtsButtonsToAllMessages() {
     addedCount++;
   });
   // 실제로 추가했을 때만 로그
-  if (addedCount > 0) {
-    console.log(`[MyaPl] Added TTS buttons to ${addedCount} new messages`);
-  }
+  //if (addedCount > 0) {
+    //console.log(`[MyaPl] Added TTS buttons to ${addedCount} new messages`);
+  //}
 }
 
 /**
