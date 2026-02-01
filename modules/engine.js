@@ -729,7 +729,7 @@ export function engineTick() {
       }
       // === Case 2: 곡 유지 불가 (타겟 프리셋에 곡이 없거나, 강제 전환 필요) ===
       else {
-        console.log(`[MyaPl] 채팅방 전환: 프리셋 변경 및 재생 갱신`);
+        // console.log(`[MyaPl] 채팅방 전환: 프리셋 변경 및 재생 갱신`);
         
         // 1. 일단 멈춤 (이전 곡 정리)
         stopRuntime();
