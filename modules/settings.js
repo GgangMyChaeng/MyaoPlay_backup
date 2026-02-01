@@ -594,6 +594,29 @@ export async function migrateLegacyDataUrlsToIDB(settings) {
   }
 }
 
+// BGM 이름 NFC 정규화 마이그레이션 (한글 폰트 적용 문제 해결)
+let _nfcMigrated = false;
+export function migrateNamesToNFC(settings) {
+  if (_nfcMigrated) return;
+  _nfcMigrated = true;
+  let changed = false;
+  for (const p of Object.values(settings.presets ?? {})) {
+    for (const b of (p.bgms ?? [])) {
+      if (b.name && typeof b.name === 'string') {
+        const normalized = b.name.normalize('NFC');
+        if (normalized !== b.name) {
+          b.name = normalized;
+          changed = true;
+        }
+      }
+    }
+  }
+  if (changed) {
+    console.log("[MyaoPlay] NFC migration applied");
+    try { saveSettingsDebounced?.(); } catch {}
+  }
+}
+
 
 
 /** ========================= 매크로 헬퍼 함수 ========================= */
