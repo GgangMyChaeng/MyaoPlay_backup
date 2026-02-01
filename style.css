@@ -870,6 +870,7 @@ body.autobgm-modal-open {
   table-layout: fixed;
   min-width: 0;
   color: var(--abgm-text);
+  font-family: var(--abgm-font);
 }
 
 .abgm-table thead {
@@ -906,6 +907,7 @@ body.autobgm-modal-open {
   border: 1px solid var(--abgm-input-border);
   background: var(--abgm-input-bg);
   color: var(--abgm-text);
+  font-family: var(--abgm-font);
 }
 
 /* column widths */
@@ -3057,6 +3059,18 @@ textarea.abgm-lyrics-input:focus {
   font-family: var(--abgm-font) !important;
   font-size: inherit;
   font-weight: inherit;
+}
+
+/* GLOBAL FONT INHERITANCE FOR FORM ELEMENTS */
+.abgm-modal input,
+.abgm-modal textarea,
+.abgm-modal select,
+.abgm-modal button,
+.abgm-np-modal input,
+.abgm-np-modal textarea,
+.abgm-np-modal select,
+.abgm-np-modal button {
+  font-family: var(--abgm-font) !important;
 }
 
 #abgm_modal_overlay,
