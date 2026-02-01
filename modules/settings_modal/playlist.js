@@ -349,7 +349,7 @@ export function initPlaylistEvents(root, settings) {
       preset.bgms.push({
         id: _uid(),
         fileKey,
-        name: _basenameNoExt(fileKey),
+        name: _basenameNoExt(fileKey).normalize('NFC'),
         keywords: "",
         priority: 0,
         volume: 1.0,
@@ -385,7 +385,7 @@ export function initPlaylistEvents(root, settings) {
           preset.bgms.push({
             id: _uid(),
             fileKey: key,
-            name: _basenameNoExt(key),
+            name: _basenameNoExt(key).normalize('NFC'),
             keywords: "",
             priority: 0,
             volume: 1.0,
