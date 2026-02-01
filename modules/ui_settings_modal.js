@@ -4,7 +4,7 @@
  * - 탭 시스템, 공통 헬퍼, 의존성 주입, 자식 모듈 조립
  */
 
-import { ensureSettings, migrateLegacyDataUrlsToIDB } from "./settings.js";
+import { ensureSettings, migrateLegacyDataUrlsToIDB, migrateNamesToNFC } from "./settings.js";
 import { saveSettingsDebounced } from "./deps.js";
 import { openFreeSourcesModal, initFreeSourcesInPanel } from "./ui_freesources.js";
 
@@ -444,6 +444,7 @@ export function initModal(overlay) {
 
   // 구버전 dataUrl 있으면 IndexedDB로 옮김
   migrateLegacyDataUrlsToIDB(settings).catch(() => {});
+  migrateNamesToNFC(settings);
 
   // ===== 상단 옵션 =====
   const kw = root.querySelector("#abgm_keywordMode");
