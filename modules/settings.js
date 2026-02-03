@@ -520,18 +520,6 @@ Example B (without keyword):
   s.sfxMode ??= {};
   s.sfxMode.overlay ??= true;
   s.sfxMode.skipInOtherModes ??= true;
-  // TTS Mode 보정
-  s.ttsMode ??= {};
-  s.ttsMode.enabled ??= false;
-  s.ttsMode.autoPlay ??= true;
-  s.ttsMode.provider ??= "qwen";
-  s.ttsMode.providers ??= {};
-  s.ttsMode.providers.qwen ??= { model: "qwen3-tts-flash", apiKey: "", voice: "Cherry" };
-  // 구버전 마이그레이션: 최상위 qwen 설정을 providers.qwen으로 이동
-  if (s.ttsMode.qwen) {
-    s.ttsMode.providers.qwen = { ...s.ttsMode.providers.qwen, ...s.ttsMode.qwen };
-    delete s.ttsMode.qwen;
-  }
   // > 프리셋/곡 스키마 보정 + 구버전 변환
   Object.values(s.presets).forEach((p) => {
     p.defaultBgmKey ??= "";
