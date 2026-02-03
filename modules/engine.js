@@ -3,7 +3,6 @@
 import { ensureSettings } from "./settings.js";
 import { saveSettingsDebounced, getBoundPresetIdFromContext } from "./deps.js";
 import { idbGet } from "./storage.js";
-import { providers as ttsProviders } from "./tts/providers/index.js";
 
 // console.log("[MyaPl] engine loaded");
 
@@ -58,8 +57,6 @@ const _sfxAudio = new Audio();
 let _sfxUrl = "";
 let _sfxCurrentFileKey = "";
 // 참고: SFX 런타임 상태(_lastSfxSig, _bgmPausedBySfx, _sfxOverlayWasOff)는 state.js에서 관리
-
-let _lastTtsSig = ""; // TTS 중복 재생 방지용
 
 // ===== 외부 접근용 getter =====
 // 메인 BGM Audio 객체를 외부(UI)에서 접근할 수 있게 반환
@@ -601,32 +598,6 @@ export function engineTick() {
   // ===== 디버그 라인: 항상 업데이트 (키워드 모드 여부 무관) =====
   const lastAsst = _getLastAssistantText(ctx);
   const asstText = String(lastAsst ?? "");
-
-  // [TTS] 자동 재생 로직
-  if (asstText && settings.ttsMode?.enabled && settings.ttsMode?.autoPlay) {
-    const currentSig = _makeAsstSig(asstText);
-    // 이전과 다른 메시지라면 재생 시도
-    if (currentSig !== _lastTtsSig) {
-      _lastTtsSig = currentSig;
-      // 비동기로 실행 (엔진 틱 지연 방지)
-      (async () => {
-        try {
-          const pid = settings.ttsMode.provider;
-          const provider = ttsProviders[pid];
-          const pSettings = settings.ttsMode.providers?.[pid];
-          if (provider && pSettings) {
-            const url = await provider.getAudioUrl(asstText, pSettings);
-            const audio = new Audio(url);
-            audio.volume = 0.8; // 임시 볼륨 (나중에 설정으로 뺄 수 있음)
-            await audio.play();
-          }
-        } catch (e) {
-          console.error("[MyaPl] Auto TTS Error:", e);
-        }
-      })();
-    }
-  }
-
   if (window.__abgmDebugMode) {
     const len = asstText.length;
     const preview = asstText.slice(0, 40).replace(/\s+/g, " ");
