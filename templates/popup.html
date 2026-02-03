@@ -223,7 +223,6 @@
     <button type="button" class="abgm-mode-subtab is-active" data-mode-tab="keyword" role="tab" aria-selected="true">🎤 Keyword</button>
     <button type="button" class="abgm-mode-subtab" data-mode-tab="time" role="tab" aria-selected="false">⏰ Time</button>
     <button type="button" class="abgm-mode-subtab" data-mode-tab="sfx" role="tab" aria-selected="false">🔊 SFX</button>
-    <button type="button" class="abgm-mode-subtab" data-mode-tab="tts" role="tab" aria-selected="false">🗣️ TTS</button> 
   </div>
 
   <!-- Keyword Mode Settings -->
@@ -549,256 +548,6 @@
       </div>
     </div>
   </div>
-
-  <!-- TTS Mode Settings -->
-  <div class="abgm-mode-subpanel" id="abgm-mode-tts" data-mode-panel="tts" style="display:none;">
-    <div class="abgm-card" style="padding:15px;">
-      <b>🗣️ TTS 설정</b>
-      <p style="opacity:.7; margin-top:6px; font-size:12px;">
-        AI 응답을 음성으로 읽어줍니다.
-      </p>
-
-        <!-- 메시지 TTS 버튼 토글 -->
-      <div style="margin-top:15px; padding:12px; background:rgba(100,200,100,.1); border:1px solid rgba(100,200,100,.3); border-radius:8px;">
-        <div style="display:flex; align-items:center; justify-content:space-between;">
-          <div>
-            <b style="font-size:13px;">💬 메시지 TTS 버튼</b>
-            <p style="font-size:11px; opacity:.7; margin-top:4px;">
-              AI 메시지에 TTS 버튼을 표시합니다.
-            </p>
-          </div>
-          <label class="abgm-switch" style="flex-shrink:0;">
-            <input type="checkbox" id="abgm_tts_msg_button_toggle">
-            <span class="abgm-slider"></span>
-          </label>
-        </div>
-        
-        <!-- 버튼 모드 선택 (토글 켜졌을 때만 표시) -->
-        <div id="abgm_tts_msg_button_options" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,.1);">
-          <label style="font-size:12px; opacity:.8;">읽기 모드</label>
-          <select id="abgm_tts_msg_read_mode" class="abgm-select" style="width:100%; margin-top:4px;">
-            <option value="dialogue">대사만 ("")</option>
-            <option value="all" disabled>전체 (🚧 준비 중)</option>
-          </select>
-          <p style="font-size:10px; opacity:.5; margin-top:4px;">
-            대사만: 따옴표 안의 대사만 읽습니다.
-          </p>
-        </div>
-      </div>
-
-      <!-- Provider 선택 -->
-      <div style="margin-top:15px;">
-        <label style="font-size:12px; opacity:.8;">Provider</label>
-        <select id="abgm_tts_provider" class="abgm-select" style="width:100%; margin-top:4px;">
-          <!-- JS에서 동적으로 채움 -->
-        </select>
-      </div>
-
-      <!-- ========== Qwen 설정 ========== -->
-      <div id="abgm_tts_qwen_settings" class="abgm-tts-provider-box" style="display:none;">
-        <div class="abgm-tts-provider-title">Qwen (Alibaba)</div>
-        
-        <div>
-          <label style="font-size:12px; opacity:.8;">Model</label>
-          <select id="abgm_tts_qwen_model" class="abgm-select" style="width:100%; margin-top:4px;">
-            <option value="qwen3-tts-flash">qwen3-tts-flash (권장)</option>
-            <option value="qwen3-tts-flash-2025-11-27">qwen3-tts-flash-2025-11-27</option>
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Voice</label>
-          <select id="abgm_tts_qwen_voice" class="abgm-select" style="width:100%; margin-top:4px;">
-            <!-- JS에서 동적으로 채움 -->
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">API Key</label>
-          <input type="password" id="abgm_tts_qwen_apikey" class="abgm-input" placeholder="sk-xxxxxxxx" style="width:100%; margin-top:4px;">
-          <p style="font-size:10px; opacity:.5; margin-top:4px;">
-            <a href="https://bailian.console.alibabacloud.com/?tab=model#/api-key" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
-          </p>
-        </div>
-      </div>
-
-      <!-- ========== OpenAI 설정 ========== -->
-      <div id="abgm_tts_openai_settings" class="abgm-tts-provider-box" style="display:none;">
-        <div class="abgm-tts-provider-title">OpenAI TTS</div>
-        
-        <div>
-          <label style="font-size:12px; opacity:.8;">Model</label>
-          <select id="abgm_tts_openai_model" class="abgm-select" style="width:100%; margin-top:4px;">
-            <option value="tts-1">tts-1 (빠름)</option>
-            <option value="tts-1-hd">tts-1-hd (고품질)</option>
-            <option value="gpt-4o-mini-tts">gpt-4o-mini-tts</option>
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Voice</label>
-          <select id="abgm_tts_openai_voice" class="abgm-select" style="width:100%; margin-top:4px;">
-            <!-- JS에서 동적으로 채움 -->
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Speed</label>
-          <input type="range" id="abgm_tts_openai_speed" min="0.25" max="4.0" step="0.05" value="1.0" style="width:100%; margin-top:4px;">
-          <div style="display:flex; justify-content:space-between; font-size:10px; opacity:.5;">
-            <span>0.25x</span>
-            <span id="abgm_tts_openai_speed_val">1.0x</span>
-            <span>4.0x</span>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Instructions <span style="opacity:.5;">(선택)</span></label>
-          <textarea id="abgm_tts_openai_instructions" class="abgm-input" rows="2" placeholder="예: Speak in a cheerful tone..." style="width:100%; margin-top:4px; resize:vertical;"></textarea>
-          <p style="font-size:10px; opacity:.5; margin-top:2px;">gpt-4o-mini-tts만 지원</p>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">API Key</label>
-          <input type="password" id="abgm_tts_openai_apikey" class="abgm-input" placeholder="sk-xxxxxxxx" style="width:100%; margin-top:4px;">
-          <p style="font-size:10px; opacity:.5; margin-top:4px;">
-            <a href="https://platform.openai.com/api-keys" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
-          </p>
-        </div>
-      </div>
-
-      <!-- ========== Gemini 설정 ========== -->
-      <div id="abgm_tts_gemini_settings" class="abgm-tts-provider-box" style="display:none;">
-        <div class="abgm-tts-provider-title">Gemini (Google)</div>
-        
-        <div>
-          <label style="font-size:12px; opacity:.8;">Model</label>
-          <select id="abgm_tts_gemini_model" class="abgm-select" style="width:100%; margin-top:4px;">
-            <option value="gemini-2.5-flash-preview-tts">gemini-2.5-flash-preview-tts</option>
-            <option value="gemini-2.5-pro-preview-tts">gemini-2.5-pro-preview-tts (고품질)</option>
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Voice</label>
-          <select id="abgm_tts_gemini_voice" class="abgm-select" style="width:100%; margin-top:4px;">
-            <!-- JS에서 동적으로 채움 -->
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">API Key</label>
-          <input type="password" id="abgm_tts_gemini_apikey" class="abgm-input" placeholder="AIzaSy..." style="width:100%; margin-top:4px;">
-          <p style="font-size:10px; opacity:.5; margin-top:4px;">
-            <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
-          </p>
-        </div>
-      </div>
-
-            <!-- ========== LMNT 설정 ========== -->
-      <div id="abgm_tts_lmnt_settings" class="abgm-tts-provider-box" style="display:none;">
-        <div class="abgm-tts-provider-title">LMNT</div>
-        
-        <div>
-          <label style="font-size:12px; opacity:.8;">Model</label>
-          <select id="abgm_tts_lmnt_model" class="abgm-select" style="width:100%; margin-top:4px;">
-            <option value="blizzard">blizzard (기본)</option>
-            <option value="aurora">aurora (고품질)</option>
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Voice</label>
-          <select id="abgm_tts_lmnt_voice" class="abgm-select" style="width:100%; margin-top:4px;">
-            <!-- JS에서 동적으로 채움 -->
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Speed</label>
-          <input type="range" id="abgm_tts_lmnt_speed" min="0.5" max="2.0" step="0.1" value="1.0" style="width:100%; margin-top:4px;">
-          <div style="display:flex; justify-content:space-between; font-size:10px; opacity:.5;">
-            <span>0.5x</span>
-            <span id="abgm_tts_lmnt_speed_val">1.0x</span>
-            <span>2.0x</span>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">API Key</label>
-          <input type="password" id="abgm_tts_lmnt_apikey" class="abgm-input" placeholder="your-api-key" style="width:100%; margin-top:4px;">
-          <p style="font-size:10px; opacity:.5; margin-top:4px;">
-            <a href="https://app.lmnt.com/account" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
-          </p>
-        </div>
-      </div>
-
-      <!-- ========== ElevenLabs 설정 ========== -->
-      <div id="abgm_tts_elevenlabs_settings" class="abgm-tts-provider-box" style="display:none;">
-        <div class="abgm-tts-provider-title">ElevenLabs</div>
-        
-        <div>
-          <label style="font-size:12px; opacity:.8;">Model</label>
-          <select id="abgm_tts_elevenlabs_model" class="abgm-select" style="width:100%; margin-top:4px;">
-            <!-- JS에서 동적으로 채움 -->
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Voice</label>
-          <select id="abgm_tts_elevenlabs_voice" class="abgm-select" style="width:100%; margin-top:4px;">
-            <!-- JS에서 동적으로 채움 -->
-          </select>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Stability (안정성)</label>
-          <input type="range" id="abgm_tts_elevenlabs_stability" min="0" max="1" step="0.05" value="0.5" style="width:100%; margin-top:4px;">
-          <div style="display:flex; justify-content:space-between; font-size:10px; opacity:.5;">
-            <span>0 (변화↑)</span>
-            <span id="abgm_tts_elevenlabs_stability_val">0.5</span>
-            <span>1 (안정↑)</span>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">Similarity Boost (유사도)</label>
-          <input type="range" id="abgm_tts_elevenlabs_similarity" min="0" max="1" step="0.05" value="0.75" style="width:100%; margin-top:4px;">
-          <div style="display:flex; justify-content:space-between; font-size:10px; opacity:.5;">
-            <span>0 (자유↑)</span>
-            <span id="abgm_tts_elevenlabs_similarity_val">0.75</span>
-            <span>1 (원본↑)</span>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;">
-          <label style="font-size:12px; opacity:.8;">API Key</label>
-          <input type="password" id="abgm_tts_elevenlabs_apikey" class="abgm-input" placeholder="your-api-key" style="width:100%; margin-top:4px;">
-          <p style="font-size:10px; opacity:.5; margin-top:4px;">
-            <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" style="color:#8af;">API 키 발급받기 →</a>
-          </p>
-        </div>
-      </div>
-
-      <!-- ========== 공통: 테스트 & 재생 버튼 ========== -->
-      <div id="abgm_tts_common_actions" class="abgm-tts-divider" style="display:none;">
-        <button type="button" id="abgm_tts_test_btn" class="menu_button" style="width:100%;">
-          🔊 연결 테스트
-        </button>
-        <div id="abgm_tts_test_result" style="margin-top:8px; font-size:11px;"></div>
-        
-        <button type="button" id="abgm_tts_speak_btn" class="menu_button" style="width:100%; margin-top:10px;">
-          💾 마지막 오디오 다운로드
-        </button>
-        <div id="abgm_tts_speak_status" style="margin-top:8px; font-size:11px;"></div>
-      </div>
-
-      <!-- CORS 안내 -->
-      <div id="abgm_tts_cors_warning" class="abgm-tts-warning" style="display:none;">
-        ⚠️ TTS 기능을 사용하려면 ST의 <code>config.yaml</code>에서 <code>enableCorsProxy: true</code>로 설정 후 재시작이 필요합니다.
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Sources Panel -->
@@ -920,18 +669,19 @@
     <details class="abgm-details" style="margin-top:10px;">
       <summary class="abgm-details-summary">🧾 변경사항 (Changelog)</summary>
       <div class="abgm-details-body">
-        <div>2026~</div>
-        <div>01-14: v1.0.0 배포</div>
-        <div>01-15: 테마를 따라가지 못하던 요소 일부(메뉴) &amp; Bind 창의 UI 및 캐릭터 이름 정렬순 개선</div>
-        <div>01-17: 소스 &gt; 쓸모없어진 No lyric 태그 제거 / 확장 공유 관련 라이센스 강화 / 소스 &gt; 정렬순 &amp; 가사 및 라이센스 저장 시스템 추가 &amp; options 바텀시트 내 복사&amp;정보 분리</div>
-        <div>01-18: SillyTavern 요술봉 메뉴에 버튼 추가 / BGM List 새로고침 버튼 추가</div>
-        <div>01-19: Default 곡 없는 프리셋 불러오기 시 None 유지하도록 정상 개선 / 설정 창 타이틀 제거 & 해당 자리에 활성화/비활성화 버튼 추가</div>
-        <div>01-20: Change Mp3 버튼을 Change Source 버튼으로 변경</div>
-        <div>01-21: 단일 파일 혹은 zip을 먹였을 때 다른 프리셋으로 튕겨나가는 치명적인 버그 개선 / BPM 태그 분류 방식 개선</div>
-        <div>01-23: 확장자 호환 개선</div>
-        <div>01-29: 테마 > 폰트 설정 추가 / 모드 > TTS 섹션 추가(테스트용 최소 구현)</div>
-        <div>01-30: 일반 재생 모드 로직 개선</div>
-        <div>02-01: 항목 이름 자동 생성의 경우 폰트 적용이 안 되던 부분 개선</div>
+        <div>2026-01~<br><br>
+          14: v1.0.0 배포<br>
+          15: 테마를 따라가지 못하던 요소 일부(메뉴) &amp; Bind 창의 UI 및 캐릭터 이름 정렬순 개선<br>
+          17: 소스 &gt; 쓸모없어진 No lyric 태그 제거 / 확장 공유 관련 라이센스 강화 / 소스 &gt; 정렬순 &amp; 가사 및 라이센스 저장 시스템 추가 &amp; options 바텀시트 내 복사&amp;정보 분리<br>
+          18: SillyTavern 요술봉 메뉴에 버튼 추가 / BGM List 새로고침 버튼 추가<br>
+          19: Default 곡 없는 프리셋 불러오기 시 None 유지하도록 정상 개선 / 설정 창 타이틀 제거 & 해당 자리에 활성화/비활성화 버튼 추가<br>
+          20: Change Mp3 버튼을 Change Source 버튼으로 변경<br>
+          21: 단일 파일 혹은 zip을 먹였을 때 다른 프리셋으로 튕겨나가는 치명적인 버그 개선 / BPM 태그 분류 방식 개선<br>
+          23: 확장자 호환 개선<br>
+          29: 테마 > 폰트 설정 추가 / 모드 > TTS 섹션 추가(테스트용 최소 구현)<br>
+          30: 일반 재생 모드 로직 개선</div>
+        <div>02~<br><br>
+          02-01: 항목 이름 자동 생성의 경우 폰트 적용이 안 되던 부분 개선</div>
       </div>
     </details>
 
