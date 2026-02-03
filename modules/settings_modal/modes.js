@@ -3,7 +3,7 @@
  * Mode Panel 초기화 (키워드/시간/SFX 모드)
  */
 
-import { initTtsPanel, bindTtsPanelDeps } from "./tts.js";
+
 
 // 의존성 (부모 모듈에서 주입받음)
 let _saveSettingsDebounced = () => {};
@@ -27,8 +27,6 @@ export function bindModesPanelDeps(deps = {}) {
   if (typeof deps.abgmConfirm === "function") {
     _abgmConfirm = deps.abgmConfirm;
   }
-  // TTS 패널에도 의존성 전달
-  bindTtsPanelDeps(deps);
 }
 
 /**
@@ -351,8 +349,6 @@ export function initModePanel(root, settings) {
   initTimePanel(root, settings);
   // > SFX Mode Panel 초기화
   initSfxPanel(root, settings);
-  // > TTS Mode Panel 초기화
-  initTtsPanel(root, settings);
 } // initModePanel 닫기
 
 
