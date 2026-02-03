@@ -287,23 +287,6 @@ Example B (without keyword):
       overlay: true,        // true: BGM 위에 겹쳐 재생, false: BGM 일시정지 후 재생
       skipInOtherModes: true, // 키워드 모드 아닐 때 SFX 타입 곡 건너뛰기
     },
-    // TTS Mode 기본 설정
-    ttsMode: {
-      enabled: false,
-      autoPlay: true,
-      provider: "qwen", // 'qwen', 'elevenlabs' 등
-      providers: {
-        qwen: {
-          apiKey: "",
-          model: "qwen3-tts-flash",
-          voice: "Cherry",
-        },
-        elevenlabs: {
-          apiKey: "",
-          voiceId: "21m00Tcm4TlvDq8ikWAM", // 예시: Rachel
-        }
-      }
-    },
   };
   const s = extension_settings[SETTINGS_KEY];
   s.globalVolLocked ??= false;
