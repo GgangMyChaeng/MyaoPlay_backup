@@ -18,7 +18,6 @@ import { abgmBindFreeSourcesDeps, closeFreeSourcesModal, bootFreeSourcesSync, sy
 import { abgmBindEngineDeps, getBgmAudio, getEngineCurrentFileKey, getEngineCurrentPresetId, stopRuntime, togglePlayPause, ensurePlayFile, engineTick, startEngine, setEngineCurrentFileKey, pickRandomKey } from "./modules/engine.js";
 import { uid, basenameNoExt, escapeHtml, isProbablyUrl, dropboxToRaw, clamp01, clone, parseKeywords, getChatKeyFromContext, getLastAssistantText, makeAsstSig } from "./modules/utils.js";
 import { getActivePreset, getEntryName, ensureBgmNames, getBgmSort, getPresetSort, getSortedBgms, getSortedKeys, findBgmByKey, abgmCycleBgmSort, abgmSortNice, isFileKeyReferenced } from "./modules/state.js";
-import { initMessageButtons } from "./modules/tts/tts_message_button.js";
 /** =================================================================================== */
 
 
@@ -516,8 +515,6 @@ async function init() {
   startEngine();
   // 완드 메뉴
   addWandMenuButton();
-  // TTS 메시지 버튼 초기화
-  initMessageButtons();
   // 2) 플로팅 버튼 초기화
   const settings = ensureSettings();
   // 테마 초기화 (저장된 테마 적용)
