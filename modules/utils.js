@@ -111,33 +111,3 @@ export function makeAsstSig(text) {
   const tail = t.slice(-20).replace(/\s+/g, " ");
   return `${t.length}:${head}:${tail}`;
 }
-
-
-
-/** ========================= TTS 텍스트 전처리 ========================= */
-// TTS로 보내기 전에 불필요한 요소 제거
-export function preprocessForTts(text) {
-  let t = String(text || "");
-  // 0) HTML/XML 태그 + 내용물 전부 제거 (state, StatusPlaceHolderImpl 등)
-  t = t.replace(/<[^>]+>[^<]*<\/[^>]+>/g, " ");  // <tag>내용</tag> 형태
-  t = t.replace(/<[^>]*\/>/g, " ");              // <SelfClosing/> 형태
-  t = t.replace(/<[^>]*>/g, " ");                // 남은 단독 태그
-  // 1) *지문/액션* 제거 (별표로 감싼 부분)
-  t = t.replace(/\*[^*]+\*/g, " ");
-  // 2) 마크다운 제거
-  t = t.replace(/\*\*([^*]+)\*\*/g, "$1");  // **굵게**
-  t = t.replace(/__([^_]+)__/g, "$1");       // __굵게__
-  t = t.replace(/\*([^*]+)\*/g, "$1");       // *기울임*
-  t = t.replace(/_([^_]+)_/g, "$1");         // _기울임_
-  t = t.replace(/~~([^~]+)~~/g, "$1");       // ~~취소선~~
-  t = t.replace(/`([^`]+)`/g, "$1");         // `코드`
-  t = t.replace(/^#{1,6}\s*/gm, "");         // # 헤더
-  // 3) 이모지 제거 (대부분의 이모지 범위)
-  t = t.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]/gu, "");
-  // 4) 따옴표 정리 (대사 따옴표는 유지하되 깔끔하게)
-  t = t.replace(/[""]/g, '"');
-  t = t.replace(/['']/g, "'");
-  // 5) 연속 공백/줄바꿈 정리
-  t = t.replace(/\s+/g, " ").trim();
-  return t;
-}
